@@ -14,8 +14,8 @@ int main(void){
     Vector2 h = d;
     h.x = 0;
 
-    std::cout << "Vector2 (" << d.x << ", " << d.y << ") " << std::endl;
-    std::cout << "Vector2 (" << h.x << ", " << h.y << ") " << std::endl;
+    std::cout << Vector4(d.Normalized()) << std::endl;
     
     return 0;
 };
+
