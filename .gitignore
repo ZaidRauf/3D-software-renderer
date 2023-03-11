@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+# Vim
+*.swp
+
+# Compiled binary
+3D_renderer
