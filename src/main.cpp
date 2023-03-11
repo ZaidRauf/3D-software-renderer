@@ -14,7 +14,9 @@ int main(void){
     Vector2 h = d;
     h.x = 0;
 
-    std::cout << Vector4(d.Normalized()) << std::endl;
+    Matrix4x4 mat = Matrix4x4::Translation(1, 1, 1);
+    
+    std::cout << mat * Vector4(1,1,1,1) << std::endl;
     
     return 0;
 };

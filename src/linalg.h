@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <cmath>
 #include <iostream>
 
@@ -83,6 +84,7 @@ class Vector4{
         Vector4(const Vector2 &vector);
         Vector4(const Vector3 &vector);
         Vector4(const Vector4 &vector);
+        Vector4(const std::array<float, 4> &arr);
         ~Vector4();
         float Length();
         Vector4 Normalized();
@@ -102,3 +104,20 @@ Vector4 operator*(const Vector4 &vector, const float &scalar);
 Vector4 operator*(const float &scalar, const Vector4 &vector);
 Vector4 operator*(const Vector4 &vector, const float &scalar);
 std::ostream& operator<<(std::ostream &os, const Vector4 &v);
+
+
+// Matrix4x4
+class Matrix4x4{
+    public:
+        std::array<std::array<float, 4>, 4> matrix;
+        ~Matrix4x4();
+        static Vector4 MatrixVectorMultiply(const Matrix4x4 &mat, const Vector4 &v);
+        static Matrix4x4 Identity();
+        static Matrix4x4 Zeros();
+        static Matrix4x4 Translation(float tx, float ty, float tz);
+
+    private:
+        Matrix4x4();
+};
+
+Vector4 operator*(const Matrix4x4 &mat, const Vector4 &vector);

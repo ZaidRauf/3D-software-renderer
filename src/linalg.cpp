@@ -154,6 +154,8 @@ Vector4::Vector4(const Vector3 &vector) : x(vector.x), y(vector.y), z(vector.z),
 
 Vector4::Vector4(const Vector4 &vector) : x(vector.x), y(vector.y), z(vector.z), w(vector.w){}
 
+Vector4::Vector4(const std::array<float, 4> &arr) : x(arr[0]), y(arr[1]), z(arr[2]), w(arr[3]){}
+
 Vector4::~Vector4(){}
 
 float Vector4::Length(){
@@ -173,7 +175,7 @@ Vector4 Vector4::Subtract(const Vector4 &a, const Vector4 &b){
 }
 
 float Vector4::Dot(const Vector4 &a, const Vector4 &b){
-    return (a.x * b.x) + (a.y * b.y) + (a.z * b.z) + (a.z * b.z);
+    return (a.x * b.x) + (a.y * b.y) + (a.z * b.z) + (a.w * b.w);
 }
 
 Vector4 Vector4::ScalarMultiply(const float &scalar, const Vector4 &vector){
@@ -215,7 +217,70 @@ std::ostream& operator<<(std::ostream &os, const Vector4 &v){
 
 // TODO: Matrix 4x4 Implementation
 
+Matrix4x4::Matrix4x4(){
+    matrix = {{
+        {1, 0, 0, 0},
+        {0, 1, 0, 0},
+        {0, 0, 1, 0},
+        {0, 0, 0, 1}
+    }};
+}
 
+Matrix4x4::~Matrix4x4(){}
+
+Vector4 Matrix4x4::MatrixVectorMultiply(const Matrix4x4 &mat, const Vector4 &v){
+    return Vector4(
+            Vector4::Dot(Vector4(mat.matrix[0]), v),
+            Vector4::Dot(Vector4(mat.matrix[1]), v),
+            Vector4::Dot(Vector4(mat.matrix[2]), v),
+            Vector4::Dot(Vector4(mat.matrix[3]), v)
+            );   
+}
+
+Matrix4x4 Matrix4x4::Identity(){
+   Matrix4x4 mat;
+
+   mat.matrix = {{
+        {1, 0, 0, 0},
+        {0, 1, 0, 0},
+        {0, 0, 1, 0},
+        {0, 0, 0, 1}
+    }}; 
+
+   return mat; 
+}
+
+Matrix4x4 Matrix4x4::Zeros(){
+   Matrix4x4 mat;
+
+   mat.matrix = {{
+        {0, 0, 0, 0},
+        {0, 0, 0, 0},
+        {0, 0, 0, 0},
+        {0, 0, 0, 0}
+    }}; 
+
+   return mat; 
+}
+
+Matrix4x4 Matrix4x4::Translation(float tx, float ty, float tz){
+   Matrix4x4 mat;
+
+   mat.matrix = {{
+        {1, 0, 0, tx},
+        {0, 1, 0, ty},
+        {0, 0, 1, tz},
+        {0, 0, 0, 1}
+    }}; 
+
+   return mat; 
+}
+
+
+
+Vector4 operator*(const Matrix4x4 &mat, const Vector4 &vector){
+    return Matrix4x4::MatrixVectorMultiply(mat, vector);
+}
 // Extra Utility Functions
 
 // Determinant of a 2x2 Matrix

@@ -1,2 +1,2 @@
 all:
-	g++ ./src/*.cpp -o 3D_renderer -lSDL2
+	g++ ./src/*.cpp -g -o 3D_renderer -lSDL2
