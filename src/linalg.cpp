@@ -290,6 +290,48 @@ Matrix4x4 Matrix4x4::Scale(float sx, float sy, float sz){
    return mat; 
 }
 
+// Working with floats hence using cosf, sinf
+// All angles assumed to be passed as radians
+Matrix4x4 Matrix4x4::ZRotationMatrix(float theta){
+   Matrix4x4 mat;
+
+   mat.matrix = {{
+        {cosf(theta), -sinf(theta), 0, 0},
+        {sinf(theta), cosf(theta),  0, 0},
+        {0,           0,            1, 0},
+        {0,           0,            0, 1}
+    }}; 
+
+   return mat; 
+}
+
+// Derive again later
+Matrix4x4 Matrix4x4::YRotationMatrix(float theta){
+   Matrix4x4 mat;
+
+   mat.matrix = {{
+        { cosf(theta),  0,  sinf(theta),  0},
+        { 0,            1,  0,            0},
+        {-sinf(theta),  0,  cosf(theta),  0},
+        { 0,            0,  0,            1}
+    }}; 
+   
+   return mat; 
+}
+
+Matrix4x4 Matrix4x4::XRotationMatrix(float theta){
+   Matrix4x4 mat;
+
+   mat.matrix = {{
+        {1, 0,             0,              0},
+        {0, cosf(theta),  -sinf(theta),    0},
+        {0, sinf(theta),   cosf(theta),    0},
+        {0, 0,             0,              1}
+   }}; 
+
+   return mat; 
+}
+
 const Vector4 Matrix4x4::operator*(const Vector4 &vector){
     return MatrixVectorMultiply(vector);
 }

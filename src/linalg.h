@@ -106,7 +106,7 @@ Vector4 operator*(const Vector4 &vector, const float &scalar);
 std::ostream& operator<<(std::ostream &os, const Vector4 &v);
 
 
-// Matrix4x4
+// Homogenous Matrix4x4 Definition
 class Matrix4x4{
     public:
         std::array<std::array<float, 4>, 4> matrix;
@@ -116,6 +116,9 @@ class Matrix4x4{
         static Matrix4x4 Zeros();
         static Matrix4x4 Translation(float tx, float ty, float tz);
         static Matrix4x4 Scale(float sx, float sy, float sz);
+        static Matrix4x4 ZRotationMatrix(float angleRadians);
+        static Matrix4x4 YRotationMatrix(float angleRadians);
+        static Matrix4x4 XRotationMatrix(float angleRadians);
         const Vector4 operator*(const Vector4 &vector);
     private:
         Matrix4x4();
