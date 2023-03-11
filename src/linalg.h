@@ -56,6 +56,7 @@ class Vector3{
         static Vector3 Add(const Vector3 &a, const Vector3 &b);
         static Vector3 Subtract(const Vector3 &a, const Vector3 &b);
         static float Dot(const Vector3 &a, const Vector3 &b);
+        static Vector3 Cross(const Vector3 &a, const Vector3 &b);
         static Vector3 ScalarMultiply(const float &scalar, const Vector3 &vector);
         Vector3 operator=(const Vector3 &v);
 };

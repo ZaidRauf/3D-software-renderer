@@ -109,6 +109,14 @@ Vector3 Vector3::operator=(const Vector3 &v){
     return *this;
 }
 
+Vector3 Vector3::Cross(const Vector3 &a, const Vector3 &b){
+    return Vector3(
+            (a.y * b.z) - (a.z * b.y),
+            (a.z * b.x) - (a.x * b.z),
+            (a.y * b.z) - (a.z * b.y)
+            );
+}
+
 // Vector3 Operator Implementations
 Vector3 operator+(const Vector3 &a, const Vector3 &b){
     return Vector3::Add(a, b);
@@ -203,4 +211,16 @@ Vector4 operator*(const Vector4 &vector, const float &scalar){
 
 std::ostream& operator<<(std::ostream &os, const Vector4 &v){
     return os << "Vector4: (x: " << v.x << ", y: " << v.y << ", z: " << v.z << ", w: " << v.w << ")";
+}
+
+// TODO: Matrix 4x4 Implementation
+
+
+// Extra Utility Functions
+
+// Determinant of a 2x2 Matrix
+// | a b |
+// | c d | = ad - bc
+inline float Determinant(const Vector2 &a, Vector2 const &b){
+    return (a.x * b.y) - (a.y * b.x);
 }
