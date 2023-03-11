@@ -111,13 +111,14 @@ class Matrix4x4{
     public:
         std::array<std::array<float, 4>, 4> matrix;
         ~Matrix4x4();
-        static Vector4 MatrixVectorMultiply(const Matrix4x4 &mat, const Vector4 &v);
+        const Vector4 MatrixVectorMultiply(const Vector4 &v);
         static Matrix4x4 Identity();
         static Matrix4x4 Zeros();
         static Matrix4x4 Translation(float tx, float ty, float tz);
-
+        static Matrix4x4 Scale(float sx, float sy, float sz);
+        const Vector4 operator*(const Vector4 &vector);
     private:
         Matrix4x4();
 };
 
-Vector4 operator*(const Matrix4x4 &mat, const Vector4 &vector);
+std::ostream& operator<<(std::ostream &os, const Matrix4x4 mat);

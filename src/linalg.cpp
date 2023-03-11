@@ -228,12 +228,12 @@ Matrix4x4::Matrix4x4(){
 
 Matrix4x4::~Matrix4x4(){}
 
-Vector4 Matrix4x4::MatrixVectorMultiply(const Matrix4x4 &mat, const Vector4 &v){
+const Vector4 Matrix4x4::MatrixVectorMultiply(const Vector4 &v){
     return Vector4(
-            Vector4::Dot(Vector4(mat.matrix[0]), v),
-            Vector4::Dot(Vector4(mat.matrix[1]), v),
-            Vector4::Dot(Vector4(mat.matrix[2]), v),
-            Vector4::Dot(Vector4(mat.matrix[3]), v)
+            Vector4::Dot(Vector4(matrix[0]), v),
+            Vector4::Dot(Vector4(matrix[1]), v),
+            Vector4::Dot(Vector4(matrix[2]), v),
+            Vector4::Dot(Vector4(matrix[3]), v)
             );   
 }
 
@@ -277,12 +277,24 @@ Matrix4x4 Matrix4x4::Translation(float tx, float ty, float tz){
 }
 
 
+Matrix4x4 Matrix4x4::Scale(float sx, float sy, float sz){
+   Matrix4x4 mat;
 
-Vector4 operator*(const Matrix4x4 &mat, const Vector4 &vector){
-    return Matrix4x4::MatrixVectorMultiply(mat, vector);
+   mat.matrix = {{
+        {sx, 0, 0, 0},
+        {0, sy, 0, 0},
+        {0, 0, sz, 0},
+        {0, 0, 0, 1}
+    }}; 
+
+   return mat; 
 }
-// Extra Utility Functions
 
+const Vector4 Matrix4x4::operator*(const Vector4 &vector){
+    return MatrixVectorMultiply(vector);
+}
+
+// Extra Utility Functions
 // Determinant of a 2x2 Matrix
 // | a b |
 // | c d | = ad - bc
