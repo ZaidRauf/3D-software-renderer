@@ -1,11 +1,15 @@
 #include "inputhandler.h"
 
 InputHandler::InputHandler(){
+    init_successful = true;
 
+    if(SDL_Init(SDL_INIT_EVERYTHING) != 0){
+        init_successful = false;
+    }
 }
 
 InputHandler::~InputHandler(){
-
+    SDL_Quit();
 }
 
 void InputHandler::RegisterCallback(int inputKey, void (*funcPtr)()){
@@ -22,4 +26,8 @@ void InputHandler::HandleInput(){
             };
         }
     }
+}
+
+bool InputHandler::InitSuccessful(){
+    return init_successful;
 }
