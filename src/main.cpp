@@ -32,7 +32,8 @@ int main(void){
     //framebuffer.SetPixel(width/2, height/2, 0xFF0000FF);
 
    //draw.DrawLine({width/2, height/2}, {10, 10}, 0x00FF00FF);
-   draw.DrawLine({10, 10}, {20, height/2}, 0x0000FFFF);
+   //draw.DrawLine({10, 10}, {20, height/2}, 0x0000FFFF);
+    draw.DrawTriangle({10, 10}, {50, 40}, {3, 100}, 0x00FF00FF);
     while(running){
         screen.RenderFrame(framebuffer);
         inputhandler.HandleInput();

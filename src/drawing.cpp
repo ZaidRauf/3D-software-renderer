@@ -40,6 +40,12 @@ void Drawing::DrawLine(const Pixel &start, const Pixel &end, const uint32_t colo
     return;
 }
 
+void Drawing::DrawTriangle(const Pixel &a, const Pixel &b, const Pixel &c, uint32_t color){
+    this->DrawLine(a, b, color);
+    this->DrawLine(b, c, color);
+    this->DrawLine(c, a, color);
+}
+
 
 //void Drawing::DrawBresenhamLine(const Pixel &start, const Pixel &end, const uint32_t color){
 //    int dx = end.x - start.x;
