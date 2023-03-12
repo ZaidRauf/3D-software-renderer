@@ -14,8 +14,8 @@ FrameBuffer::~FrameBuffer(){
  
 }
 
-uint32_t FrameBuffer::GetPixel(unsigned int x, unsigned int y){
-    if(x >= buffer_width || y >= buffer_height){
+uint32_t FrameBuffer::GetPixel(int x, int y){
+    if(x < 0 || y < 0 || x >= buffer_width || y >= buffer_height){
         return 0xFFFFFFFF;
     }
 
@@ -23,8 +23,8 @@ uint32_t FrameBuffer::GetPixel(unsigned int x, unsigned int y){
     return frame_buffer[y * buffer_width + x];
 }
 
-void FrameBuffer::SetPixel(unsigned int x, unsigned int y, uint32_t color){
-    if(x >= buffer_width || y >= buffer_height){
+void FrameBuffer::SetPixel(int x, int y, uint32_t color){
+    if(x < 0 || y < 0 || x >= buffer_width || y >= buffer_height){
         return;
     }
 

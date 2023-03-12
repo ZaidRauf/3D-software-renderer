@@ -6,6 +6,8 @@ Drawing::~Drawing(){}
 
 Drawing::Pixel::Pixel(int x, int y) : x(x), y(y){}
 
+Drawing::Pixel::Pixel(Vector2 v) : x(v.x), y(v.y){}
+
 Drawing::Pixel::~Pixel(){}
 
 // DDA Algorithm
@@ -37,3 +39,24 @@ void Drawing::DrawLine(const Pixel &start, const Pixel &end, const uint32_t colo
 
     return;
 }
+
+
+//void Drawing::DrawBresenhamLine(const Pixel &start, const Pixel &end, const uint32_t color){
+//    int dx = end.x - start.x;
+//    int dy = end.y - start.y;
+//    int D = 2*dy - dx;
+//    int current_y = start.y;
+//
+//    for (auto x = start.x; x <= end.x; x++){
+//        frame_buffer.SetPixel(x, current_y, color);
+//
+//        if(D > 0){
+//            current_y = current_y+1;
+//            D -= 2 * dx;
+//        }
+//
+//        D += 2 * dy;
+//    }
+//
+//    return;
+//}

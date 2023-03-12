@@ -31,10 +31,8 @@ int main(void){
 
     //framebuffer.SetPixel(width/2, height/2, 0xFF0000FF);
 
-    draw.DrawLine({200, 500}, {width/2, height/2}, 0x00FF00FF);
-    
-    draw.DrawLine({width/2, height/2}, {10, 10}, 0x00FF00FF);
-    
+   //draw.DrawLine({width/2, height/2}, {10, 10}, 0x00FF00FF);
+   draw.DrawLine({10, 10}, {20, height/2}, 0x0000FFFF);
     while(running){
         screen.RenderFrame(framebuffer);
         inputhandler.HandleInput();
