@@ -12,9 +12,9 @@ class FrameBuffer{
         uint32_t GetPixel(unsigned int x, unsigned int y);
         void SetPixel(unsigned int x, unsigned int y, uint32_t color);
         // For now assume this wont change during runtime
-        const int buffer_width;
-        const int buffer_height;
-        const int buffer_length;
+        const unsigned int buffer_width;
+        const unsigned int buffer_height;
+        const unsigned int buffer_length;
         static constexpr uint32_t BLACK = 0x000000FF;
     
     private:

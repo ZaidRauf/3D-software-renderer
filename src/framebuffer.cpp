@@ -3,7 +3,7 @@
 FrameBuffer::FrameBuffer(int width, int height) : buffer_width(width), buffer_height(height), buffer_length(buffer_width * buffer_height){
     frame_buffer = std::unique_ptr<uint32_t[]>(new uint32_t[buffer_width * buffer_height]);
 
-    for(int i = 0; i < buffer_width * buffer_height; i++){
+    for(auto i = 0; i < buffer_length; i++){
         frame_buffer[i] = FrameBuffer::BLACK;
     }
 

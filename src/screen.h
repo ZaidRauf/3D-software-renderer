@@ -6,7 +6,7 @@
 
 class Screen{
     public:
-        Screen();
+        Screen(FrameBuffer &fb);
         ~Screen();
         void RenderFrame(FrameBuffer &fb);
         bool InitSuccessful();

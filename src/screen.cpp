@@ -1,6 +1,6 @@
 #include "screen.h"
 
-Screen::Screen(){
+Screen::Screen(FrameBuffer &fb){
     init_successful = true;
 
     if(SDL_Init(SDL_INIT_EVERYTHING) != 0){
@@ -40,12 +40,19 @@ Screen::Screen(){
         init_successful = false;
     }
 
+    unsigned int render_width = fb.buffer_width;
+    unsigned int render_height = fb.buffer_height;
+    
+    if(render_width == 0 || render_height == 0){
+        init_successful = false;
+    }
+
     texture = SDL_CreateTexture(
             renderer,
             SDL_PIXELFORMAT_RGBA8888,
             SDL_TEXTUREACCESS_STREAMING,
-            max_width,
-            max_height);
+            render_width,
+            render_height);
 
     if(!texture){
         init_successful = false;
