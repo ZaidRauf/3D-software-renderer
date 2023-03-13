@@ -50,6 +50,7 @@ class Vector3{
         Vector3(const float x, const float y, float z);
         Vector3(const Vector2 &vector);
         Vector3(const Vector3 &vector);
+        Vector3(const Vector4 &vector);
         ~Vector3();
         float Length();
         Vector3 Normalized();

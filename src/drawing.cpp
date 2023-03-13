@@ -10,6 +10,10 @@ Drawing::Pixel::Pixel(Vector2 v) : x(v.x), y(v.y){}
 
 Drawing::Pixel::~Pixel(){}
 
+void Drawing::DrawVertex(Vector2 v, uint32_t color){
+    frame_buffer.SetPixel(v.x, v.y, color);
+}
+
 // DDA Algorithm
 void Drawing::DrawLine(const Pixel &start, const Pixel &end, const uint32_t color){
     // Calculate the lengths of between start and end along x and y axis

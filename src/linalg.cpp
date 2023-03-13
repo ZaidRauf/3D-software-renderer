@@ -76,6 +76,8 @@ Vector3::Vector3(const Vector2 &vector) : x(vector.x), y(vector.y), z(0){}
 
 Vector3::Vector3(const Vector3 &vector) : x(vector.x), y(vector.y), z(vector.z){}
 
+Vector3::Vector3(const Vector4 &vector) : x(vector.x), y(vector.y), z(vector.z){}
+
 Vector3::~Vector3(){}
 
 float Vector3::Length(){
