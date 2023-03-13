@@ -5,6 +5,7 @@
 #include "inputhandler.h"
 #include "linalg.h"
 #include "drawing.h"
+#include "geometry.h"
 
 bool running = true;
 
@@ -20,7 +21,7 @@ int main(void){
     Drawing draw = Drawing(framebuffer);
     Screen screen = Screen(framebuffer);
     InputHandler inputhandler = InputHandler();
-
+    
     if(!screen.InitSuccessful() || !inputhandler.InitSuccessful()){
         std::cerr << "Failed to Initialize SDL2 Screen or InputHandler" << std::endl;
         return -1;

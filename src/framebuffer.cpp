@@ -1,7 +1,8 @@
 #include "framebuffer.h"
 
-FrameBuffer::FrameBuffer(int width, int height) : buffer_width(width), buffer_height(height), buffer_length(buffer_width * buffer_height){
-    frame_buffer = std::unique_ptr<uint32_t[]>(new uint32_t[buffer_width * buffer_height]);
+FrameBuffer::FrameBuffer(int width, int height) : _buffer_width(width), _buffer_height(height), _buffer_length(_buffer_width * _buffer_height){
+    //frame_buffer = std::unique_ptr<uint32_t[]>(new uint32_t[buffer_width * buffer_height]);
+    frame_buffer = std::make_unique<uint32_t[]>(buffer_width * buffer_height);
 
     for(auto i = 0; i < buffer_length; i++){
         frame_buffer[i] = FrameBuffer::BLACK;
@@ -37,3 +38,18 @@ void FrameBuffer::SetPixel(int x, int y, uint32_t color){
 uint32_t* FrameBuffer::GetFrameBuffer(){
     return frame_buffer.get();
 }
+
+void FrameBuffer::ResizeFrameBuffer(unsigned int new_buffer_width, unsigned int new_buffer_height){
+    _buffer_width = new_buffer_width;
+    _buffer_height = new_buffer_height;
+    _buffer_length = _buffer_width * _buffer_height;
+
+    //frame_buffer = std::unique_ptr<uint32_t[]>(new uint32_t[buffer_width * buffer_height]);
+    //frame_buffer = new uint32_t[_buffer_length];
+    frame_buffer = std::make_unique<uint32_t[]>(buffer_width * buffer_height);
+
+    for(auto i = 0; i < buffer_length; i++){
+        frame_buffer[i] = FrameBuffer::BLACK;
+    }
+}
+
