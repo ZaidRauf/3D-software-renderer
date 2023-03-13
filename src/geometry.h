@@ -14,9 +14,9 @@ class Triangle{
 // Represents a 3d Triangular Face of a mesh
 class Face{
     public:
-        Vector3 a, b, c;
+        int a, b, c;
         Face();
-        Face(Vector3 v1, Vector3 v2, Vector3 v3);
+        Face(int a, int b, int c);
         ~Face();
 };
 
@@ -32,7 +32,7 @@ struct Transform{
 class Mesh{
     private:
         std::unique_ptr<Face[]> faces;
-        std::unique_ptr<int[]> face_indices;
+        std::unique_ptr<Vector3[]> vertices;
         int _num_triangles = 0;
     
     public:
