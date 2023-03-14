@@ -43,7 +43,8 @@ Screen::Screen(FrameBuffer &fb, bool setFrameBufferMaxSize){
     unsigned int render_width = fb.buffer_width;
     unsigned int render_height = fb.buffer_height;
 
-    screen_pixels = std::make_unique<char*>(new char[fb.buffer_length * sizeof(uint32_t)]);
+    //screen_pixels = std::make_unique<char*>(new char[fb.buffer_length * sizeof(uint32_t)]);
+    screen_pixels = std::make_unique<RawPixelByte*>(new RawPixelByte[fb.buffer_length * sizeof(uint32_t)]);
     screen_pitch = fb.buffer_width * sizeof(uint32_t);
     screen_pixels_ptr = static_cast<void*>(screen_pixels.get());
 

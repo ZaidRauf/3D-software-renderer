@@ -6,6 +6,8 @@
 #include <memory>
 #include <cstring>
 
+using RawPixelByte = char;
+
 class Screen{
     public:
         Screen(FrameBuffer &fb, bool setFrameBufferMaxSize = false);
@@ -23,7 +25,8 @@ class Screen{
         bool init_successful;
         //void* screen_pixels;
         //char* screen_pixels;
-        std::unique_ptr<char*> screen_pixels;
+        //std::unique_ptr<char*> screen_pixels;
+        std::unique_ptr<RawPixelByte*> screen_pixels;
         void* screen_pixels_ptr;
         int screen_pitch;
 };
