@@ -8,7 +8,7 @@
 class Triangle{
     public:
         Vector2 a, b, c;
-        Triangle(Vector2 v1, Vector2 v2, Vector3 v3);
+        Triangle(Vector2 v1, Vector2 v2, Vector2 v3);
         ~Triangle();
 };
 

@@ -338,6 +338,23 @@ const Vector4 Matrix4x4::operator*(const Vector4 &vector){
     return MatrixVectorMultiply(vector);
 }
 
+
+const Matrix4x4 Matrix4x4::MatrixMultiply(const Matrix4x4 &m){
+    Matrix4x4 final_matrix = Matrix4x4::Zeros();
+
+    for(auto m_row = 0; m_row < 4; m_row++){
+        for(auto n_col = 0; n_col < 4; n_col++){
+            final_matrix.matrix[m_row][n_col] = Vector4::Dot(Vector4(this->matrix[m_row]), Vector4(m.matrix[0][n_col], m.matrix[1][n_col], m.matrix[2][n_col], m.matrix[3][n_col]));
+        }
+    }
+
+    return final_matrix;
+}
+
+const Matrix4x4 Matrix4x4::operator*(const Matrix4x4 &m){
+    return MatrixMultiply(m);
+}
+
 // Extra Utility Functions
 // Determinant of a 2x2 Matrix
 // | a b |

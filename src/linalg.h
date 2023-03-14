@@ -113,6 +113,7 @@ class Matrix4x4{
         std::array<std::array<float, 4>, 4> matrix;
         ~Matrix4x4();
         const Vector4 MatrixVectorMultiply(const Vector4 &v);
+        const Matrix4x4 MatrixMultiply(const Matrix4x4 &m);
         static Matrix4x4 Identity();
         static Matrix4x4 Zeros();
         static Matrix4x4 Translation(float tx, float ty, float tz);
@@ -121,6 +122,7 @@ class Matrix4x4{
         static Matrix4x4 YRotationMatrix(float angleRadians);
         static Matrix4x4 XRotationMatrix(float angleRadians);
         const Vector4 operator*(const Vector4 &vector);
+        const Matrix4x4 operator*(const Matrix4x4 &vector);
     private:
         Matrix4x4();
 };

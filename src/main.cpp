@@ -96,14 +96,22 @@ int main(void){
    // }
     
     float x_translation = 0;
+    float rotation = 0;
     while(running){
         x_translation += 0.01;
+        rotation += 0.01;
         for (auto i = 0; i < cube.num_triangles; i++){
             Face f(cube.faces[i]);
             
             auto v1 = cube.vertices[f.a - 1];
             auto v2 = cube.vertices[f.b - 1];
             auto v3 = cube.vertices[f.c - 1];
+            
+            Matrix4x4 world_matrix = Matrix4x4::YRotationMatrix(rotation) * Matrix4x4::ZRotationMatrix(rotation);
+
+            v1 = world_matrix * v1;
+            v2 = world_matrix * v2;
+            v3 = world_matrix * v3;
 
             v1.z += 5.0;
             v2.z += 5.0;
