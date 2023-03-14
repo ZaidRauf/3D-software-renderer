@@ -355,6 +355,19 @@ const Matrix4x4 Matrix4x4::operator*(const Matrix4x4 &m){
     return MatrixMultiply(m);
 }
 
+// FOV passed in radians
+Matrix4x4 Matrix4x4::PerspectiveProjectionMatrix(float fov, float aspect_ratio, float z_near, float z_far){
+    Matrix4x4 persp_matrix = Matrix4x4::Zeros();
+
+    persp_matrix.matrix[0][0] = 1/(aspect_ratio * tan(fov/2));
+    persp_matrix.matrix[1][1] = 1/(tan(fov/2));
+    persp_matrix.matrix[2][2] = z_far / (z_far - z_near);
+    persp_matrix.matrix[2][3] = - (z_far * z_near) / (z_far - z_near);
+    persp_matrix.matrix[3][2] = 1.0;
+
+    return persp_matrix;
+}
+
 // Extra Utility Functions
 // Determinant of a 2x2 Matrix
 // | a b |

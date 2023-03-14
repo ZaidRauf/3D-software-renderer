@@ -50,6 +50,7 @@ int main(void){
             auto v3 = cube.vertices[f.c - 1];
             
             Matrix4x4 world_matrix = Matrix4x4::Identity();
+            world_matrix = Matrix4x4::Scale(1, 1, 1);
             world_matrix = Matrix4x4::YRotationMatrix(rotation) * world_matrix;
             world_matrix = Matrix4x4::ZRotationMatrix(rotation) * world_matrix;
             world_matrix = Matrix4x4::Translation(0, 0, 5) * world_matrix;
@@ -57,6 +58,14 @@ int main(void){
             v1 = world_matrix * v1;
             v2 = world_matrix * v2;
             v3 = world_matrix * v3;
+            
+            auto PI = 3.14159;
+            float aspect_ratio = (float)framebuffer.buffer_width / (float)framebuffer.buffer_height;
+            Matrix4x4 projection_matrix = Matrix4x4::PerspectiveProjectionMatrix(PI/3, aspect_ratio, 0.1, 100);
+
+            v1 = projection_matrix * v1;
+            v2 = projection_matrix * v2;
+            v3 = projection_matrix * v3;
             
             auto persp_divide = [](Vector3 &v){
                 v.x /= v.z;
@@ -67,11 +76,11 @@ int main(void){
             persp_divide(v2);
             persp_divide(v3);
 
-            Matrix4x4 matScale = Matrix4x4::Scale(1280, 1280, 0);
+            Matrix4x4 matScale = Matrix4x4::Scale(framebuffer.buffer_width / 2, framebuffer.buffer_height / 2, 0);
             v1 = matScale * v1;
             v2 = matScale * v2;
             v3 = matScale * v3;
-
+            
             Vector3 translate(width/2, height/2, 0);
             v1 = v1 + translate;
             v2 = v2 + translate;
