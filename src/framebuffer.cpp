@@ -11,6 +11,16 @@ FrameBuffer::FrameBuffer(int width, int height) : _buffer_width(width), _buffer_
     return;
 }
 
+FrameBuffer::FrameBuffer() : _buffer_width(0), _buffer_height(0), _buffer_length(_buffer_width * _buffer_height){
+    frame_buffer = std::make_unique<uint32_t[]>(buffer_width * buffer_height);
+
+    for(auto i = 0; i < buffer_length; i++){
+        frame_buffer[i] = FrameBuffer::BLACK;
+    }
+
+    return;
+}
+
 FrameBuffer::~FrameBuffer(){
  
 }
@@ -52,4 +62,15 @@ void FrameBuffer::ResizeFrameBuffer(unsigned int new_buffer_width, unsigned int 
         frame_buffer[i] = FrameBuffer::BLACK;
     }
 }
+
+
+void FrameBuffer::ClearFrameBuffer(uint32_t color){
+    
+    for(auto i = 0; i < buffer_length; i++){
+        frame_buffer[i] = color;
+    }
+
+    return;
+}
+
 

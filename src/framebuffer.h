@@ -12,6 +12,7 @@ class FrameBuffer{
         unsigned int _buffer_length = 0;
 
     public:
+        FrameBuffer();
         FrameBuffer(int width, int height);
         ~FrameBuffer();
         uint32_t* GetFrameBuffer();
@@ -21,6 +22,6 @@ class FrameBuffer{
         const unsigned int &buffer_height = _buffer_height;
         const unsigned int &buffer_length = _buffer_length;
         void ResizeFrameBuffer(unsigned int new_buffer_width, unsigned int new_buffer_height);
-        // For now assume this wont change during runtime
+        void ClearFrameBuffer(uint32_t color);
         static constexpr uint32_t BLACK = 0x000000FF;
 };

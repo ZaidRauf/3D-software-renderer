@@ -3,10 +3,12 @@
 #include <cstdbool>
 #include <SDL2/SDL.h>
 #include "framebuffer.h"
+#include <memory>
+#include <cstring>
 
 class Screen{
     public:
-        Screen(FrameBuffer &fb);
+        Screen(FrameBuffer &fb, bool setFrameBufferMaxSize = false);
         ~Screen();
         void RenderFrame(FrameBuffer &fb);
         bool InitSuccessful();
@@ -19,5 +21,9 @@ class Screen{
         int max_width;
         int max_height;
         bool init_successful;
-
+        //void* screen_pixels;
+        //char* screen_pixels;
+        std::unique_ptr<char*> screen_pixels;
+        void* screen_pixels_ptr;
+        int screen_pitch;
 };

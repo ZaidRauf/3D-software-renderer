@@ -1,13 +1,13 @@
 #include "screen.h"
 
-Screen::Screen(FrameBuffer &fb){
+Screen::Screen(FrameBuffer &fb, bool setFrameBufferMaxSize){
     init_successful = true;
 
     if(SDL_Init(SDL_INIT_EVERYTHING) != 0){
         init_successful = false;
     }
 
-    if(SDL_GetCurrentDisplayMode(0, &display_mode) != 0 ){
+    if(SDL_GetCurrentDisplayMode(0, &display_mode) != 0){
         init_successful = false;
         max_width = 0;
         max_height = 0;
@@ -42,7 +42,17 @@ Screen::Screen(FrameBuffer &fb){
 
     unsigned int render_width = fb.buffer_width;
     unsigned int render_height = fb.buffer_height;
-    
+
+    screen_pixels = std::make_unique<char*>(new char[fb.buffer_length * sizeof(uint32_t)]);
+    screen_pitch = fb.buffer_width * sizeof(uint32_t);
+    screen_pixels_ptr = static_cast<void*>(screen_pixels.get());
+
+    if(setFrameBufferMaxSize){
+        render_width = max_width;
+        render_height = max_height;
+        fb.ResizeFrameBuffer(max_width, max_height);   
+    }
+
     if(render_width == 0 || render_height == 0){
         init_successful = false;
     }
@@ -60,6 +70,8 @@ Screen::Screen(FrameBuffer &fb){
 }
 
 Screen::~Screen(){
+    //delete screen_pixels;
+    // TODO: CLean up screen pixels
     SDL_DestroyTexture(texture);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
@@ -67,11 +79,21 @@ Screen::~Screen(){
 }
 
 void Screen::RenderFrame(FrameBuffer &fb){
-    SDL_UpdateTexture(
-            texture,
-            NULL,
-            fb.GetFrameBuffer(),
-            fb.buffer_width * sizeof(uint32_t));
+    //SDL_UpdateTexture(
+    //        texture,
+    //        NULL,
+    //        fb.GetFrameBuffer(),
+    //        fb.buffer_width * sizeof(uint32_t));
+
+    SDL_LockTexture(
+            texture, 
+            NULL, 
+            &screen_pixels_ptr, 
+            &screen_pitch);
+
+    memcpy(screen_pixels_ptr, fb.GetFrameBuffer(), fb.buffer_length * sizeof(uint32_t));
+    
+    SDL_UnlockTexture(texture);
 
     SDL_RenderCopy(renderer, texture, NULL, NULL);
     SDL_RenderPresent(renderer);
