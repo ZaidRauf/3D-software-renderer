@@ -9,6 +9,8 @@ Vector2::Vector2(const Vector2 &vector) : x(vector.x), y(vector.y){}
 
 Vector2::Vector2(const Vector3 &vector) : x(vector.x), y(vector.y){}
 
+Vector2::Vector2(const Vector4 &vector) : x(vector.x), y(vector.y){}
+
 Vector2::~Vector2(){}
 
 float Vector2::Length(){
@@ -364,6 +366,10 @@ Matrix4x4 Matrix4x4::PerspectiveProjectionMatrix(float fov, float aspect_ratio, 
     persp_matrix.matrix[2][2] = z_far / (z_far - z_near);
     persp_matrix.matrix[2][3] = - (z_far * z_near) / (z_far - z_near);
     persp_matrix.matrix[3][2] = 1.0;
+
+
+    //persp_matrix.matrix[2][2] = 0;
+    //persp_matrix.matrix[2][3] = 0;
 
     return persp_matrix;
 }

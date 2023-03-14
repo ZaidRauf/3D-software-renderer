@@ -42,13 +42,17 @@ int main(void){
     while(running){
         x_translation += 0.01;
         rotation += 0.01;
+
+        // This loop is essentially the "Vertex Shader" of my renderer
         for (auto i = 0; i < cube.num_triangles; i++){
             Face f(cube.faces[i]);
             
-            auto v1 = cube.vertices[f.a - 1];
-            auto v2 = cube.vertices[f.b - 1];
-            auto v3 = cube.vertices[f.c - 1];
+            // Vertices are in Model Space
+            Vector4 v1 = cube.vertices[f.a - 1];
+            Vector4 v2 = cube.vertices[f.b - 1];
+            Vector4 v3 = cube.vertices[f.c - 1];
             
+            // Vertices Are Transformed in World Spaace
             Matrix4x4 world_matrix = Matrix4x4::Identity();
             world_matrix = Matrix4x4::Scale(1, 1, 1);
             world_matrix = Matrix4x4::YRotationMatrix(rotation) * world_matrix;
@@ -59,6 +63,7 @@ int main(void){
             v2 = world_matrix * v2;
             v3 = world_matrix * v3;
             
+            // Vertices are in Clip Space
             auto PI = 3.14159;
             float aspect_ratio = (float)framebuffer.buffer_width / (float)framebuffer.buffer_height;
             Matrix4x4 projection_matrix = Matrix4x4::PerspectiveProjectionMatrix(PI/3, aspect_ratio, 0.1, 100);
@@ -67,31 +72,29 @@ int main(void){
             v2 = projection_matrix * v2;
             v3 = projection_matrix * v3;
             
-            auto persp_divide = [](Vector3 &v){
-                v.x /= v.z;
-                v.y /= v.z;
+            // Vertices are in NDC
+            auto persp_divide = [](Vector4 &v){
+                v.x /= v.w;
+                v.y /= v.w;
+                v.z /= v.w;
             };
 
             persp_divide(v1);
             persp_divide(v2);
             persp_divide(v3);
 
-            Matrix4x4 matScale = Matrix4x4::Scale(framebuffer.buffer_width / 2, framebuffer.buffer_height / 2, 0);
-            v1 = matScale * v1;
-            v2 = matScale * v2;
-            v3 = matScale * v3;
-            
-            Vector3 translate(width/2, height/2, 0);
-            v1 = v1 + translate;
-            v2 = v2 + translate;
-            v3 = v3 + translate;
+            // Vertices are transformed to the viewport and are ready for texturing/rasterization
+            Matrix4x4 viewport_scale = Matrix4x4::Scale(framebuffer.buffer_width / 2, framebuffer.buffer_height / 2, 1.0);
+            Vector4 viewport_translate(width/2, height/2, 0, 0);
+
+            v1 = (viewport_scale * v1) + viewport_translate;
+            v2 = (viewport_scale * v2) + viewport_translate;
+            v3 = (viewport_scale * v3) + viewport_translate;
 
             Triangle t(
                     v1,
                     v2,
                     v3);
-
-            //std::cout << i << " " << t.a << " " << t.b << " " << t.c << std::endl;
 
             draw.DrawTriangle(t.a, t.b, t.c, 0x00FF00FF);
 
@@ -99,6 +102,8 @@ int main(void){
             draw.DrawVertex(t.b, 0xFF0000FF);
             draw.DrawVertex(t.c, 0xFF0000FF);
         }
+
+        // TODO: Fragment Pass here
         
         // Render what we've drawn into the framebuffer
         screen.RenderFrame(framebuffer);

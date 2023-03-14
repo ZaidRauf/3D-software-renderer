@@ -19,6 +19,7 @@ class Vector2{
         Vector2(const float x, const float y);
         Vector2(const Vector2 &vector);
         Vector2(const Vector3 &vector);
+        Vector2(const Vector4 &vector);
         ~Vector2();
         float Length();
         Vector2 Normalized();
