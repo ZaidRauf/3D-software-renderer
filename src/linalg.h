@@ -123,6 +123,7 @@ class Matrix4x4{
         static Matrix4x4 YRotationMatrix(float angleRadians);
         static Matrix4x4 XRotationMatrix(float angleRadians);
         static Matrix4x4 PerspectiveProjectionMatrix(float fov, float aspect_ratio, float z_near, float z_far);
+        static Matrix4x4 ViewMatrix(const Vector3 &position, const Vector3 &target, const Vector3 &up);
         const Vector4 operator*(const Vector4 &vector);
         const Matrix4x4 operator*(const Matrix4x4 &vector);
     private:

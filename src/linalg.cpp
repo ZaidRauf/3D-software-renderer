@@ -117,7 +117,7 @@ Vector3 Vector3::Cross(const Vector3 &a, const Vector3 &b){
     return Vector3(
             (a.y * b.z) - (a.z * b.y),
             (a.z * b.x) - (a.x * b.z),
-            (a.y * b.z) - (a.z * b.y)
+            (a.x * b.y) - (a.y * b.x)
             );
 }
 
@@ -372,6 +372,34 @@ Matrix4x4 Matrix4x4::PerspectiveProjectionMatrix(float fov, float aspect_ratio, 
     //persp_matrix.matrix[2][3] = 0;
 
     return persp_matrix;
+}
+
+
+Matrix4x4 Matrix4x4::ViewMatrix(const Vector3 &position, const Vector3 &target, const Vector3 &up){
+    Matrix4x4 view_matrix = Matrix4x4::Identity();
+
+    Vector3 front_vec = (target - position).Normalized(); // Z
+    Vector3 side_vec = (Vector3::Cross(up, front_vec)).Normalized(); // X
+    Vector3 up_vec = Vector3::Cross(front_vec, side_vec); // Y
+
+    view_matrix.matrix[0][0] = side_vec.x;
+    view_matrix.matrix[0][1] = side_vec.y;
+    view_matrix.matrix[0][2] = side_vec.z;
+
+    view_matrix.matrix[1][0] = up_vec.x;
+    view_matrix.matrix[1][1] = up_vec.y;
+    view_matrix.matrix[1][2] = up_vec.z;
+
+    view_matrix.matrix[2][0] = front_vec.x;
+    view_matrix.matrix[2][1] = front_vec.y;
+    view_matrix.matrix[2][2] = front_vec.z;
+
+    
+    view_matrix.matrix[0][3] = -(side_vec * position); 
+    view_matrix.matrix[1][3] = -(up_vec * position);
+    view_matrix.matrix[2][3] = -(front_vec * position);
+
+    return view_matrix;
 }
 
 // Extra Utility Functions

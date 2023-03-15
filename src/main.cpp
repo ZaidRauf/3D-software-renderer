@@ -6,6 +6,7 @@
 #include "linalg.h"
 #include "drawing.h"
 #include "geometry.h"
+#include "camera.h"
 
 bool running = true;
 
@@ -39,6 +40,9 @@ int main(void){
     
     float x_translation = 0;
     float rotation = 0;
+
+    Camera camera({0,0,-5}, {0,0,1}, {0,0,0});
+
     while(running){
         x_translation += 0.01;
         rotation += 0.01;
@@ -51,17 +55,26 @@ int main(void){
             Vector4 v1 = cube.vertices[f.a - 1];
             Vector4 v2 = cube.vertices[f.b - 1];
             Vector4 v3 = cube.vertices[f.c - 1];
-            
+
             // Vertices Are Transformed in World Spaace
             Matrix4x4 world_matrix = Matrix4x4::Identity();
             world_matrix = Matrix4x4::Scale(1, 1, 1);
             world_matrix = Matrix4x4::YRotationMatrix(rotation) * world_matrix;
             world_matrix = Matrix4x4::ZRotationMatrix(rotation) * world_matrix;
-            world_matrix = Matrix4x4::Translation(0, 0, 5) * world_matrix;
+            world_matrix = Matrix4x4::Translation(0, 0, 0) * world_matrix;
 
             v1 = world_matrix * v1;
             v2 = world_matrix * v2;
             v3 = world_matrix * v3;
+
+            // TODO: Add View Matrix support
+            Matrix4x4 view_matrix = Matrix4x4::ViewMatrix(camera.position, camera.target, {0, 1, 0});
+
+            v1 = view_matrix * v1;
+            v2 = view_matrix * v2;
+            v3 = view_matrix * v3;
+
+            // TODO: Back face culling
             
             // Vertices are in Clip Space
             auto PI = 3.14159;
