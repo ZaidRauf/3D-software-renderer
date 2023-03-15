@@ -41,7 +41,7 @@ int main(void){
     float x_translation = 0;
     float rotation = 0;
 
-    Camera camera({0,0,-5}, {0,0,1}, {0,0,0});
+    Camera camera({5,0,-5}, {5,0,1}, {0,0,0});
 
     while(running){
         x_translation += 0.01;
@@ -84,6 +84,16 @@ int main(void){
             v1 = projection_matrix * v1;
             v2 = projection_matrix * v2;
             v3 = projection_matrix * v3;
+            
+            // Test culling triangles if any vertex is out of bounds
+            // This actually seems to work how i expect, see if interpolation in clip space is also possible
+            //auto clip_test = [](Vector4 &v){
+            //    return fabsf(v.x) >= fabsf(v.w) || fabsf(v.y) >= fabsf(v.w) || fabsf(v.z) >= fabsf(v.w);
+            //};
+
+            //if(clip_test(v1) || clip_test(v2) || clip_test(v3)){
+            //        continue;
+            //}
             
             // Vertices are in NDC
             auto persp_divide = [](Vector4 &v){
