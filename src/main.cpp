@@ -8,11 +8,18 @@
 #include "geometry.h"
 #include "camera.h"
 #include "clipping_culling.h"
+#include "interpolation.h"
 
+// TODO: Move to a settings object/singleton later
 bool running = true;
+bool backface_culling_enabled = true;
 
 void exit_callback(){
     running = false;
+}
+
+void toggle_culling_callback(){
+    backface_culling_enabled = !backface_culling_enabled;
 }
 
 int main(void){
@@ -37,6 +44,7 @@ int main(void){
     
     // Move to game logic type file / class later
     inputhandler.RegisterCallback(SDLK_ESCAPE, exit_callback);
+    inputhandler.RegisterCallback(SDLK_c, toggle_culling_callback);
 
     
     float x_translation = 0;
@@ -68,14 +76,14 @@ int main(void){
             v2 = world_matrix * v2;
             v3 = world_matrix * v3;
 
-            // TODO: Add View Matrix support
+            // Add View Matrix support
             Matrix4x4 view_matrix = Matrix4x4::ViewMatrix(camera.position, camera.target, {0, 1, 0});
 
             v1 = view_matrix * v1;
             v2 = view_matrix * v2;
             v3 = view_matrix * v3;
 
-            if(cull::should_backface_cull(v1, v2, v3, camera.position)){
+            if(backface_culling_enabled && cull::should_backface_cull(v1, v2, v3, camera.position)){
                 continue;
             }
 
@@ -87,6 +95,9 @@ int main(void){
             v1 = projection_matrix * v1;
             v2 = projection_matrix * v2;
             v3 = projection_matrix * v3;
+
+            //TODO: Implement proper clipping
+            //auto lerp_test = interpolation::lerp<Vector4>(v1, v2, 0.5);
             
             // Test culling triangles if any vertex is out of bounds
             // This actually seems to work how i expect, see if interpolation in clip space is also possible
