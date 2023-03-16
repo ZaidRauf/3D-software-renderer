@@ -7,6 +7,7 @@
 #include "drawing.h"
 #include "geometry.h"
 #include "camera.h"
+#include "clipping_culling.h"
 
 bool running = true;
 
@@ -74,22 +75,10 @@ int main(void){
             v2 = view_matrix * v2;
             v3 = view_matrix * v3;
 
-            // TODO: Back face culling
-
-            // First get the Face Normal
-            // Be wary of winding order and handedness here
-            // since this is a left handed coordinate system with clockwise winding order keep that in mind for cross product
-            Vector3 normal = Vector3::Cross(v1 - v2, v1 - v3).Normalized();
-
-            // Calculate ray from face to camera
-            Vector3 face_camera_ray = (camera.position - Vector3(v1)).Normalized();
-
-            if(Vector3::Dot(face_camera_ray, normal) <= 0){
+            if(cull::should_backface_cull(v1, v2, v3, camera.position)){
                 continue;
             }
 
-            
-            
             // Vertices are in Clip Space
             auto PI = 3.14159;
             float aspect_ratio = (float)framebuffer.buffer_width / (float)framebuffer.buffer_height;
