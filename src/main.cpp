@@ -41,7 +41,7 @@ int main(void){
     float x_translation = 0;
     float rotation = 0;
 
-    Camera camera({5,0,-5}, {5,0,1}, {0,0,0});
+    Camera camera({0,0,-5}, {0,0,1}, {0,0,0});
 
     while(running){
         x_translation += 0.01;
@@ -75,6 +75,20 @@ int main(void){
             v3 = view_matrix * v3;
 
             // TODO: Back face culling
+
+            // First get the Face Normal
+            // Be wary of winding order and handedness here
+            // since this is a left handed coordinate system with clockwise winding order keep that in mind for cross product
+            Vector3 normal = Vector3::Cross(v1 - v2, v1 - v3).Normalized();
+
+            // Calculate ray from face to camera
+            Vector3 face_camera_ray = (camera.position - Vector3(v1)).Normalized();
+
+            if(Vector3::Dot(face_camera_ray, normal) <= 0){
+                continue;
+            }
+
+            
             
             // Vertices are in Clip Space
             auto PI = 3.14159;
@@ -88,7 +102,7 @@ int main(void){
             // Test culling triangles if any vertex is out of bounds
             // This actually seems to work how i expect, see if interpolation in clip space is also possible
             //auto clip_test = [](Vector4 &v){
-            //    return fabsf(v.x) >= fabsf(v.w) || fabsf(v.y) >= fabsf(v.w) || fabsf(v.z) >= fabsf(v.w);
+            //    return fabsf(v.x) >= fabsf(v.w) || fabsf(v.y) >= fabsf(v.w) || fabsf(v.z) >= fabsf(v.w) || v.z < 0;
             //};
 
             //if(clip_test(v1) || clip_test(v2) || clip_test(v3)){
