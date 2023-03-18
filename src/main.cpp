@@ -78,7 +78,7 @@ int main(void){
 
             // Vertices Are Transformed in World Spaace
             Matrix4x4 world_matrix = Matrix4x4::Identity();
-            world_matrix = Matrix4x4::Scale(1, 1, 1);
+            world_matrix = Matrix4x4::Scale(1, -1, 1);
             world_matrix = Matrix4x4::YRotationMatrix(rotation) * world_matrix;
             world_matrix = Matrix4x4::ZRotationMatrix(rotation) * world_matrix;
             world_matrix = Matrix4x4::Translation(translation_x, 0, 0) * world_matrix;
@@ -116,12 +116,6 @@ int main(void){
                 return v.x >= v.w;
             };
             
-            if(right_clip_test(v3)){
-                    float t = (v1.w - v1.x)/((v1.w - v1.x) - (v3.w - v3.x));
-                    auto result = interpolation::lerp<Vector4>(v2, v3, t);
-                    v3 = result;
-            }
-
             std::vector<Vector4> test_vertex_list;
             std::vector<Vector4> keep_vertex_list;
 
@@ -149,11 +143,6 @@ int main(void){
 
             }
 
-            std::cout << keep_vertex_list.size() << std::endl;
-            for(auto &v : keep_vertex_list){
-                std::cout << v << std::endl;
-            }
-            
             // Vertices are in NDC
             auto persp_divide = [](Vector4 &v){
                 v.x /= v.w;
@@ -173,12 +162,24 @@ int main(void){
             v2 = (viewport_scale * v2) + viewport_translate;
             v3 = (viewport_scale * v3) + viewport_translate;
 
-            Triangle t(
-                    v1,
-                    v2,
-                    v3);
 
-            rendered_triangles.push_back(t);
+            for(auto &v : keep_vertex_list){
+                persp_divide(v);
+                v = (viewport_scale * v) + viewport_translate;
+
+                if(v.x == framebuffer.buffer_width) v.x -= 1;
+            }
+
+            // retriangulate kept 
+            //std::cout << keep_vertex_list.size() << std::endl;
+            for(int i = 0; i < (keep_vertex_list.size() - 2); i++){
+                if(keep_vertex_list.size() == 0) break;
+                Triangle t(keep_vertex_list[0], keep_vertex_list[i+1], keep_vertex_list[i+2]);
+                rendered_triangles.push_back(t);
+            }
+
+            //Triangle t(v1, v2, v3);
+            //rendered_triangles.push_back(t);
 
         }
 
