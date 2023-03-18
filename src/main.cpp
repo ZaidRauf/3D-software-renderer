@@ -115,6 +115,10 @@ int main(void){
             auto right_clip_test = [](Vector4 &v){
                 return v.x >= v.w;
             };
+
+            auto left_clip_test = [](Vector4 &v){
+                return v.x <= -v.w;
+            };
             
             std::vector<Vector4> test_vertex_list;
             std::vector<Vector4> keep_vertex_list;
@@ -136,7 +140,8 @@ int main(void){
                 }
 
                 if(v1_outside != v2_outside){
-                    float t = (test_v1.w - test_v1.x)/((test_v1.w - test_v1.x) - (test_v2.w - test_v2.x));
+                    float t = (test_v1.w - test_v1.x)/((test_v1.w - test_v1.x) - (test_v2.w - test_v2.x)); // Right
+                    //float t = (test_v1.w + test_v1.x)/((test_v1.w + test_v1.x) - (test_v2.w + test_v2.x)); // Left
                     auto result = interpolation::lerp<Vector4>(test_v1, test_v2, t);
                     keep_vertex_list.push_back(result);
                 }
@@ -150,17 +155,17 @@ int main(void){
                 v.z /= v.w;
             };
 
-            persp_divide(v1);
-            persp_divide(v2);
-            persp_divide(v3);
+            //persp_divide(v1);
+            //persp_divide(v2);
+            //persp_divide(v3);
 
             // Vertices are transformed to the viewport and are ready for texturing/rasterization
             Matrix4x4 viewport_scale = Matrix4x4::Scale(framebuffer.buffer_width / 2, framebuffer.buffer_height / 2, 1.0);
             Vector4 viewport_translate(width/2, height/2, 0, 0);
 
-            v1 = (viewport_scale * v1) + viewport_translate;
-            v2 = (viewport_scale * v2) + viewport_translate;
-            v3 = (viewport_scale * v3) + viewport_translate;
+            //v1 = (viewport_scale * v1) + viewport_translate;
+            //v2 = (viewport_scale * v2) + viewport_translate;
+            //v3 = (viewport_scale * v3) + viewport_translate;
 
 
             for(auto &v : keep_vertex_list){
@@ -170,10 +175,10 @@ int main(void){
                 if(v.x == framebuffer.buffer_width) v.x -= 1;
             }
 
-            // retriangulate kept 
+            // retriangulate kept
             //std::cout << keep_vertex_list.size() << std::endl;
-            for(int i = 0; i < (keep_vertex_list.size() - 2); i++){
-                if(keep_vertex_list.size() == 0) break;
+            int kept_vert_sz = keep_vertex_list.size();
+            for(int i = 0; i < kept_vert_sz - 2; i++){
                 Triangle t(keep_vertex_list[0], keep_vertex_list[i+1], keep_vertex_list[i+2]);
                 rendered_triangles.push_back(t);
             }
