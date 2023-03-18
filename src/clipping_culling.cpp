@@ -18,3 +18,62 @@ bool cull::should_backface_cull(const Vector3 &v1, const Vector3 &v2, const Vect
     return false;
 }
 
+
+void clip::clip_vertices(Vector4 v1, Vector4 v2, Vector4 v3, std::vector<Vector4> &keep_vertex_list){
+    std::vector<Vector4> test_vertex_list;
+    std::vector<Vector4> temp_keep_vertex_list;
+
+    test_vertex_list.push_back(v1);
+    test_vertex_list.push_back(v2);
+    test_vertex_list.push_back(v3);
+
+    using ClipFnPair = std::pair<bool(*)(const Vector4&), float(*)(const Vector4&, const Vector4&)>;
+
+    ClipFnPair right_clip_fns{
+        [](const Vector4 &v){ return v.x >= v.w; },
+        [](const Vector4 &v1, const Vector4 &v2){ return (v1.w - v1.x)/((v1.w - v1.x) - (v2.w - v2.x)); }
+    };
+
+    ClipFnPair left_clip_fns{
+        [](const Vector4 &v){ return v.x <= -v.w; },
+        [](const Vector4 &v1, const Vector4 &v2){ return (v1.w + v1.x)/((v1.w + v1.x) - (v2.w + v2.x)); }
+    };
+
+    std::array<ClipFnPair, 2> clip_test_fns = {
+        right_clip_fns,
+        left_clip_fns
+    };
+    
+    for (auto clip_fn_pair : clip_test_fns){
+        for(auto i = 0; i < test_vertex_list.size(); i++){
+            Vector4 test_v1 = test_vertex_list[i];
+            Vector4 test_v2 = test_vertex_list[(i + 1) % test_vertex_list.size()];
+        
+            bool v1_outside = clip_fn_pair.first(test_v1);
+            bool v2_outside = clip_fn_pair.first(test_v2);
+        
+            if(!v1_outside){
+                temp_keep_vertex_list.push_back(test_v1);
+            }
+        
+            if(v1_outside != v2_outside){
+                float t = clip_fn_pair.second(test_v1, test_v2);
+                auto result = interpolation::lerp<Vector4>(test_v1, test_v2, t);
+
+                temp_keep_vertex_list.push_back(result);
+            }
+        }
+
+        test_vertex_list.erase(test_vertex_list.begin(), test_vertex_list.end());
+
+        for(Vector4 v : temp_keep_vertex_list){
+           test_vertex_list.push_back(v); 
+        }
+
+        temp_keep_vertex_list.erase(temp_keep_vertex_list.begin(), temp_keep_vertex_list.end());
+    }
+
+    for (Vector4 v : test_vertex_list){
+        keep_vertex_list.push_back(v);
+    }
+}

@@ -25,11 +25,11 @@ void toggle_culling_callback(){
 }
 
 void translation_callback(){
-    translation_x += 1;
+    translation_x += 0.1;
 }
 
 void translation2_callback(){
-    translation_x -= 1;
+    translation_x -= 0.1;
 }
 
 int main(void){
@@ -40,12 +40,13 @@ int main(void){
     FrameBuffer framebuffer = FrameBuffer();
     Drawing draw = Drawing(framebuffer);
     Screen screen = Screen(framebuffer, true);
+    //Screen screen = Screen(framebuffer);
     InputHandler inputhandler = InputHandler();
 
     int width = framebuffer.buffer_width;
     int height = framebuffer.buffer_height;
 
-    Mesh cube = Mesh(Mesh::DefaultMesh::Triangle);
+    Mesh cube = Mesh(Mesh::DefaultMesh::Cube);
     
     if(!screen.InitSuccessful() || !inputhandler.InitSuccessful()){
         std::cerr << "Failed to Initialize SDL2 Screen or InputHandler" << std::endl;
@@ -78,7 +79,7 @@ int main(void){
 
             // Vertices Are Transformed in World Spaace
             Matrix4x4 world_matrix = Matrix4x4::Identity();
-            world_matrix = Matrix4x4::Scale(1, -1, 1);
+            world_matrix = Matrix4x4::Scale(1, 1, 1);
             world_matrix = Matrix4x4::YRotationMatrix(rotation) * world_matrix;
             world_matrix = Matrix4x4::ZRotationMatrix(rotation) * world_matrix;
             world_matrix = Matrix4x4::Translation(translation_x, 0, 0) * world_matrix;
@@ -107,46 +108,10 @@ int main(void){
             v2 = projection_matrix * v2;
             v3 = projection_matrix * v3;
 
-            //TODO: Implement proper clipping
-            //auto lerp_test = interpolation::lerp<Vector4>(v1, v2, 0.5);
+            //Proper clipping
             
-            // Test culling triangles if any vertex is out of bounds
-            // This actually seems to work how i expect, see if interpolation in clip space is also possible
-            auto right_clip_test = [](Vector4 &v){
-                return v.x >= v.w;
-            };
-
-            auto left_clip_test = [](Vector4 &v){
-                return v.x <= -v.w;
-            };
-            
-            std::vector<Vector4> test_vertex_list;
             std::vector<Vector4> keep_vertex_list;
-
-            test_vertex_list.push_back(v1);
-            test_vertex_list.push_back(v2);
-            test_vertex_list.push_back(v3);
-
-            for(auto i = 0; i < test_vertex_list.size(); i++){
-                Vector4 test_v1 = test_vertex_list[i];
-                Vector4 test_v2 = test_vertex_list[(i + 1) % test_vertex_list.size()];
-
-                bool v1_outside = right_clip_test(test_v1);
-                bool v2_outside = right_clip_test(test_v2);
-
-
-                if(!v1_outside){
-                    keep_vertex_list.push_back(test_v1);
-                }
-
-                if(v1_outside != v2_outside){
-                    float t = (test_v1.w - test_v1.x)/((test_v1.w - test_v1.x) - (test_v2.w - test_v2.x)); // Right
-                    //float t = (test_v1.w + test_v1.x)/((test_v1.w + test_v1.x) - (test_v2.w + test_v2.x)); // Left
-                    auto result = interpolation::lerp<Vector4>(test_v1, test_v2, t);
-                    keep_vertex_list.push_back(result);
-                }
-
-            }
+            clip::clip_vertices(v1, v2, v3, keep_vertex_list);
 
             // Vertices are in NDC
             auto persp_divide = [](Vector4 &v){
@@ -154,20 +119,11 @@ int main(void){
                 v.y /= v.w;
                 v.z /= v.w;
             };
-
-            //persp_divide(v1);
-            //persp_divide(v2);
-            //persp_divide(v3);
-
+            
             // Vertices are transformed to the viewport and are ready for texturing/rasterization
             Matrix4x4 viewport_scale = Matrix4x4::Scale(framebuffer.buffer_width / 2, framebuffer.buffer_height / 2, 1.0);
             Vector4 viewport_translate(width/2, height/2, 0, 0);
-
-            //v1 = (viewport_scale * v1) + viewport_translate;
-            //v2 = (viewport_scale * v2) + viewport_translate;
-            //v3 = (viewport_scale * v3) + viewport_translate;
-
-
+            
             for(auto &v : keep_vertex_list){
                 persp_divide(v);
                 v = (viewport_scale * v) + viewport_translate;
@@ -176,16 +132,10 @@ int main(void){
             }
 
             // retriangulate kept
-            //std::cout << keep_vertex_list.size() << std::endl;
-            int kept_vert_sz = keep_vertex_list.size();
-            for(int i = 0; i < kept_vert_sz - 2; i++){
-                Triangle t(keep_vertex_list[0], keep_vertex_list[i+1], keep_vertex_list[i+2]);
+            for(int i = 0; i <static_cast<int>(keep_vertex_list.size()) - 2; i++){
+                Triangle t(keep_vertex_list.front(), keep_vertex_list[i+1], keep_vertex_list[i+2]);
                 rendered_triangles.push_back(t);
             }
-
-            //Triangle t(v1, v2, v3);
-            //rendered_triangles.push_back(t);
-
         }
 
         // TODO: Fragment Pass here
