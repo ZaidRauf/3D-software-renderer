@@ -49,23 +49,30 @@ void clip::clip_vertices(Vector4 v1, Vector4 v2, Vector4 v3, std::vector<Vector4
         [](const Vector4 &v1, const Vector4 &v2){ return (v1.w + v1.y)/((v1.w + v1.y) - (v2.w + v2.y)); }
     };
 
-    ClipFnPair near_clip_fns{
-        [](const Vector4 &v){ return v.z <= 0; },
+    ClipFnPair far_clip_fns{
+        [](const Vector4 &v){ return v.z >= v.w; },
         [](const Vector4 &v1, const Vector4 &v2){ return (v1.w - v1.z)/((v1.w - v1.z) - (v2.w - v2.z)); }
     };
 
-    ClipFnPair far_clip_fns{
-        [](const Vector4 &v){ return v.z >= v.w; },
+    ClipFnPair near_clip_fns{
+        [](const Vector4 &v){ return v.z <= 0; },
         [](const Vector4 &v1, const Vector4 &v2){ return (v1.w + v1.z)/((v1.w + v1.z) - (v2.w + v2.z)); }
     };
+    
+    // Not sure if I need this    
+    //ClipFnPair negative_clip_fns{
+    //    [](const Vector4 &v){ return v.w <= 0; },
+    //    [](const Vector4 &v1, const Vector4 &v2){ return (v1.w)/(v1.w - v2.w); }
+    //};
 
     std::array<ClipFnPair, 6> clip_test_fns = {
         right_clip_fns,
         left_clip_fns,
         bottom_clip_fns,
         top_clip_fns,
-        near_clip_fns,
-        far_clip_fns
+        far_clip_fns,
+        near_clip_fns
+        //negative_clip_fns
     };
     
     for (auto clip_fn_pair : clip_test_fns){
@@ -99,5 +106,13 @@ void clip::clip_vertices(Vector4 v1, Vector4 v2, Vector4 v3, std::vector<Vector4
 
     for (Vector4 v : test_vertex_list){
         keep_vertex_list.push_back(v);
+    }
+}
+
+
+void clip::retriangulate_clipped_vertices(std::vector<Vector4> &clipped_vertex_list, std::vector<Triangle> &rebuilt_triangles){
+    for(int i = 0; i <static_cast<int>(clipped_vertex_list.size()) - 2; i++){
+        Triangle t(clipped_vertex_list.front(), clipped_vertex_list[i+1], clipped_vertex_list[i+2]);
+        rebuilt_triangles.push_back(t);
     }
 }

@@ -155,18 +155,12 @@ int main(void){
             }
 
             // retriangulate kept
-            for(int i = 0; i <static_cast<int>(keep_vertex_list.size()) - 2; i++){
-                Triangle t(keep_vertex_list.front(), keep_vertex_list[i+1], keep_vertex_list[i+2]);
-                rendered_triangles.push_back(t);
-            }
+            clip::retriangulate_clipped_vertices(keep_vertex_list, rendered_triangles);
         }
 
         // TODO: Fragment Pass here
-        for(Triangle t : rendered_triangles){
+       for(Triangle t : rendered_triangles){
             draw.DrawTriangle(t.a, t.b, t.c, 0x00FF00FF);
-            //draw.DrawVertex(t.a, 0xFF0000FF);
-            //draw.DrawVertex(t.b, 0xFF0000FF);
-            //draw.DrawVertex(t.c, 0xFF0000FF);
         }
 
         // Render what we've drawn into the framebuffer
