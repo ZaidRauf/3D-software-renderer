@@ -47,4 +47,16 @@ Mesh::Mesh(DefaultMesh meshEnum){
         faces[10] = {6,8,1};  // 8
         faces[11] = {6,1,4};  // 8
     }
+
+    else if(meshEnum == Triangle){
+        faces = std::make_unique<Face[]>(1);
+        vertices = std::make_unique<Vector3[]>(3);
+        _num_triangles = 1;
+
+        vertices[0] = {-1, -1, -1};
+        vertices[1] = {-1, 1,  -1};
+        vertices[2] = {1,  1,  -1};
+        faces[0] = {1,2,3};
+    }
 }
+

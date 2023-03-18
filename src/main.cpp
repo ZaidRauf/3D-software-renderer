@@ -9,10 +9,12 @@
 #include "camera.h"
 #include "clipping_culling.h"
 #include "interpolation.h"
+#include <vector>
 
 // TODO: Move to a settings object/singleton later
 bool running = true;
-bool backface_culling_enabled = true;
+bool backface_culling_enabled = false;
+float translation_x = 0.0;
 
 void exit_callback(){
     running = false;
@@ -22,9 +24,17 @@ void toggle_culling_callback(){
     backface_culling_enabled = !backface_culling_enabled;
 }
 
+void translation_callback(){
+    translation_x += 1;
+}
+
+void translation2_callback(){
+    translation_x -= 1;
+}
+
 int main(void){
-    //constexpr int width = 320;
-    //constexpr int height = 190;
+    //int width = 320;
+    //int height = 190;
 
     //FrameBuffer framebuffer = FrameBuffer(width, height);
     FrameBuffer framebuffer = FrameBuffer();
@@ -35,7 +45,7 @@ int main(void){
     int width = framebuffer.buffer_width;
     int height = framebuffer.buffer_height;
 
-    Mesh cube = Mesh(Mesh::DefaultMesh::Cube);
+    Mesh cube = Mesh(Mesh::DefaultMesh::Triangle);
     
     if(!screen.InitSuccessful() || !inputhandler.InitSuccessful()){
         std::cerr << "Failed to Initialize SDL2 Screen or InputHandler" << std::endl;
@@ -45,22 +55,23 @@ int main(void){
     // Move to game logic type file / class later
     inputhandler.RegisterCallback(SDLK_ESCAPE, exit_callback);
     inputhandler.RegisterCallback(SDLK_c, toggle_culling_callback);
+    inputhandler.RegisterCallback(SDLK_w, translation_callback);
+    inputhandler.RegisterCallback(SDLK_s, translation2_callback);
 
     
-    float x_translation = 0;
     float rotation = 0;
 
     Camera camera({0,0,-5}, {0,0,1}, {0,0,0});
 
     while(running){
-        x_translation += 0.01;
-        rotation += 0.01;
+        //rotation += 0.01;
+        std::vector<Triangle> rendered_triangles;
 
         // This loop is essentially the "Vertex Shader" of my renderer
         for (auto i = 0; i < cube.num_triangles; i++){
             Face f(cube.faces[i]);
             
-            // Vertices are in Model Space
+            // Vertices are in (Homogenous) Model Space
             Vector4 v1 = cube.vertices[f.a - 1];
             Vector4 v2 = cube.vertices[f.b - 1];
             Vector4 v3 = cube.vertices[f.c - 1];
@@ -70,7 +81,7 @@ int main(void){
             world_matrix = Matrix4x4::Scale(1, 1, 1);
             world_matrix = Matrix4x4::YRotationMatrix(rotation) * world_matrix;
             world_matrix = Matrix4x4::ZRotationMatrix(rotation) * world_matrix;
-            world_matrix = Matrix4x4::Translation(0, 0, 0) * world_matrix;
+            world_matrix = Matrix4x4::Translation(translation_x, 0, 0) * world_matrix;
 
             v1 = world_matrix * v1;
             v2 = world_matrix * v2;
@@ -101,13 +112,47 @@ int main(void){
             
             // Test culling triangles if any vertex is out of bounds
             // This actually seems to work how i expect, see if interpolation in clip space is also possible
-            //auto clip_test = [](Vector4 &v){
-            //    return fabsf(v.x) >= fabsf(v.w) || fabsf(v.y) >= fabsf(v.w) || fabsf(v.z) >= fabsf(v.w) || v.z < 0;
-            //};
+            auto right_clip_test = [](Vector4 &v){
+                return v.x >= v.w;
+            };
+            
+            if(right_clip_test(v3)){
+                    float t = (v1.w - v1.x)/((v1.w - v1.x) - (v3.w - v3.x));
+                    auto result = interpolation::lerp<Vector4>(v2, v3, t);
+                    v3 = result;
+            }
 
-            //if(clip_test(v1) || clip_test(v2) || clip_test(v3)){
-            //        continue;
-            //}
+            std::vector<Vector4> test_vertex_list;
+            std::vector<Vector4> keep_vertex_list;
+
+            test_vertex_list.push_back(v1);
+            test_vertex_list.push_back(v2);
+            test_vertex_list.push_back(v3);
+
+            for(auto i = 0; i < test_vertex_list.size(); i++){
+                Vector4 test_v1 = test_vertex_list[i];
+                Vector4 test_v2 = test_vertex_list[(i + 1) % test_vertex_list.size()];
+
+                bool v1_outside = right_clip_test(test_v1);
+                bool v2_outside = right_clip_test(test_v2);
+
+
+                if(!v1_outside){
+                    keep_vertex_list.push_back(test_v1);
+                }
+
+                if(v1_outside != v2_outside){
+                    float t = (test_v1.w - test_v1.x)/((test_v1.w - test_v1.x) - (test_v2.w - test_v2.x));
+                    auto result = interpolation::lerp<Vector4>(test_v1, test_v2, t);
+                    keep_vertex_list.push_back(result);
+                }
+
+            }
+
+            std::cout << keep_vertex_list.size() << std::endl;
+            for(auto &v : keep_vertex_list){
+                std::cout << v << std::endl;
+            }
             
             // Vertices are in NDC
             auto persp_divide = [](Vector4 &v){
@@ -133,15 +178,18 @@ int main(void){
                     v2,
                     v3);
 
-            draw.DrawTriangle(t.a, t.b, t.c, 0x00FF00FF);
+            rendered_triangles.push_back(t);
 
-            draw.DrawVertex(t.a, 0xFF0000FF);
-            draw.DrawVertex(t.b, 0xFF0000FF);
-            draw.DrawVertex(t.c, 0xFF0000FF);
         }
 
         // TODO: Fragment Pass here
-        
+        for(Triangle t : rendered_triangles){
+            draw.DrawTriangle(t.a, t.b, t.c, 0x00FF00FF);
+            //draw.DrawVertex(t.a, 0xFF0000FF);
+            //draw.DrawVertex(t.b, 0xFF0000FF);
+            //draw.DrawVertex(t.c, 0xFF0000FF);
+        }
+
         // Render what we've drawn into the framebuffer
         screen.RenderFrame(framebuffer);
         framebuffer.ClearFrameBuffer(FrameBuffer::BLACK);

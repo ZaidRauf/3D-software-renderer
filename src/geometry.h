@@ -38,7 +38,7 @@ class Mesh{
     public:
         std::unique_ptr<Face[]> faces;
         std::unique_ptr<Vector3[]> vertices;
-        enum DefaultMesh { Cube };
+        enum DefaultMesh { Cube, Triangle };
         const int &num_triangles = _num_triangles;
         Transform transform;
         Mesh();
