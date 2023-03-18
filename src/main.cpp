@@ -15,6 +15,8 @@
 bool running = true;
 bool backface_culling_enabled = false;
 float translation_x = 0.0;
+float translation_y = 0.0;
+float translation_z = 0.0;
 
 void exit_callback(){
     running = false;
@@ -30,6 +32,22 @@ void translation_callback(){
 
 void translation2_callback(){
     translation_x -= 0.1;
+}
+
+void translation3_callback(){
+    translation_y -= 0.1;
+}
+
+void translation4_callback(){
+    translation_y += 0.1;
+}
+
+void translation5_callback(){
+    translation_z += 0.1;
+}
+
+void translation6_callback(){
+    translation_z -= 0.1;
 }
 
 int main(void){
@@ -56,8 +74,12 @@ int main(void){
     // Move to game logic type file / class later
     inputhandler.RegisterCallback(SDLK_ESCAPE, exit_callback);
     inputhandler.RegisterCallback(SDLK_c, toggle_culling_callback);
-    inputhandler.RegisterCallback(SDLK_w, translation_callback);
-    inputhandler.RegisterCallback(SDLK_s, translation2_callback);
+    inputhandler.RegisterCallback(SDLK_d, translation_callback);
+    inputhandler.RegisterCallback(SDLK_a, translation2_callback);
+    inputhandler.RegisterCallback(SDLK_w, translation3_callback);
+    inputhandler.RegisterCallback(SDLK_s, translation4_callback);
+    inputhandler.RegisterCallback(SDLK_q, translation5_callback);
+    inputhandler.RegisterCallback(SDLK_e, translation6_callback);
 
     
     float rotation = 0;
@@ -82,7 +104,7 @@ int main(void){
             world_matrix = Matrix4x4::Scale(1, 1, 1);
             world_matrix = Matrix4x4::YRotationMatrix(rotation) * world_matrix;
             world_matrix = Matrix4x4::ZRotationMatrix(rotation) * world_matrix;
-            world_matrix = Matrix4x4::Translation(translation_x, 0, 0) * world_matrix;
+            world_matrix = Matrix4x4::Translation(translation_x, translation_y, translation_z) * world_matrix;
 
             v1 = world_matrix * v1;
             v2 = world_matrix * v2;
@@ -129,6 +151,7 @@ int main(void){
                 v = (viewport_scale * v) + viewport_translate;
 
                 if(v.x == framebuffer.buffer_width) v.x -= 1;
+                if(v.y == framebuffer.buffer_height) v.y -= 1;
             }
 
             // retriangulate kept
