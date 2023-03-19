@@ -10,6 +10,8 @@
 #include "clipping_culling.h"
 #include "interpolation.h"
 #include <vector>
+#include <chrono>
+#include <thread>
 
 // TODO: Move to a settings object/singleton later
 bool running = true;
@@ -18,6 +20,10 @@ float translation_x = 0.0;
 float translation_y = 0.0;
 float translation_z = 0.0;
 
+constexpr int FRAMES_PER_SECOND = 120;
+constexpr int FRAME_LENGTH_MS = 1000/FRAMES_PER_SECOND;
+auto previous_frame_time = std::chrono::steady_clock::now();
+float delta_time = 0;
 void exit_callback(){
     running = false;
 }
@@ -51,18 +57,18 @@ void translation6_callback(){
 }
 
 int main(){
-    //int width = 320;
-    //int height = 190;
+    int width = 320;
+    int height = 190;
 
-    //FrameBuffer framebuffer = FrameBuffer(width, height);
-    FrameBuffer framebuffer = FrameBuffer();
+    FrameBuffer framebuffer = FrameBuffer(width, height);
+    //FrameBuffer framebuffer = FrameBuffer();
     Drawing draw = Drawing(framebuffer);
-    Screen screen = Screen(framebuffer, true);
-    //Screen screen = Screen(framebuffer);
+    //Screen screen = Screen(framebuffer, true);
+    Screen screen = Screen(framebuffer);
     InputHandler inputhandler = InputHandler();
 
-    int width = framebuffer.buffer_width;
-    int height = framebuffer.buffer_height;
+    //int width = framebuffer.buffer_width;
+    //int height = framebuffer.buffer_height;
 
     Mesh cube = Mesh(Mesh::DefaultMesh::Cube);
     
@@ -87,7 +93,21 @@ int main(){
     Camera camera({0,0,-5}, {0,0,1}, {0,0,0});
 
     while(running){
-        rotation += 0.01;
+        // TODO: Put frame time management in own function or object
+        auto frame_start_time = std::chrono::steady_clock::now();
+        auto frame_elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(frame_start_time - previous_frame_time);
+
+        int wait_time_ms = FRAME_LENGTH_MS - frame_elapsed_time.count();
+        if(wait_time_ms > 0 && wait_time_ms <= FRAME_LENGTH_MS){
+            std::this_thread::sleep_for(std::chrono::milliseconds(wait_time_ms));
+        }
+
+        auto delta_elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - previous_frame_time);
+        delta_time = static_cast<float>(delta_elapsed_time.count()) / 1000.0;
+        std::cout << delta_time << std::endl;
+        previous_frame_time = std::chrono::steady_clock::now();
+           
+        rotation += 0.7 * delta_time;
         std::vector<Triangle> rendered_triangles;
 
         // This loop is essentially the "Vertex Shader" of my renderer
@@ -171,7 +191,7 @@ int main(){
 
         // TODO: Fragment Pass here
        for(Triangle t : rendered_triangles){
-           //draw.DrawFilledTriangle(t.a, t.b, t.c, 0xFFFFFFFF);
+           draw.DrawFilledTriangle(t.a, t.b, t.c, 0xFFFFFFFF);
            draw.DrawTriangle(t.a, t.b, t.c, 0x00FF00FF);
            //draw.DrawFilledTriangle(t.a, t.b, t.c, colors[i % 4]);
            //i++;
