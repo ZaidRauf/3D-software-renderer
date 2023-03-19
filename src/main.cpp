@@ -50,7 +50,7 @@ void translation6_callback(){
     translation_z -= 0.1;
 }
 
-int main(void){
+int main(){
     //int width = 320;
     //int height = 190;
 
@@ -149,9 +149,12 @@ int main(void){
             for(auto &v : keep_vertex_list){
                 persp_divide(v);
                 v = (viewport_scale * v) + viewport_translate;
-
-                if(v.x == framebuffer.buffer_width) v.x -= 1;
-                if(v.y == framebuffer.buffer_height) v.y -= 1;
+                
+                // Clamp kept vertices to be withing buffer
+                if(v.x >= framebuffer.buffer_width) v.x = framebuffer.buffer_width - 1;
+                if(v.y >= framebuffer.buffer_height) v.y = framebuffer.buffer_height - 1;
+                if(v.x < 0) v.x = 0;
+                if(v.y < 0) v.y = 0;
             }
 
             // retriangulate kept

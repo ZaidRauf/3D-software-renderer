@@ -8,6 +8,10 @@ Drawing::Pixel::Pixel(int x, int y) : x(x), y(y){}
 
 Drawing::Pixel::Pixel(Vector2 v) : x(v.x), y(v.y){}
 
+Drawing::Pixel::Pixel(Vector3 v) : x(v.x), y(v.y){}
+
+Drawing::Pixel::Pixel(Vector4 v) : x(v.x), y(v.y){}
+
 Drawing::Pixel::~Pixel(){}
 
 void Drawing::DrawVertex(Vector2 v, uint32_t color){
@@ -50,6 +54,10 @@ void Drawing::DrawTriangle(const Pixel &a, const Pixel &b, const Pixel &c, uint3
     this->DrawLine(c, a, color);
 }
 
+// Flat top flat bottom algorithm`
+void Drawing::DrawFilledTriangle(const Pixel &a, const Pixel &b, const Pixel &c, uint32_t color){
+    
+}
 
 //void Drawing::DrawBresenhamLine(const Pixel &start, const Pixel &end, const uint32_t color){
 //    int dx = end.x - start.x;

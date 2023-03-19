@@ -7,8 +7,8 @@
 // Represents a 2D triangle projected onto the screen
 class Triangle{
     public:
-        Vector2 a, b, c;
-        Triangle(Vector2 v1, Vector2 v2, Vector2 v3);
+        Vector4 a, b, c;
+        Triangle(Vector4 v1, Vector4 v2, Vector4 v3);
         ~Triangle();
 };
 

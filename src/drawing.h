@@ -13,6 +13,8 @@ class Drawing{
         struct Pixel{
             Pixel(int x, int y);
             Pixel(Vector2 v);
+            Pixel(Vector3 v);
+            Pixel(Vector4 v);
             ~Pixel();
             int x;
             int y;
@@ -23,6 +25,7 @@ class Drawing{
         void DrawLine(const Pixel &start, const Pixel &end, uint32_t color);
         void DrawTriangle(const Pixel &a, const Pixel &b, const Pixel &c, uint32_t color);
         void DrawVertex(Vector2 v, uint32_t color);
+        void DrawFilledTriangle(const Pixel &a, const Pixel &b, const Pixel &c, uint32_t color);
         //void DrawBresenhamLine(const Pixel &start, const Pixel &end, const uint32_t color);
     private:
         FrameBuffer &frame_buffer;
