@@ -56,9 +56,9 @@ void Drawing::DrawTriangle(const Pixel &a, const Pixel &b, const Pixel &c, uint3
 
 // Flat top flat bottom algorithm`
 void Drawing::DrawFilledTriangle(const Vector4 &a, const Vector4 &b, const Vector4 &c, uint32_t color){
-    Vector4 v0 = a;
-    Vector4 v1 = b;
-    Vector4 v2 = c;
+    Pixel v0 = Pixel(a);
+    Pixel v1 = Pixel(b);
+    Pixel v2 = Pixel(c);
 
     if(v0.y > v1.y){
         std::swap(v0, v1);
@@ -71,58 +71,37 @@ void Drawing::DrawFilledTriangle(const Vector4 &a, const Vector4 &b, const Vecto
     if(v0.y > v1.y){
         std::swap(v0, v1);
     }
+
+    float slope_side_1 = 0;
+    float slope_side_2 = 0;
+
+    if (v1.y - v0.y != 0) slope_side_1 = static_cast<float>((v1.x - v0.x)) / static_cast<float>((v1.y - v0.y));
+    if (v2.y - v0.y != 0) slope_side_2 = static_cast<float>((v2.x - v0.x)) / static_cast<float>((v2.y - v0.y));
     
-    float x_left = v0.x;
-    float x_right = v0.x;
-
-    float slope_left = static_cast<float>((v1.x - v0.x)) / static_cast<float>((v1.y - v0.y));
-    float slope_right = static_cast<float>((v2.x - v0.x)) / static_cast<float>((v2.y - v0.y));
-
-    auto y = 0;
-    for(y = v0.y; y <= v1.y; y++){
-        this->DrawLine({static_cast<int>(std::roundf(x_left)), y}, {static_cast<int>(std::roundf(x_right)), y}, color);
-        
-        //for(auto x = x_left; x <= x_right; x++){
-        //    Vector3 barycentric_weights = interpolation::barycentric_weights(v0, v1, v2, Vector2(x, y));
-        //    
-        //    auto alpha = barycentric_weights.x;
-        //    auto beta = barycentric_weights.y;
-        //    auto gamma = barycentric_weights.z;
-
-        //    auto interpolated_z = 1/((alpha/v0.w) + (beta/v1.w) + (gamma/v2.w));
-
-        //    //if(frame_buffer.GetZPixel(x, y) > interpolated_z){
-        //        //frame_buffer.SetZPixel(x, y, interpolated_z);
-        //        frame_buffer.SetPixel(x, y, color);
-        //    //}
-        //}
-
-        x_left += slope_left;
-        x_right += slope_right;
+    float x_start = v0.x;
+    float x_end = v0.x;
+    
+    // If triangle is not flat top run flat bottom
+    if(v1.y - v0.y != 0){
+        for(auto y = v0.y; y <= v1.y; y++){
+            this->DrawLine({static_cast<int>(std::roundf(x_start)), y}, {static_cast<int>(std::roundf(x_end)), y}, color);
+            x_start += slope_side_1;
+            x_end += slope_side_2;
+        }
     }
     
-    x_left = v1.x; 
-    slope_left = static_cast<float>((v2.x - v1.x)) / static_cast<float>((v2.y - v1.y));
-    for(; y <= v2.y; y++){
-        this->DrawLine({static_cast<int>(std::roundf(x_left)), y}, {static_cast<int>(std::roundf(x_right)), y}, color);
+    slope_side_1 = 0;
+    if (v2.y - v1.y != 0) slope_side_1 = static_cast<float>((v2.x - v1.x)) / static_cast<float>((v2.y - v1.y));
+    x_start = v2.x;
+    x_end = v2.x;
 
-        //for(auto x = x_left; x <= x_right; x++){
-        //    Vector3 barycentric_weights = interpolation::barycentric_weights(v0, v1, v2, Vector2(x, y));
-        //    
-        //    auto alpha = barycentric_weights.x;
-        //    auto beta = barycentric_weights.y;
-        //    auto gamma = barycentric_weights.z;
-
-        //    auto interpolated_z = 1/((alpha/v0.w) + (beta/v1.w) + (gamma/v2.w));
-
-        //    //if(frame_buffer.GetZPixel(x, y) > interpolated_z){
-        //        //frame_buffer.SetZPixel(x, y, interpolated_z);
-        //        frame_buffer.SetPixel(x, y, color);
-        //    //}
-        //}
-
-        x_left += slope_left;
-        x_right += slope_right;
+    // If triangle is not flat bottom
+    if(v2.y - v1.y != 0){
+        for(auto y = v2.y; y >= v1.y; y--){
+            this->DrawLine({static_cast<int>(std::roundf(x_start)), y}, {static_cast<int>(std::roundf(x_end)), y}, color);
+            x_start -= slope_side_1;
+            x_end -= slope_side_2;
+        }
     }
 }
 

@@ -64,7 +64,7 @@ int main(){
     int width = framebuffer.buffer_width;
     int height = framebuffer.buffer_height;
 
-    Mesh cube = Mesh(Mesh::DefaultMesh::Cube);
+    Mesh cube = Mesh(Mesh::DefaultMesh::Triangle);
     
     if(!screen.InitSuccessful() || !inputhandler.InitSuccessful()){
         std::cerr << "Failed to Initialize SDL2 Screen or InputHandler" << std::endl;
