@@ -131,3 +131,5 @@ class Matrix4x4{
 };
 
 std::ostream& operator<<(std::ostream &os, const Matrix4x4 mat);
+
+float Determinant(const Vector2 &a, Vector2 const &b);

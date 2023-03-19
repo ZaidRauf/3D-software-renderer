@@ -163,12 +163,14 @@ int main(){
 
         // TODO: Fragment Pass here
        for(Triangle t : rendered_triangles){
+            draw.DrawFilledTriangle(t.a, t.b, t.c, 0xFFFFFFFF);
             draw.DrawTriangle(t.a, t.b, t.c, 0x00FF00FF);
         }
 
         // Render what we've drawn into the framebuffer
         screen.RenderFrame(framebuffer);
         framebuffer.ClearFrameBuffer(FrameBuffer::BLACK);
+        framebuffer.ClearZBuffer();
         inputhandler.HandleInput();
     }
 

@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include "linalg.h"
 #include "framebuffer.h"
+#include "interpolation.h"
 
 // Executes drawing operations on the provided framebuffer
 class Drawing{
@@ -25,7 +26,7 @@ class Drawing{
         void DrawLine(const Pixel &start, const Pixel &end, uint32_t color);
         void DrawTriangle(const Pixel &a, const Pixel &b, const Pixel &c, uint32_t color);
         void DrawVertex(Vector2 v, uint32_t color);
-        void DrawFilledTriangle(const Pixel &a, const Pixel &b, const Pixel &c, uint32_t color);
+        void DrawFilledTriangle(const Vector4 &a, const Vector4 &b, const Vector4 &c, uint32_t color);
         //void DrawBresenhamLine(const Pixel &start, const Pixel &end, const uint32_t color);
     private:
         FrameBuffer &frame_buffer;
