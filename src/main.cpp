@@ -13,7 +13,7 @@
 
 // TODO: Move to a settings object/singleton later
 bool running = true;
-bool backface_culling_enabled = false;
+bool backface_culling_enabled = true;
 float translation_x = 0.0;
 float translation_y = 0.0;
 float translation_z = 0.0;
@@ -64,7 +64,7 @@ int main(){
     int width = framebuffer.buffer_width;
     int height = framebuffer.buffer_height;
 
-    Mesh cube = Mesh(Mesh::DefaultMesh::Triangle);
+    Mesh cube = Mesh(Mesh::DefaultMesh::Cube);
     
     if(!screen.InitSuccessful() || !inputhandler.InitSuccessful()){
         std::cerr << "Failed to Initialize SDL2 Screen or InputHandler" << std::endl;
@@ -87,7 +87,7 @@ int main(){
     Camera camera({0,0,-5}, {0,0,1}, {0,0,0});
 
     while(running){
-        //rotation += 0.01;
+        rotation += 0.01;
         std::vector<Triangle> rendered_triangles;
 
         // This loop is essentially the "Vertex Shader" of my renderer
@@ -150,7 +150,7 @@ int main(){
                 persp_divide(v);
                 v = (viewport_scale * v) + viewport_translate;
                 
-                // Clamp kept vertices to be withing buffer
+                // Clamp kept vertices to be within buffer
                 if(v.x >= framebuffer.buffer_width) v.x = framebuffer.buffer_width - 1;
                 if(v.y >= framebuffer.buffer_height) v.y = framebuffer.buffer_height - 1;
                 if(v.x < 0) v.x = 0;
@@ -160,11 +160,21 @@ int main(){
             // retriangulate kept
             clip::retriangulate_clipped_vertices(keep_vertex_list, rendered_triangles);
         }
+        
+        //auto i = 0;
+        //std::array<uint32_t, 4> colors = {
+        //    0xFF0000FF,
+        //    0x00FF00FF,
+        //    0x0000FFFF,
+        //    0xFFFF00FF
+        //};
 
         // TODO: Fragment Pass here
        for(Triangle t : rendered_triangles){
-            draw.DrawFilledTriangle(t.a, t.b, t.c, 0xFFFFFFFF);
-            draw.DrawTriangle(t.a, t.b, t.c, 0x00FF00FF);
+           //draw.DrawFilledTriangle(t.a, t.b, t.c, 0xFFFFFFFF);
+           draw.DrawTriangle(t.a, t.b, t.c, 0x00FF00FF);
+           //draw.DrawFilledTriangle(t.a, t.b, t.c, colors[i % 4]);
+           //i++;
         }
 
         // Render what we've drawn into the framebuffer

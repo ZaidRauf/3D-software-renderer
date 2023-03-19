@@ -52,7 +52,7 @@ void FrameBuffer::SetPixel(int x, int y, uint32_t color){
 
 float FrameBuffer::GetZPixel(int x, int y){
     if(x < 0 || y < 0 || x >= buffer_width || y >= buffer_height){
-        return 110;
+        return 0;
     }
 
     // Go to Yth row and then go to Xth column

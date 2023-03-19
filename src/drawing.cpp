@@ -84,7 +84,26 @@ void Drawing::DrawFilledTriangle(const Vector4 &a, const Vector4 &b, const Vecto
     // If triangle is not flat top run flat bottom
     if(v1.y - v0.y != 0){
         for(auto y = v0.y; y <= v1.y; y++){
-            this->DrawLine({static_cast<int>(std::roundf(x_start)), y}, {static_cast<int>(std::roundf(x_end)), y}, color);
+            int trunc_x_end = static_cast<int>(std::roundf(x_end));
+            int trunc_x_start = static_cast<int>(std::roundf(x_start));
+
+            if(trunc_x_end < trunc_x_start){
+                std::swap(trunc_x_end, trunc_x_start);
+            }
+
+            for(int x = trunc_x_start; x <= trunc_x_end; x++){
+                // Set the Z Buffer value
+                // Returns weights of alpha, beta, gamma in xyz respectively
+                Vector3 weights = interpolation::barycentric_weights(a, b, c, Vector2(x, y));
+                float interpolated_z = 1/((weights.x/a.w) + (weights.y/b.w) + (weights.z/c.w));
+
+                if(frame_buffer.GetZPixel(x, y) > interpolated_z){
+                    frame_buffer.SetZPixel(x, y, interpolated_z);
+                    frame_buffer.SetPixel(x, y, color);
+                }
+                //frame_buffer.SetPixel(x, y, color);
+            }
+
             x_start += slope_side_1;
             x_end += slope_side_2;
         }
@@ -98,7 +117,24 @@ void Drawing::DrawFilledTriangle(const Vector4 &a, const Vector4 &b, const Vecto
     // If triangle is not flat bottom
     if(v2.y - v1.y != 0){
         for(auto y = v2.y; y >= v1.y; y--){
-            this->DrawLine({static_cast<int>(std::roundf(x_start)), y}, {static_cast<int>(std::roundf(x_end)), y}, color);
+            int trunc_x_end = static_cast<int>(std::roundf(x_end));
+            int trunc_x_start = static_cast<int>(std::roundf(x_start));
+
+            if(trunc_x_end < trunc_x_start){
+                std::swap(trunc_x_end, trunc_x_start);
+            }
+
+            for(int x = trunc_x_start; x <= trunc_x_end; x++){
+               Vector3 weights = interpolation::barycentric_weights(a, b, c, Vector2(x, y));
+               float interpolated_z = 1/((weights.x/a.w) + (weights.y/b.w) + (weights.z/c.w));
+
+               if(frame_buffer.GetZPixel(x, y) > interpolated_z){
+                   frame_buffer.SetZPixel(x, y, interpolated_z);
+                   frame_buffer.SetPixel(x, y, color);
+               }
+               //frame_buffer.SetPixel(x, y, color);
+            }
+
             x_start -= slope_side_1;
             x_end -= slope_side_2;
         }
