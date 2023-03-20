@@ -1,6 +1,6 @@
 #include "screen.h"
 
-Screen::Screen(FrameBuffer &fb, bool setFrameBufferMaxSize){
+Screen::Screen(FrameBuffer &fb, bool setFrameBufferMaxSize, int render_scale_factor){
     init_successful = true;
 
     if(SDL_Init(SDL_INIT_EVERYTHING) != 0){
@@ -49,9 +49,9 @@ Screen::Screen(FrameBuffer &fb, bool setFrameBufferMaxSize){
     screen_pixels_ptr = static_cast<void*>(screen_pixels.get());
 
     if(setFrameBufferMaxSize){
-        render_width = max_width;
-        render_height = max_height;
-        fb.ResizeFrameBuffer(max_width, max_height);   
+        render_width = max_width/render_scale_factor;
+        render_height = max_height/render_scale_factor;
+        fb.ResizeFrameBuffer(render_width, render_height);   
     }
 
     if(render_width == 0 || render_height == 0){

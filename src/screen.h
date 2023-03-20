@@ -10,7 +10,7 @@ using RawPixelByte = char;
 
 class Screen{
     public:
-        Screen(FrameBuffer &fb, bool setFrameBufferMaxSize = false);
+        Screen(FrameBuffer &fb, bool setFrameBufferMaxSize = false, int render_scale_factor = 1);
         ~Screen();
         void RenderFrame(FrameBuffer &fb);
         bool InitSuccessful();
@@ -29,4 +29,5 @@ class Screen{
         std::unique_ptr<RawPixelByte*> screen_pixels;
         void* screen_pixels_ptr;
         int screen_pitch;
+        int render_scale_factor = 1;
 };

@@ -16,14 +16,15 @@
 // TODO: Move to a settings object/singleton later
 bool running = true;
 bool backface_culling_enabled = true;
-float translation_x = 0.0;
-float translation_y = 0.0;
-float translation_z = 0.0;
-
 constexpr int FRAMES_PER_SECOND = 120;
 constexpr int FRAME_LENGTH_MS = 1000/FRAMES_PER_SECOND;
 auto previous_frame_time = std::chrono::steady_clock::now();
 float delta_time = 0;
+
+float translation_x = 0.0;
+float translation_y = 0.0;
+float translation_z = 0.0;
+
 void exit_callback(){
     running = false;
 }
@@ -57,18 +58,15 @@ void translation6_callback(){
 }
 
 int main(){
-    int width = 320;
-    int height = 190;
-
-    FrameBuffer framebuffer = FrameBuffer(width, height);
-    //FrameBuffer framebuffer = FrameBuffer();
+    FrameBuffer framebuffer = FrameBuffer();
     Drawing draw = Drawing(framebuffer);
-    //Screen screen = Screen(framebuffer, true);
-    Screen screen = Screen(framebuffer);
+    Screen screen = Screen(framebuffer, true, 6); // Use scale parameter instead of explicit size to maintain aspect ratio
     InputHandler inputhandler = InputHandler();
 
-    //int width = framebuffer.buffer_width;
-    //int height = framebuffer.buffer_height;
+    int width = framebuffer.buffer_width;
+    int height = framebuffer.buffer_height;
+
+    std::cout << width << " " << height << std::endl;
 
     Mesh cube = Mesh(Mesh::DefaultMesh::Cube);
     
@@ -104,7 +102,6 @@ int main(){
 
         auto delta_elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - previous_frame_time);
         delta_time = static_cast<float>(delta_elapsed_time.count()) / 1000.0;
-        std::cout << delta_time << std::endl;
         previous_frame_time = std::chrono::steady_clock::now();
            
         rotation += 0.7 * delta_time;
@@ -151,7 +148,6 @@ int main(){
             v3 = projection_matrix * v3;
 
             //Proper clipping
-            
             std::vector<Vector4> keep_vertex_list;
             clip::clip_vertices(v1, v2, v3, keep_vertex_list);
 
@@ -180,21 +176,11 @@ int main(){
             // retriangulate kept
             clip::retriangulate_clipped_vertices(keep_vertex_list, rendered_triangles);
         }
-        
-        //auto i = 0;
-        //std::array<uint32_t, 4> colors = {
-        //    0xFF0000FF,
-        //    0x00FF00FF,
-        //    0x0000FFFF,
-        //    0xFFFF00FF
-        //};
 
         // TODO: Fragment Pass here
        for(Triangle t : rendered_triangles){
            draw.DrawFilledTriangle(t.a, t.b, t.c, 0xFFFFFFFF);
            draw.DrawTriangle(t.a, t.b, t.c, 0x00FF00FF);
-           //draw.DrawFilledTriangle(t.a, t.b, t.c, colors[i % 4]);
-           //i++;
         }
 
         // Render what we've drawn into the framebuffer
