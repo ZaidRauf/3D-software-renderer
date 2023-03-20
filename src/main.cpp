@@ -12,25 +12,29 @@
 #include <vector>
 #include <chrono>
 #include <thread>
+#include "gamestate.h"
+
 
 // TODO: Move to a settings object/singleton later
-bool running = true;
-bool backface_culling_enabled = true;
-constexpr int FRAMES_PER_SECOND = 120;
-constexpr int FRAME_LENGTH_MS = 1000/FRAMES_PER_SECOND;
-auto previous_frame_time = std::chrono::steady_clock::now();
-float delta_time = 0;
+//bool running = true;
+//bool backface_culling_enabled = true;
+//constexpr int FRAMES_PER_SECOND = 120;
+//constexpr int FRAME_LENGTH_MS = 1000/FRAMES_PER_SECOND;
+//auto previous_frame_time = std::chrono::steady_clock::now();
+//float delta_time = 0;
 
 float translation_x = 0.0;
 float translation_y = 0.0;
 float translation_z = 0.0;
 
+GameState gamestate = GameState();
+
 void exit_callback(){
-    running = false;
+    gamestate.running = false;
 }
 
 void toggle_culling_callback(){
-    backface_culling_enabled = !backface_culling_enabled;
+    gamestate.backface_culling_enabled = !gamestate.backface_culling_enabled;
 }
 
 void translation_callback(){
@@ -90,19 +94,22 @@ int main(){
 
     Camera camera({0,0,-5}, {0,0,1}, {0,0,0});
 
-    while(running){
+    while(gamestate.running){
         // TODO: Put frame time management in own function or object
-        auto frame_start_time = std::chrono::steady_clock::now();
-        auto frame_elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(frame_start_time - previous_frame_time);
+        //auto frame_start_time = std::chrono::steady_clock::now();
+        //auto frame_elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(frame_start_time - previous_frame_time);
 
-        int wait_time_ms = FRAME_LENGTH_MS - frame_elapsed_time.count();
-        if(wait_time_ms > 0 && wait_time_ms <= FRAME_LENGTH_MS){
-            std::this_thread::sleep_for(std::chrono::milliseconds(wait_time_ms));
-        }
+        //int wait_time_ms = FRAME_LENGTH_MS - frame_elapsed_time.count();
+        //if(wait_time_ms > 0 && wait_time_ms <= FRAME_LENGTH_MS){
+        //    std::this_thread::sleep_for(std::chrono::milliseconds(wait_time_ms));
+        //}
 
-        auto delta_elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - previous_frame_time);
-        delta_time = static_cast<float>(delta_elapsed_time.count()) / 1000.0;
-        previous_frame_time = std::chrono::steady_clock::now();
+        //auto delta_elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - previous_frame_time);
+        //delta_time = static_cast<float>(delta_elapsed_time.count()) / 1000.0;
+        //previous_frame_time = std::chrono::steady_clock::now();
+        
+        gamestate.WaitForFrame();
+        float delta_time = gamestate.delta_time;
            
         rotation += 0.7 * delta_time;
         std::vector<Triangle> rendered_triangles;
@@ -134,7 +141,7 @@ int main(){
             v2 = view_matrix * v2;
             v3 = view_matrix * v3;
 
-            if(backface_culling_enabled && cull::should_backface_cull(v1, v2, v3, camera.position)){
+            if(gamestate.backface_culling_enabled && cull::should_backface_cull(v1, v2, v3, camera.position)){
                 continue;
             }
 
