@@ -1,4 +1,4 @@
-#include <iostrea>
+#include <iostream>
 #include <cstdbool>
 #include "screen.h"
 #include "framebuffer.h"
@@ -10,9 +10,8 @@
 #include "clipping_culling.h"
 #include "interpolation.h"
 #include <vector>
-#include <chrono>
-#include <thread>
 #include "gamestate.h"
+#include "texture.h"
 
 float translation_x = 0.0;
 float translation_y = 0.0;
@@ -93,6 +92,9 @@ int main(){
            
         rotation += 0.7 * delta_time;
         std::vector<Triangle> rendered_triangles;
+        
+        // TODO: Clean up lighting pass later
+        std::vector<uint32_t> face_colors;
 
         // This loop is essentially the "Vertex Shader" of my renderer
         for (auto i = 0; i < cube.num_triangles; i++){
@@ -124,6 +126,16 @@ int main(){
             if(gamestate.backface_culling_enabled && cull::should_backface_cull(v1, v2, v3, camera.position)){
                 continue;
             }
+
+            auto face_normal = Vector3::Cross(v1 - v2, v1 - v3).Normalized();
+            Vector3 light_dir{0, 0, -1};
+
+            auto intensity = light_dir * face_normal;
+            intensity += 0.05;
+            intensity = std::max(std::min(intensity, 1.0f), 0.0f); // 0x FF FF FF FF
+            //intensity += 0.2; // ambient luminence
+            uint32_t color = ((int)(intensity * 0xFF) << 24) + ((int)(intensity * 0xFF) << 16) + ((int)(intensity * 0xFF) << 8);
+            color += 0xFF;
 
             // Vertices are in Clip Space
             auto PI = 3.14159;
@@ -162,12 +174,17 @@ int main(){
 
             // retriangulate kept
             clip::retriangulate_clipped_vertices(keep_vertex_list, rendered_triangles);
+
+            face_colors.push_back(color);
         }
 
         // TODO: Fragment Pass here
+       int i = 0;
        for(Triangle t : rendered_triangles){
-           draw.DrawFilledTriangle(t.a, t.b, t.c, 0xFFFFFFFF);
-           draw.DrawTriangle(t.a, t.b, t.c, 0x00FF00FF);
+           auto color = face_colors[i];
+           i++;
+           draw.DrawFilledTriangle(t.a, t.b, t.c, color);
+           //draw.DrawTriangle(t.a, t.b, t.c, 0x00FF00FF);
         }
 
         // Render what we've drawn into the framebuffer
