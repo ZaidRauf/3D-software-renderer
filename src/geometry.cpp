@@ -23,6 +23,7 @@ Mesh::Mesh(DefaultMesh meshEnum){
         faces = std::make_unique<Face[]>(12);
         vertices = std::make_unique<Vector3[]>(8);
         _num_triangles = 12;
+        _num_vertices = 8;
 
 
         vertices[0] = {-1, -1, -1}; // 1
@@ -52,6 +53,7 @@ Mesh::Mesh(DefaultMesh meshEnum){
         faces = std::make_unique<Face[]>(1);
         vertices = std::make_unique<Vector3[]>(3);
         _num_triangles = 1;
+        _num_vertices = 3;
 
         vertices[0] = {-1, -1, -1};
         vertices[1] = {-1, 1,  -1};

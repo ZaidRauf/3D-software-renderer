@@ -16,7 +16,7 @@ class Triangle{
 class Face{
     public:
         int a, b, c;
-        uint32_t color;
+        int uv_a, uv_b, uv_c;
         Face();
         Face(int a, int b, int c);
         ~Face();
@@ -34,12 +34,15 @@ struct Transform{
 class Mesh{
     private:
         int _num_triangles = 0;
+        int _num_vertices = 0;
     
     public:
         std::unique_ptr<Face[]> faces;
         std::unique_ptr<Vector3[]> vertices;
+        std::unique_ptr<Vector2[]> uv_coords;
         enum DefaultMesh { Cube, Triangle };
         const int &num_triangles = _num_triangles;
+        const int &num_vertices = _num_vertices;
         Transform transform;
         Mesh();
         Mesh(DefaultMesh meshEnum);

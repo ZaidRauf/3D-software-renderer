@@ -129,7 +129,8 @@ int main(){
 
             auto face_normal = Vector3::Cross(v1 - v2, v1 - v3).Normalized();
             Vector3 light_dir{0, 0, -1};
-
+            
+            //TODO: Move lighting calculations to own file later
             auto intensity = light_dir * face_normal;
             intensity += 0.05;
             intensity = std::max(std::min(intensity, 1.0f), 0.0f); // 0x FF FF FF FF
