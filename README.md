@@ -28,7 +28,7 @@ I really wanted to develop a deeper understanding of how the real time 3D graphi
 
 I also used this as an opportunity to learn some more modern C++ features such as smart pointers and making heavy use of the standard template library when appropriate.
 
-Finally I also learned about
+Finally I also learned about the SDL2 library and how it can be used for both input and displaying results as the output.
 
 ## References I Used
 - [Pikuma: 3D Computer Graphics Programming](https://pikuma.com/courses/learn-3d-computer-graphics-programming) by Gustavo Pezzi - An excellent course that goes through teaching the theory and practice of building a software rasterizer
