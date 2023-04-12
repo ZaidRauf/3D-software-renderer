@@ -86,7 +86,7 @@ void FrameBuffer::ResizeFrameBuffer(unsigned int new_buffer_width, unsigned int 
 
     for(auto i = 0; i < buffer_length; i++){
         frame_buffer[i] = FrameBuffer::BLACK;
-        z_buffer[i] = 110;
+        z_buffer[i] = -110;
     }
 }
 
@@ -104,7 +104,7 @@ void FrameBuffer::ClearFrameBuffer(uint32_t color){
 void FrameBuffer::ClearZBuffer(){
     
     for(auto i = 0; i < buffer_length; i++){
-        z_buffer[i] = 110;
+        z_buffer[i] = -110;
     }
 
     return;

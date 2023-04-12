@@ -15,7 +15,8 @@
 
 float translation_x = 0.0;
 float translation_y = 0.0;
-float translation_z = 0.0;
+float translation_z = -4.5;
+float rotation = 0;
 
 GameState gamestate = GameState();
 
@@ -52,10 +53,14 @@ void translation6_callback(){
     translation_z -= 0.1;
 }
 
+void rotation_callback(){
+    rotation += 0.1;
+}
+
 int main(){
     FrameBuffer framebuffer = FrameBuffer();
     Drawing draw = Drawing(framebuffer);
-    Screen screen = Screen(framebuffer, true, 6); // Use scale parameter instead of explicit size to maintain aspect ratio
+    Screen screen = Screen(framebuffer, true, 1); // Use scale parameter instead of explicit size to maintain aspect ratio
     InputHandler inputhandler = InputHandler();
 
     int width = framebuffer.buffer_width;
@@ -63,7 +68,7 @@ int main(){
 
     std::cout << width << " " << height << std::endl;
 
-    Mesh cube = Mesh(Mesh::DefaultMesh::Cube);
+    Mesh cube = Mesh(Mesh::DefaultMesh::Bunny);
     
     if(!screen.InitSuccessful() || !inputhandler.InitSuccessful()){
         std::cerr << "Failed to Initialize SDL2 Screen or InputHandler" << std::endl;
@@ -79,18 +84,20 @@ int main(){
     inputhandler.RegisterCallback(SDLK_s, translation4_callback);
     inputhandler.RegisterCallback(SDLK_q, translation5_callback);
     inputhandler.RegisterCallback(SDLK_e, translation6_callback);
+    inputhandler.RegisterCallback(SDLK_t, rotation_callback);
 
     
-    float rotation = 0;
 
     Camera camera({0,0,-5}, {0,0,1}, {0,0,0});
+
+    Texture t = Texture();
 
     while(gamestate.running){
         // Put frame time management in own function or object
         gamestate.WaitForFrame();
         float delta_time = gamestate.delta_time;
            
-        rotation += 0.7 * delta_time;
+        //rotation += 0.7 * delta_time;
         std::vector<Triangle> rendered_triangles;
         
         // TODO: Clean up lighting pass later
@@ -99,6 +106,14 @@ int main(){
         // This loop is essentially the "Vertex Shader" of my renderer
         for (auto i = 0; i < cube.num_triangles; i++){
             Face f(cube.faces[i]);
+
+            Triangle t{
+                cube.vertices[f.a - 1],
+                cube.vertices[f.b - 1],
+                cube.vertices[f.c - 1]};
+                //cube.vertices[f.uv_a],
+                //cube.vertices[f.uv_b],
+                //cube.vertices[f.uv_c]};
             
             // Vertices are in (Homogenous) Model Space
             Vector4 v1 = cube.vertices[f.a - 1];
@@ -107,14 +122,16 @@ int main(){
 
             // Vertices Are Transformed in World Spaace
             Matrix4x4 world_matrix = Matrix4x4::Identity();
-            world_matrix = Matrix4x4::Scale(1, 1, 1);
+            world_matrix = Matrix4x4::Scale(1, -1, 1);
             world_matrix = Matrix4x4::YRotationMatrix(rotation) * world_matrix;
-            world_matrix = Matrix4x4::ZRotationMatrix(rotation) * world_matrix;
+            //world_matrix = Matrix4x4::ZRotationMatrix(rotation) * world_matrix;
             world_matrix = Matrix4x4::Translation(translation_x, translation_y, translation_z) * world_matrix;
 
             v1 = world_matrix * v1;
             v2 = world_matrix * v2;
             v3 = world_matrix * v3;
+
+            t.MapVerts(world_matrix);
 
             // Add View Matrix support
             Matrix4x4 view_matrix = Matrix4x4::ViewMatrix(camera.position, camera.target, {0, 1, 0});

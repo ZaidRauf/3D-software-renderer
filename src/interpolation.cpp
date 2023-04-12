@@ -9,6 +9,5 @@ Vector3 interpolation::barycentric_weights(const Vector2 &a, const Vector2 &b, c
     float beta = std::fabs(Determinant(p - a, p - c))/triangle_area;
     float gamma = std::fabs(Determinant(p - b, p - a))/triangle_area;
 
-
     return Vector3(alpha, beta, gamma);
 }
