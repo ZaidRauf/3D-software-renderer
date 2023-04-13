@@ -15,7 +15,7 @@
 
 float translation_x = 0.0;
 float translation_y = 0.0;
-float translation_z = -4.5;
+float translation_z = 0.0; // -4.5 for the bunny
 float rotation = 0;
 
 GameState gamestate = GameState();
@@ -60,7 +60,7 @@ void rotation_callback(){
 int main(){
     FrameBuffer framebuffer = FrameBuffer();
     Drawing draw = Drawing(framebuffer);
-    Screen screen = Screen(framebuffer, true, 1); // Use scale parameter instead of explicit size to maintain aspect ratio
+    Screen screen = Screen(framebuffer, true, 3); // Use scale parameter instead of explicit size to maintain aspect ratio
     InputHandler inputhandler = InputHandler();
 
     int width = framebuffer.buffer_width;
@@ -122,7 +122,7 @@ int main(){
 
             // Vertices Are Transformed in World Spaace
             Matrix4x4 world_matrix = Matrix4x4::Identity();
-            world_matrix = Matrix4x4::Scale(1, -1, 1);
+            world_matrix = Matrix4x4::Scale(1, 1, 1);
             world_matrix = Matrix4x4::YRotationMatrix(rotation) * world_matrix;
             //world_matrix = Matrix4x4::ZRotationMatrix(rotation) * world_matrix;
             world_matrix = Matrix4x4::Translation(translation_x, translation_y, translation_z) * world_matrix;
@@ -181,7 +181,13 @@ int main(){
             
             for(auto &v : keep_vertex_list){
                 persp_divide(v);
-                v = (viewport_scale * v) + viewport_translate;
+                v = (viewport_scale * v);
+
+                // Flip as screen space grows downwards in y axi
+                v.y *= -1;
+
+                // Translate into centre
+                v = v + viewport_translate;
                 
                 // Clamp kept vertices to be within buffer
                 if(v.x >= framebuffer.buffer_width) v.x = framebuffer.buffer_width - 1;

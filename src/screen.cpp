@@ -80,7 +80,7 @@ Screen::~Screen(){
 }
 
 void Screen::RenderFrame(FrameBuffer &fb){
-    //SDL_UpdateTexture(
+    // SDL_UpdateTexture(
     //        texture,
     //        NULL,
     //        fb.GetFrameBuffer(),

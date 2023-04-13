@@ -60,19 +60,19 @@ void clip::clip_vertices(Vector4 v1, Vector4 v2, Vector4 v3, std::vector<Vector4
     };
     
     // Not sure if I need this    
-    //ClipFnPair negative_clip_fns{
-    //    [](const Vector4 &v){ return v.w <= 0; },
-    //    [](const Vector4 &v1, const Vector4 &v2){ return (v1.w)/(v1.w - v2.w); }
-    //};
+    ClipFnPair negative_clip_fns{
+       [](const Vector4 &v){ return v.w <= 0; },
+       [](const Vector4 &v1, const Vector4 &v2){ return (v1.w)/(v1.w - v2.w); }
+    };
 
-    std::array<ClipFnPair, 6> clip_test_fns = {
+    std::array<ClipFnPair, 7> clip_test_fns = {
         right_clip_fns,
         left_clip_fns,
         bottom_clip_fns,
         top_clip_fns,
         far_clip_fns,
-        near_clip_fns
-        //negative_clip_fns
+        near_clip_fns,
+        negative_clip_fns
     };
     
     for (auto clip_fn_pair : clip_test_fns){
