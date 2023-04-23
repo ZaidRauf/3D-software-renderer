@@ -8,9 +8,9 @@ Triangle::Triangle(Vector4 v1, Vector4 v2, Vector4 v3, Vector2 uv_a, Vector2 uv_
 Triangle::~Triangle(){}
 
 void Triangle::MapVerts(const Matrix4x4 &m){
-    a = m.MatrixVectorMultiply(a);
-    //b = m * b;
-    //c = m * c;
+    a = m * a;
+    b = m * b;
+    c = m * c;
 }
 
 Face::Face(){}

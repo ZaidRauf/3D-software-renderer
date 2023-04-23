@@ -105,44 +105,29 @@ int main(){
         for (auto i = 0; i < mesh.num_triangles; i++){
             Face f(mesh.faces[i]);
 
+            // Vertices are in (Homogenous) Model Space
             Triangle t{
                 mesh.vertices[f.a - 1],
                 mesh.vertices[f.b - 1],
                 mesh.vertices[f.c - 1]};
-                //mesh.vertices[f.uv_a],
-                //mesh.vertices[f.uv_b],
-                //mesh.vertices[f.uv_c]};
             
-            // Vertices are in (Homogenous) Model Space
-            Vector4 v1 = mesh.vertices[f.a - 1];
-            Vector4 v2 = mesh.vertices[f.b - 1];
-            Vector4 v3 = mesh.vertices[f.c - 1];
-
             // Vertices Are Transformed in World Spaace
             Matrix4x4 world_matrix = Matrix4x4::Identity();
             world_matrix = Matrix4x4::Scale(1, 1, 1);
             world_matrix = Matrix4x4::YRotationMatrix(rotation) * world_matrix;
             //world_matrix = Matrix4x4::ZRotationMatrix(rotation) * world_matrix;
             world_matrix = Matrix4x4::Translation(translation_x, translation_y, translation_z) * world_matrix;
-
-            v1 = world_matrix * v1;
-            v2 = world_matrix * v2;
-            v3 = world_matrix * v3;
-
             t.MapVerts(world_matrix);
 
             // Add View Matrix support
             Matrix4x4 view_matrix = Matrix4x4::ViewMatrix(camera.position, camera.target, {0, 1, 0});
+            t.MapVerts(view_matrix);
 
-            v1 = view_matrix * v1;
-            v2 = view_matrix * v2;
-            v3 = view_matrix * v3;
-
-            if(gamestate.backface_culling_enabled && cull::should_backface_cull(v1, v2, v3, camera.position)){
+            if(gamestate.backface_culling_enabled && cull::should_backface_cull(t.a, t.b, t.c, camera.position)){
                 continue;
             }
 
-            auto face_normal = Vector3::Cross(v1 - v2, v1 - v3).Normalized();
+            auto face_normal = Vector3::Cross(t.a - t.b, t.a - t.c).Normalized();
             Vector3 light_dir{0, 0, -1};
             
             //TODO: Move lighting calculations to own file later
@@ -157,14 +142,11 @@ int main(){
             auto PI = 3.14159;
             float aspect_ratio = (float)framebuffer.buffer_width / (float)framebuffer.buffer_height;
             Matrix4x4 projection_matrix = Matrix4x4::PerspectiveProjectionMatrix(PI/3, aspect_ratio, 0.1, 100);
-
-            v1 = projection_matrix * v1;
-            v2 = projection_matrix * v2;
-            v3 = projection_matrix * v3;
+            t.MapVerts(projection_matrix);
 
             //Proper clipping
             std::vector<Vector4> keep_vertex_list;
-            clip::clip_vertices(v1, v2, v3, keep_vertex_list);
+            clip::clip_vertices(t.a, t.b, t.c, keep_vertex_list);
 
             // Vertices are in NDC
             auto persp_divide = [](Vector4 &v){
@@ -181,7 +163,7 @@ int main(){
                 persp_divide(v);
                 v = (viewport_scale * v);
 
-                // Flip as screen space grows downwards in y axi
+                // Flip as screen space grows downwards in y axis
                 v.y *= -1;
 
                 // Translate into centre
