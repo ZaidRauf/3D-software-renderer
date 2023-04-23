@@ -60,7 +60,7 @@ void rotation_callback(){
 int main(){
     FrameBuffer framebuffer = FrameBuffer(100);
     Drawing draw = Drawing(framebuffer);
-    Screen screen = Screen(framebuffer, true, 6); // Use scale parameter instead of explicit size to maintain aspect ratio
+    Screen screen = Screen(framebuffer, true, 3); // Use scale parameter instead of explicit size to maintain aspect ratio
     InputHandler inputhandler = InputHandler();
 
     int width = framebuffer.buffer_width;
@@ -88,14 +88,14 @@ int main(){
 
     Camera camera({0,0,-5}, {0,0,1}, {0,0,0});
 
-    Texture t = Texture();
+    Texture tex = Texture();
 
     while(gamestate.running){
         // Put frame time management in own function or object
         gamestate.WaitForFrame();
         float delta_time = gamestate.delta_time;
            
-        //rotation += 0.7 * delta_time;
+        // rotation += 0.7 * delta_time;
         std::vector<Triangle> rendered_triangles;
         
         // TODO: Clean up lighting pass later
@@ -110,6 +110,9 @@ int main(){
                 mesh.vertices[f.a - 1],
                 mesh.vertices[f.b - 1],
                 mesh.vertices[f.c - 1]};
+                //mesh.uv_coords[f.uv_a],
+                //mesh.uv_coords[f.uv_a],
+                //mesh.uv_coords[f.uv_a]};
             
             // Vertices Are Transformed in World Spaace
             Matrix4x4 world_matrix = Matrix4x4::Identity();

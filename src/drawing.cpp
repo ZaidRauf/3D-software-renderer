@@ -56,9 +56,9 @@ void Drawing::DrawTriangle(const Pixel &a, const Pixel &b, const Pixel &c, uint3
 
 // Flat top flat bottom algorithm`
 void Drawing::DrawFilledTriangle(const Vector4 &a, const Vector4 &b, const Vector4 &c, uint32_t color){
-    Pixel v0 = Pixel(a);
-    Pixel v1 = Pixel(b);
-    Pixel v2 = Pixel(c);
+    Vector4 v0 = a;
+    Vector4 v1 = b;
+    Vector4 v2 = c;
 
     if(v0.y > v1.y){
         std::swap(v0, v1);
@@ -72,18 +72,22 @@ void Drawing::DrawFilledTriangle(const Vector4 &a, const Vector4 &b, const Vecto
         std::swap(v0, v1);
     }
 
+    Pixel p0 = Pixel(v0);
+    Pixel p1 = Pixel(v1);
+    Pixel p2 = Pixel(v2);
+
     float slope_side_1 = 0;
     float slope_side_2 = 0;
 
-    if (v1.y - v0.y != 0) slope_side_1 = static_cast<float>((v1.x - v0.x)) / static_cast<float>((v1.y - v0.y));
-    if (v2.y - v0.y != 0) slope_side_2 = static_cast<float>((v2.x - v0.x)) / static_cast<float>((v2.y - v0.y));
+    if (p1.y - p0.y != 0) slope_side_1 = static_cast<float>((p1.x - p0.x)) / static_cast<float>((p1.y - p0.y));
+    if (p2.y - p0.y != 0) slope_side_2 = static_cast<float>((p2.x - p0.x)) / static_cast<float>((p2.y - p0.y));
     
-    float x_start = v0.x;
-    float x_end = v0.x;
+    float x_start = p0.x;
+    float x_end = p0.x;
     
     // If triangle is not flat top run flat bottom
-    if(v1.y - v0.y != 0){
-        for(auto y = v0.y; y <= v1.y; y++){
+    if(p1.y - p0.y != 0){
+        for(auto y = p0.y; y <= p1.y; y++){
             int trunc_x_end = static_cast<int>(std::roundf(x_end));
             int trunc_x_start = static_cast<int>(std::roundf(x_start));
 
@@ -94,8 +98,8 @@ void Drawing::DrawFilledTriangle(const Vector4 &a, const Vector4 &b, const Vecto
             for(int x = trunc_x_start; x <= trunc_x_end; x++){
                 // Set the Z Buffer value
                 // Returns weights of alpha, beta, gamma in xyz respectively
-                Vector3 weights = interpolation::barycentric_weights(a, b, c, Vector2(x, y));
-                float interpolated_z = 1/((weights.x/a.w) + (weights.y/b.w) + (weights.z/c.w));
+                Vector3 weights = interpolation::barycentric_weights(v0, v1, v2, Vector2(x, y));
+                float interpolated_z = 1/((weights.x/v0.w) + (weights.y/v1.w) + (weights.z/v2.w));
                 
                 if(frame_buffer.GetZPixel(x, y) > interpolated_z){
                     frame_buffer.SetZPixel(x, y, interpolated_z);
@@ -110,13 +114,13 @@ void Drawing::DrawFilledTriangle(const Vector4 &a, const Vector4 &b, const Vecto
     }
     
     slope_side_1 = 0;
-    if (v2.y - v1.y != 0) slope_side_1 = static_cast<float>((v2.x - v1.x)) / static_cast<float>((v2.y - v1.y));
-    x_start = v2.x;
-    x_end = v2.x;
+    if (p2.y - p1.y != 0) slope_side_1 = static_cast<float>((p2.x - p1.x)) / static_cast<float>((p2.y - p1.y));
+    x_start = p2.x;
+    x_end = p2.x;
 
     // If triangle is not flat bottom
-    if(v2.y - v1.y != 0){
-        for(auto y = v2.y; y >= v1.y; y--){
+    if(p2.y - p1.y != 0){
+        for(auto y = p2.y; y >= p1.y; y--){
             int trunc_x_end = static_cast<int>(std::roundf(x_end));
             int trunc_x_start = static_cast<int>(std::roundf(x_start));
 
@@ -126,7 +130,7 @@ void Drawing::DrawFilledTriangle(const Vector4 &a, const Vector4 &b, const Vecto
 
             for(int x = trunc_x_start; x <= trunc_x_end; x++){
                Vector3 weights = interpolation::barycentric_weights(a, b, c, Vector2(x, y));
-               float interpolated_z = 1/((weights.x/a.w) + (weights.y/b.w) + (weights.z/c.w));
+               float interpolated_z = 1/((weights.x/v0.w) + (weights.y/v1.w) + (weights.z/v2.w));
             //    std::cout << weights.x + weights.y + weights.z << std::endl;
 
                if(frame_buffer.GetZPixel(x, y) > interpolated_z){
