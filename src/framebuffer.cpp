@@ -1,25 +1,25 @@
 #include "framebuffer.h"
 
-FrameBuffer::FrameBuffer(int width, int height) : _buffer_width(width), _buffer_height(height), _buffer_length(_buffer_width * _buffer_height){
+FrameBuffer::FrameBuffer(int width, int height, int max_depth) : _buffer_width(width), _buffer_height(height), _buffer_length(_buffer_width * _buffer_height), _max_depth(max_depth){
     //frame_buffer = std::unique_ptr<uint32_t[]>(new uint32_t[buffer_width * buffer_height]);
     frame_buffer = std::make_unique<uint32_t[]>(buffer_width * buffer_height);
     z_buffer = std::make_unique<float[]>(buffer_width * buffer_height);
     
     for(auto i = 0; i < buffer_length; i++){
         frame_buffer[i] = FrameBuffer::BLACK;
-        z_buffer[i] = 110;
+        z_buffer[i] = _max_depth;
     }
 
     return;
 }
 
-FrameBuffer::FrameBuffer() : _buffer_width(0), _buffer_height(0), _buffer_length(_buffer_width * _buffer_height){
+FrameBuffer::FrameBuffer(int max_depth) : _buffer_width(0), _buffer_height(0), _buffer_length(_buffer_width * _buffer_height), _max_depth(max_depth){
     frame_buffer = std::make_unique<uint32_t[]>(buffer_width * buffer_height);
     z_buffer = std::make_unique<float[]>(buffer_width * buffer_height);
 
     for(auto i = 0; i < buffer_length; i++){
         frame_buffer[i] = FrameBuffer::BLACK;
-        z_buffer[i] = 110;
+        z_buffer[i] = _max_depth;
     }
 
     return;
@@ -86,7 +86,7 @@ void FrameBuffer::ResizeFrameBuffer(unsigned int new_buffer_width, unsigned int 
 
     for(auto i = 0; i < buffer_length; i++){
         frame_buffer[i] = FrameBuffer::BLACK;
-        z_buffer[i] = 110;
+        z_buffer[i] = _max_depth;
     }
 }
 
@@ -104,7 +104,7 @@ void FrameBuffer::ClearFrameBuffer(uint32_t color){
 void FrameBuffer::ClearZBuffer(){
     
     for(auto i = 0; i < buffer_length; i++){
-        z_buffer[i] = 110;
+        z_buffer[i] = _max_depth;
     }
 
     return;

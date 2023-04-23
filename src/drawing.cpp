@@ -96,8 +96,7 @@ void Drawing::DrawFilledTriangle(const Vector4 &a, const Vector4 &b, const Vecto
                 // Returns weights of alpha, beta, gamma in xyz respectively
                 Vector3 weights = interpolation::barycentric_weights(a, b, c, Vector2(x, y));
                 float interpolated_z = 1/((weights.x/a.w) + (weights.y/b.w) + (weights.z/c.w));
-                // std::cout << weights.x + weights.y + weights.z << std::endl;
-
+                
                 if(frame_buffer.GetZPixel(x, y) > interpolated_z){
                     frame_buffer.SetZPixel(x, y, interpolated_z);
                     frame_buffer.SetPixel(x, y, color);
@@ -109,7 +108,6 @@ void Drawing::DrawFilledTriangle(const Vector4 &a, const Vector4 &b, const Vecto
             x_end += slope_side_2;
         }
     }
-
     
     slope_side_1 = 0;
     if (v2.y - v1.y != 0) slope_side_1 = static_cast<float>((v2.x - v1.x)) / static_cast<float>((v2.y - v1.y));

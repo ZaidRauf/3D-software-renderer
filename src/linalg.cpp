@@ -232,7 +232,7 @@ Matrix4x4::Matrix4x4(){
 
 Matrix4x4::~Matrix4x4(){}
 
-const Vector4 Matrix4x4::MatrixVectorMultiply(const Vector4 &v){
+Vector4 Matrix4x4::MatrixVectorMultiply(const Vector4 &v) const{
     return Vector4(
             Vector4::Dot(Vector4(matrix[0]), v),
             Vector4::Dot(Vector4(matrix[1]), v),
@@ -336,12 +336,12 @@ Matrix4x4 Matrix4x4::XRotationMatrix(float theta){
    return mat; 
 }
 
-const Vector4 Matrix4x4::operator*(const Vector4 &vector){
+Vector4 Matrix4x4::operator*(const Vector4 &vector) const{
     return MatrixVectorMultiply(vector);
 }
 
 
-const Matrix4x4 Matrix4x4::MatrixMultiply(const Matrix4x4 &m){
+Matrix4x4 Matrix4x4::MatrixMultiply(const Matrix4x4 &m) const{
     Matrix4x4 final_matrix = Matrix4x4::Zeros();
 
     for(auto m_row = 0; m_row < 4; m_row++){
@@ -353,7 +353,7 @@ const Matrix4x4 Matrix4x4::MatrixMultiply(const Matrix4x4 &m){
     return final_matrix;
 }
 
-const Matrix4x4 Matrix4x4::operator*(const Matrix4x4 &m){
+Matrix4x4 Matrix4x4::operator*(const Matrix4x4 &m)const {
     return MatrixMultiply(m);
 }
 
