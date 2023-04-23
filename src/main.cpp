@@ -127,16 +127,18 @@ int main(){
                 continue;
             }
 
+            // Calculate the normal for lighting calculation
             auto face_normal = Vector3::Cross(t.a - t.b, t.a - t.c).Normalized();
-            Vector3 light_dir{0, 0, -1};
-            
+
             //TODO: Move lighting calculations to own file later
+            Vector3 light_dir{0, 0, -1};            
             auto intensity = light_dir * face_normal;
             intensity += 0.05;
-            intensity = std::max(std::min(intensity, 1.0f), 0.0f); // 0x FF FF FF FF
-            //intensity += 0.2; // ambient luminence
+            intensity = std::max(std::min(intensity, 1.0f), 0.0f);
             uint32_t color = ((int)(intensity * 0xFF) << 24) + ((int)(intensity * 0xFF) << 16) + ((int)(intensity * 0xFF) << 8);
             color += 0xFF;
+
+            t.color = color;
 
             // Vertices are in Clip Space
             auto PI = 3.14159;
@@ -177,17 +179,14 @@ int main(){
             }
 
             // retriangulate kept
-            clip::retriangulate_clipped_vertices(keep_vertex_list, rendered_triangles);
-
-            face_colors.push_back(color);
+            clip::retriangulate_clipped_vertices(t, keep_vertex_list, rendered_triangles);
         }
 
         // TODO: Fragment Pass here
        int i = 0;
        for(Triangle t : rendered_triangles){
-           auto color = face_colors[i];
            i++;
-           draw.DrawFilledTriangle(t.a, t.b, t.c, color);
+           draw.DrawFilledTriangle(t.a, t.b, t.c, t.color);
            //draw.DrawTriangle(t.a, t.b, t.c, 0x00FF00FF);
         }
 

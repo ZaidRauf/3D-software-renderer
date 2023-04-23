@@ -9,6 +9,7 @@ class Triangle{
     public:
         Vector4 a, b, c;
         Vector2 uv_a, uv_b, uv_c;
+        uint32_t color = 0xFFFFFFFF;
         Triangle(Vector4 v1, Vector4 v2, Vector4 v3);
         Triangle(Vector4 v1, Vector4 v2, Vector4 v3, Vector2 uv_a, Vector2 uv_b, Vector2 uv_c);
         ~Triangle();

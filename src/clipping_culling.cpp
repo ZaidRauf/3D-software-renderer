@@ -109,10 +109,10 @@ void clip::clip_vertices(Vector4 v1, Vector4 v2, Vector4 v3, std::vector<Vector4
     }
 }
 
-
-void clip::retriangulate_clipped_vertices(std::vector<Vector4> &clipped_vertex_list, std::vector<Triangle> &rebuilt_triangles){
+void clip::retriangulate_clipped_vertices(const Triangle &orig_tri, std::vector<Vector4> &clipped_vertex_list, std::vector<Triangle> &rebuilt_triangles){
     for(int i = 0; i <static_cast<int>(clipped_vertex_list.size()) - 2; i++){
         Triangle t(clipped_vertex_list.front(), clipped_vertex_list[i+1], clipped_vertex_list[i+2]);
+        t.color = orig_tri.color;
         rebuilt_triangles.push_back(t);
     }
 }
