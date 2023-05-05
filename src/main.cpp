@@ -194,6 +194,7 @@ int main(){
         }
 
         // Render what we've drawn into the framebuffer
+        // TODO: Avoid extra memcpy by writing into screen buffer directly
         screen.RenderFrame(framebuffer);
         framebuffer.ClearFrameBuffer(FrameBuffer::BLACK);
         framebuffer.ClearZBuffer();
