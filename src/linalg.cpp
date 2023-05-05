@@ -406,6 +406,7 @@ Matrix4x4 Matrix4x4::ViewMatrix(const Vector3 &position, const Vector3 &target, 
 // Determinant of a 2x2 Matrix
 // | a b |
 // | c d | = ad - bc
-float Determinant(const Vector2 &a, Vector2 const &b){
+
+float linalg::Determinant(const Vector2 &a, Vector2 const &b){
     return (a.x * b.y) - (a.y * b.x);
 }
