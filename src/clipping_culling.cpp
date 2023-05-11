@@ -257,3 +257,16 @@ void clip::clip_triangle(const Triangle &t, std::vector<Triangle> &keep_triangle
         keep_triangle_list.push_back(t_clipped);
     }
 }
+
+void clip::retriangulate_clipped_vertices_uvs(const Triangle &orig_tri, std::vector<Vector4> &clipped_vertex_list, std::vector<Vector2> &clipped_uv_list, std::vector<Triangle> &rebuilt_triangles){
+        for(int i = 0; i <static_cast<int>(clipped_vertex_list.size()) - 2; i++){
+        Triangle t_clipped(
+            clipped_vertex_list.front(), clipped_vertex_list[i+1], clipped_vertex_list[i+2],
+            clipped_uv_list.front(), clipped_uv_list[i+1], clipped_uv_list[i+2]
+        );
+
+        t_clipped.color = orig_tri.color;
+
+        rebuilt_triangles.push_back(t_clipped);
+    }
+}
