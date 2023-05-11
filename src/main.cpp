@@ -68,7 +68,7 @@ int main(){
 
     std::cout << width << " " << height << std::endl;
 
-    Mesh mesh = Mesh(Mesh::DefaultMesh::Bunny);
+    Mesh mesh = Mesh(Mesh::DefaultMesh::Cube);
     
     if(!screen.InitSuccessful() || !inputhandler.InitSuccessful()){
         std::cerr << "Failed to Initialize SDL2 Screen or InputHandler" << std::endl;
@@ -109,10 +109,10 @@ int main(){
             Triangle t{
                 mesh.vertices[f.a - 1],
                 mesh.vertices[f.b - 1],
-                mesh.vertices[f.c - 1]};
-                //mesh.uv_coords[f.uv_a],
-                //mesh.uv_coords[f.uv_a],
-                //mesh.uv_coords[f.uv_a]};
+                mesh.vertices[f.c - 1],
+                mesh.uv_coords[f.uv_a],
+                mesh.uv_coords[f.uv_a],
+                mesh.uv_coords[f.uv_a]};
             
             // Vertices Are Transformed in World Spaace
             Matrix4x4 world_matrix = Matrix4x4::Identity();
@@ -152,6 +152,9 @@ int main(){
             //Proper clipping
             std::vector<Vector4> keep_vertex_list;
             clip::clip_vertices(t.a, t.b, t.c, keep_vertex_list);
+
+            std::vector<Triangle> test;
+            clip::clip_triangle(t, test);
 
             // Vertices are in NDC
             auto persp_divide = [](Vector4 &v){
