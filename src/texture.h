@@ -9,7 +9,7 @@ class Texture {
         Texture();
         Texture(std::string &filename);
         ~Texture();
-        uint32_t GetTexel(int u, int v);
+        uint32_t GetTexel(int u, int v) const;
         int height;
         int width;
 

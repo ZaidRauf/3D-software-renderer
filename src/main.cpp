@@ -60,7 +60,7 @@ void rotation_callback(){
 int main(){
     FrameBuffer framebuffer = FrameBuffer(100);
     Drawing draw = Drawing(framebuffer);
-    Screen screen = Screen(framebuffer, true, 6); // Use scale parameter instead of explicit size to maintain aspect ratio
+    Screen screen = Screen(framebuffer, true, 3); // Use scale parameter instead of explicit size to maintain aspect ratio
     InputHandler inputhandler = InputHandler();
 
     int width = framebuffer.buffer_width;
@@ -111,8 +111,8 @@ int main(){
                 mesh.vertices[f.b - 1],
                 mesh.vertices[f.c - 1],
                 mesh.uv_coords[f.uv_a],
-                mesh.uv_coords[f.uv_a],
-                mesh.uv_coords[f.uv_a]};
+                mesh.uv_coords[f.uv_b],
+                mesh.uv_coords[f.uv_c]};
             
             // Vertices Are Transformed in World Spaace
             Matrix4x4 world_matrix = Matrix4x4::Identity();
@@ -235,7 +235,9 @@ int main(){
        int i = 0;
        for(Triangle t : rendered_triangles){
            i++;
-           draw.DrawFilledTriangle(t.a, t.b, t.c, t.color);
+           //draw.DrawFilledTriangle(t.a, t.b, t.c, t.color);
+           draw.DrawFilledTriangle(t, tex);
+
            //draw.DrawTriangle(t.a, t.b, t.c, 0x00FF00FF);
         }
 

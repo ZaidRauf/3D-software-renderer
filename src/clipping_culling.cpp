@@ -11,7 +11,8 @@ bool cull::should_backface_cull(const Vector3 &v1, const Vector3 &v2, const Vect
     // Calculate ray from face to camera
     Vector3 face_view_ray = (viewPos - Vector3(v1)).Normalized();
     
-    if(Vector3::Dot(face_view_ray, normal) <= 0){
+    // Normally 0, but set to 0.1 for more aggressive cullign to avoid degenerate triangle cases
+    if(Vector3::Dot(face_view_ray, normal) <= 0.01){
         return true;
     }
 
