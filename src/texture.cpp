@@ -2,7 +2,7 @@
 
 uint32_t Texture::GetTexel(int x, int y) const{
     // Go to Yth row and then go to Xth column
-    return texture_data[y * width + x];
+    return texture_data[(y * width + x) % (width * height)];
 }
 
 Texture::Texture(){

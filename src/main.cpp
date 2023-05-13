@@ -239,8 +239,7 @@ int main(){
            i++;
            //draw.DrawFilledTriangle(t.a, t.b, t.c, t.color);
            draw.DrawFilledTriangle(t, tex, true);
-
-           //draw.DrawTriangle(t.a, t.b, t.c, 0x00FF00FF);
+           //draw.DrawTriangle(t.a, t.b, t.c, 0x00FFFFFF);
         }
 
         // Render what we've drawn into the framebuffer
