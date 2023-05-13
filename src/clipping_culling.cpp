@@ -266,6 +266,7 @@ void clip::retriangulate_clipped_vertices_uvs(const Triangle &orig_tri, std::vec
             clipped_uv_list.front(), clipped_uv_list[i+1], clipped_uv_list[i+2]
         );
 
+        t_clipped.flat_shading_intensity = orig_tri.flat_shading_intensity;
         t_clipped.color = orig_tri.color;
 
         rebuilt_triangles.push_back(t_clipped);

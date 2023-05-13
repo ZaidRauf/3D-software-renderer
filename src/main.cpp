@@ -133,13 +133,15 @@ int main(){
             // Calculate the normal for lighting calculation
             auto face_normal = Vector3::Cross(t.a - t.b, t.a - t.c).Normalized();
 
-            //TODO: Move lighting calculations to own file later
+            //TODO: Make lighting pass work on more than just a global light
             Vector3 light_dir{0, 0, -1};            
             auto intensity = light_dir * face_normal;
             intensity += 0.05;
             intensity = std::max(std::min(intensity, 1.0f), 0.0f);
             uint32_t color = ((int)(intensity * 0xFF) << 24) + ((int)(intensity * 0xFF) << 16) + ((int)(intensity * 0xFF) << 8);
             color += 0xFF;
+
+            t.flat_shading_intensity = intensity;
 
             t.color = color;
 

@@ -1,9 +1,13 @@
 #include "geometry.h"
 
 
-Triangle::Triangle(Vector4 v1, Vector4 v2, Vector4 v3) : a(v1), b(v2), c(v3){}
+Triangle::Triangle(Vector4 v1, Vector4 v2, Vector4 v3) : a(v1), b(v2), c(v3){
+    flat_shading_intensity = 1.0;
+}
 
-Triangle::Triangle(Vector4 v1, Vector4 v2, Vector4 v3, Vector2 uv_a, Vector2 uv_b, Vector2 uv_c) : a(v1), b(v2), c(v3), uv_a(uv_a), uv_b(uv_b), uv_c(uv_c) {}
+Triangle::Triangle(Vector4 v1, Vector4 v2, Vector4 v3, Vector2 uv_a, Vector2 uv_b, Vector2 uv_c) : a(v1), b(v2), c(v3), uv_a(uv_a), uv_b(uv_b), uv_c(uv_c) {
+    flat_shading_intensity = 1.0;
+}
 
 Triangle::~Triangle(){}
 
