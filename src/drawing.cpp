@@ -167,7 +167,7 @@ void Drawing::DrawFilledTriangle(const Vector4 &a, const Vector4 &b, const Vecto
 //}
 
 // Flat top flat bottom algorithm`
-void Drawing::DrawFilledTriangle(const Triangle &t, const Texture &tex){
+void Drawing::DrawFilledTriangle(const Triangle &t, const Texture &tex, bool perspectiveCorrect){
     Vector4 v0 = t.a;
     Vector4 v1 = t.b;
     Vector4 v2 = t.c;
@@ -218,9 +218,21 @@ void Drawing::DrawFilledTriangle(const Triangle &t, const Texture &tex){
                 // Set the Z Buffer value
                 // Returns weights of alpha, beta, gamma in xyz respectively
                 Vector3 weights = interpolation::barycentric_weights(v0, v1, v2, Vector2(x, y));
-                float interpolated_z = 1/((weights.x/v0.w) + (weights.y/v1.w) + (weights.z/v2.w));
+                float interpolated_inverse_z = ((weights.x/v0.w) + (weights.y/v1.w) + (weights.z/v2.w));
+                float interpolated_z = 1/interpolated_inverse_z;
 
-                Vector2 interpolated_uv = (uv0 * weights.x) + (uv1 * weights.y) + (uv2 * weights.z);
+                Vector2 interpolated_uv;
+
+                if(perspectiveCorrect){
+                    // Perspective correct interpolation is scaling the Z value for each uv based off the Z value of the vertex
+                    // and the interpolated Z value at the pixel
+                    interpolated_uv = ((uv0 * (weights.x/v0.w)) + (uv1 * (weights.y/v1.w)) + (uv2 * (weights.z/v2.w))) * interpolated_z;
+                }
+                else{
+                    interpolated_uv = (uv0 * weights.x) + (uv1 * weights.y) + (uv2 * weights.z);
+                }
+                
+
                 uint32_t color = tex.GetTexel(interpolated_uv.x * 4, interpolated_uv.y * 4);
 
                 if(frame_buffer.GetZPixel(x, y) > interpolated_z){
@@ -252,11 +264,17 @@ void Drawing::DrawFilledTriangle(const Triangle &t, const Texture &tex){
 
             for(int x = trunc_x_start; x <= trunc_x_end; x++){
                Vector3 weights = interpolation::barycentric_weights(v0, v1, v2, Vector2(x, y));
-               float interpolated_z = 1/((weights.x/v0.w) + (weights.y/v1.w) + (weights.z/v2.w));
-            //    std::cout << weights.x + weights.y + weights.z << std::endl;
+                float interpolated_inverse_z = ((weights.x/v0.w) + (weights.y/v1.w) + (weights.z/v2.w));
+                float interpolated_z = 1/interpolated_inverse_z;
 
-                Vector2 interpolated_uv = (uv0 * (weights.x)) + (uv1 * (weights.y)) + (uv2 * (weights.z));
-                uint32_t color = tex.GetTexel(interpolated_uv.x * 4, interpolated_uv.y * 4);
+                Vector2 interpolated_uv;
+
+                if(perspectiveCorrect){
+                    interpolated_uv = ((uv0 * (weights.x/v0.w)) + (uv1 * (weights.y/v1.w)) + (uv2 * (weights.z/v2.w))) * interpolated_z;
+                }
+                else{
+                    interpolated_uv = (uv0 * weights.x) + (uv1 * weights.y) + (uv2 * weights.z);
+                }                uint32_t color = tex.GetTexel(interpolated_uv.x * 4, interpolated_uv.y * 4);
 
                if(frame_buffer.GetZPixel(x, y) > interpolated_z){
                    frame_buffer.SetZPixel(x, y, interpolated_z);

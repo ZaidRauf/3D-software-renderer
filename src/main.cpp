@@ -60,7 +60,7 @@ void rotation_callback(){
 int main(){
     FrameBuffer framebuffer = FrameBuffer(100);
     Drawing draw = Drawing(framebuffer);
-    Screen screen = Screen(framebuffer, true, 3); // Use scale parameter instead of explicit size to maintain aspect ratio
+    Screen screen = Screen(framebuffer, true, 6); // Use scale parameter instead of explicit size to maintain aspect ratio
     InputHandler inputhandler = InputHandler();
 
     int width = framebuffer.buffer_width;
@@ -236,7 +236,7 @@ int main(){
        for(Triangle t : rendered_triangles){
            i++;
            //draw.DrawFilledTriangle(t.a, t.b, t.c, t.color);
-           draw.DrawFilledTriangle(t, tex);
+           draw.DrawFilledTriangle(t, tex, true);
 
            //draw.DrawTriangle(t.a, t.b, t.c, 0x00FF00FF);
         }
