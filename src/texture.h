@@ -6,8 +6,13 @@
 
 class Texture {
     public:
+        enum DefaultTexture {
+            Gray,
+            Test
+        };
         Texture();
         Texture(std::string &filename);
+        Texture(enum DefaultTexture default_texture_idx);
         ~Texture();
         uint32_t GetTexel(int u, int v) const;
         int height;

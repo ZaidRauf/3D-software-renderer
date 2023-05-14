@@ -69,7 +69,8 @@ int main(){
     std::cout << width << " " << height << std::endl;
 
     Mesh mesh = Mesh(Mesh::DefaultMesh::Cube);
-    
+    Texture tex = Texture(Texture::DefaultTexture::Test);
+
     if(!screen.InitSuccessful() || !inputhandler.InitSuccessful()){
         std::cerr << "Failed to Initialize SDL2 Screen or InputHandler" << std::endl;
         return -1;
@@ -87,8 +88,6 @@ int main(){
     inputhandler.RegisterCallback(SDLK_t, rotation_callback);
 
     Camera camera({0,0,-5}, {0,0,1}, {0,0,0});
-
-    Texture tex = Texture();
 
     while(gamestate.running){
         // Put frame time management in own function or object
@@ -171,43 +170,6 @@ int main(){
             // Vertices are transformed to the viewport and are ready for texturing/rasterization
             Matrix4x4 viewport_scale = Matrix4x4::Scale(framebuffer.buffer_width / 2, framebuffer.buffer_height / 2, 1.0);
             Vector4 viewport_translate(width/2, height/2, 0, 0);
-
-            // for(auto &t : test){
-            //     persp_divide(t.a);
-            //     persp_divide(t.b);
-            //     persp_divide(t.c);
-
-            //     t.MapVerts(viewport_scale);
-
-            //     // Flip as screen space grows downwards in y axis
-            //     t.a.y *= -1;
-            //     t.b.y *= -1;
-            //     t.c.y *= -1;
-
-            //     // Translate into centre
-            //     t.a = t.a + viewport_translate;
-            //     t.b = t.b + viewport_translate;
-            //     t.c = t.c + viewport_translate;
-
-            //     // Clamp kept vertices to be within buffer
-            //     if(t.a.x >= framebuffer.buffer_width) t.a.x = framebuffer.buffer_width - 1;
-            //     if(t.a.y >= framebuffer.buffer_height) t.a.y = framebuffer.buffer_height - 1;
-            //     if(t.a.x < 0) t.a.x = 0;
-            //     if(t.a.y < 0) t.a.y = 0;
-
-            //     // Clamp kept vertices to be within buffer
-            //     if(t.b.x >= framebuffer.buffer_width) t.b.x = framebuffer.buffer_width - 1;
-            //     if(t.b.y >= framebuffer.buffer_height) t.b.y = framebuffer.buffer_height - 1;
-            //     if(t.b.x < 0) t.a.x = 0;
-            //     if(t.b.y < 0) t.a.y = 0;
-
-            //     // Clamp kept vertices to be within buffer
-            //     if(t.c.x >= framebuffer.buffer_width) t.c.x = framebuffer.buffer_width - 1;
-            //     if(t.c.y >= framebuffer.buffer_height) t.c.y = framebuffer.buffer_height - 1;
-            //     if(t.c.x < 0) t.a.x = 0;
-            //     if(t.c.y < 0) t.a.y = 0;
-            // }
-
             
             for(auto &v : keep_vertex_list){
                 persp_divide(v);
@@ -227,10 +189,7 @@ int main(){
             }
 
             // retriangulate kept
-            //clip::retriangulate_clipped_vertices(t, keep_vertex_list, rendered_triangles);
             clip::retriangulate_clipped_vertices_uvs(t, keep_vertex_list, keep_uv_list, rendered_triangles);
-
-            // rendered_triangles.insert(rendered_triangles.end(), test.begin(), test.end());
         }
 
         // TODO: Fragment Pass here

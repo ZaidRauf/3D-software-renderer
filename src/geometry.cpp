@@ -2,6 +2,9 @@
 
 
 Triangle::Triangle(Vector4 v1, Vector4 v2, Vector4 v3) : a(v1), b(v2), c(v3){
+    uv_a = Vector2();
+    uv_b = Vector2();
+    uv_c = Vector2();
     flat_shading_intensity = 1.0;
 }
 
@@ -19,7 +22,11 @@ void Triangle::MapVerts(const Matrix4x4 &m){
 
 Face::Face(){}
 
-Face::Face(int a, int b, int c) : a(a), b(b), c(c){};
+Face::Face(int a, int b, int c) : a(a), b(b), c(c){
+    uv_a = 0;
+    uv_b = 0;
+    uv_c = 0;
+};
 
 Face::Face(int a, int b, int c, int uv_a, int uv_b, int uv_c) : a(a), b(b), c(c), uv_a(uv_a), uv_b(uv_b), uv_c(uv_c){};
 
@@ -69,6 +76,9 @@ Mesh::Mesh(DefaultMesh meshEnum){
     }
 
     else if(meshEnum == Triangle){
+        uv_coords = std::make_unique<Vector2[]>(1);
+        uv_coords[0] = {0, 0};
+
         faces = std::make_unique<Face[]>(1);
         vertices = std::make_unique<Vector3[]>(3);
         _num_triangles = 1;
@@ -81,10 +91,13 @@ Mesh::Mesh(DefaultMesh meshEnum){
     }
 
     else if(meshEnum == Bunny){
+        uv_coords = std::make_unique<Vector2[]>(1);
+        uv_coords[0] = {0, 0};
+
         _num_triangles = 598;
         _num_vertices = 301;
 
-        faces = std::unique_ptr<Face[]>( new Face[]{
+        faces = std::unique_ptr<Face[]>( new Face[598]{
             {3, 2, 4},
             {3, 4, 1},
             {3, 6, 2},
@@ -685,7 +698,7 @@ Mesh::Mesh(DefaultMesh meshEnum){
             {299, 301, 292}
         });
 
-        vertices = std::unique_ptr<Vector3[]>( new Vector3[]{
+        vertices = std::unique_ptr<Vector3[]>( new Vector3[301]{
             {0.281389 ,0.237772 ,0.396183},
             {0.291839 ,0.161583 ,0.294042},
             {0.272923 ,0.177726 ,0.370747},

@@ -233,7 +233,7 @@ void Drawing::DrawFilledTriangle(const Triangle &t, const Texture &tex, bool per
                 }
                 
 
-                uint32_t color = tex.GetTexel(interpolated_uv.x * 4, interpolated_uv.y * 4);
+                uint32_t color = tex.GetTexel(interpolated_uv.x * tex.width, interpolated_uv.y * tex.height);
                 uint32_t color_red = (color & 0xFF000000) >> 24;
                 uint32_t color_green = (color & 0x00FF0000) >> 16;
                 uint32_t color_blue = (color & 0x0000FF00) >> 8;
@@ -282,7 +282,7 @@ void Drawing::DrawFilledTriangle(const Triangle &t, const Texture &tex, bool per
                     interpolated_uv = (uv0 * weights.x) + (uv1 * weights.y) + (uv2 * weights.z);
                 }
                 
-                uint32_t color = tex.GetTexel(interpolated_uv.x * 4, interpolated_uv.y * 4);
+                uint32_t color = tex.GetTexel(interpolated_uv.x * tex.width, interpolated_uv.y * tex.height);
                 uint32_t color_red = (color & 0xFF000000) >> 24;
                 uint32_t color_green = (color & 0x00FF0000) >> 16;
                 uint32_t color_blue = (color & 0x0000FF00) >> 8;
