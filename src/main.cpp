@@ -12,6 +12,7 @@
 #include <vector>
 #include "gamestate.h"
 #include "texture.h"
+#include "tga_reader.h"
 
 float translation_x = 0.0;
 float translation_y = 0.0;

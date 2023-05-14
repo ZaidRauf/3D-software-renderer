@@ -76,8 +76,8 @@ Mesh::Mesh(DefaultMesh meshEnum){
     }
 
     else if(meshEnum == Triangle){
-        uv_coords = std::make_unique<Vector2[]>(1);
-        uv_coords[0] = {0, 0};
+        uv_coords = std::make_unique<Vector2[]>(3); // set to 1 for default color
+        // uv_coords[0] = {0, 0};
 
         faces = std::make_unique<Face[]>(1);
         vertices = std::make_unique<Vector3[]>(3);
@@ -87,7 +87,11 @@ Mesh::Mesh(DefaultMesh meshEnum){
         vertices[0] = {-1, -1, -1};
         vertices[1] = {-1, 1,  -1};
         vertices[2] = {1,  1,  -1};
-        faces[0] = {1,2,3};
+        faces[0] = {1, 2, 3, 1, 0, 2};
+
+        uv_coords[0] = {0, 0};
+        uv_coords[1] = {0, 1};
+        uv_coords[2] = {1, 0};
     }
 
     else if(meshEnum == Bunny){

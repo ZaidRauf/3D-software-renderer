@@ -8,7 +8,8 @@ class Texture {
     public:
         enum DefaultTexture {
             Gray,
-            Test
+            Test,
+            Test2
         };
         Texture();
         Texture(std::string &filename);
