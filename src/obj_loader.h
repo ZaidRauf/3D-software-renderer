@@ -28,5 +28,8 @@ class OBJLoader{
         std::vector<IndexStruct> face_indices;
         std::vector<IndexStruct> uv_indices;
         int vertex_count = 0;
+        int uv_count = 0;
         int face_count = 0;
+        int face_idx_count = 0;
+        int uv_idx_count = 0;
 };
