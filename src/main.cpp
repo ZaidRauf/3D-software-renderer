@@ -72,7 +72,7 @@ int main(){
 
     std::cout << width << " " << height << std::endl;
 
-    Mesh mesh = Mesh(Mesh::DefaultMesh::Triangle);
+    Mesh mesh = Mesh(Mesh::DefaultMesh::Cube);
     Texture tex = Texture(tga);
 
     if(!screen.InitSuccessful() || !inputhandler.InitSuccessful()){
@@ -202,7 +202,7 @@ int main(){
            i++;
            //draw.DrawFilledTriangle(t.a, t.b, t.c, t.color);
            draw.DrawFilledTriangle(t, tex, true);
-           //draw.DrawTriangle(t.a, t.b, t.c, 0x00FFFFFF);
+           draw.DrawTriangle(t.a, t.b, t.c, 0x00FFFFFF);
         }
 
         // Render what we've drawn into the framebuffer

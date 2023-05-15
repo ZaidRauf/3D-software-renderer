@@ -72,7 +72,7 @@ Mesh::Mesh(DefaultMesh meshEnum){
         uv_coords[0] = {0, 0};
         uv_coords[1] = {0, 1};
         uv_coords[2] = {1, 0};
-        uv_coords[2] = {1, 1};
+        uv_coords[3] = {1, 1};
     }
 
     else if(meshEnum == Triangle){

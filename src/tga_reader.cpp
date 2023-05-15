@@ -35,21 +35,20 @@ TGAImage::TGAImage(std::string fileName){
     int bytes_per_pixel = pixel_bit_depth / 8;
     int image_color_data_bytes = bytes_per_pixel * width * height;
 
-    
-
     image_data = std::make_unique<uint32_t[]>(width * height);
 
-    std::cout << tga_file.tellg() << std::endl;
+    // std::cout << tga_file.tellg() << std::endl;
     char color_data_buf[4];
     for(int i = 0; i < width * height; i++){
         tga_file.read(color_data_buf, bytes_per_pixel);
+        // oh man....
+        uint32_t read_data_as_int;
+        read_data_as_int = *reinterpret_cast<uint32_t*>(color_data_buf);
 
-        uint32_t assembled_argb_pixel_data = (static_cast<uint32_t>(color_data_buf[3]) << 24) | (static_cast<uint32_t>(color_data_buf[2]) << 16) | (static_cast<uint32_t>(color_data_buf[1]) << 8) | (static_cast<uint32_t>(color_data_buf[0]));
-        assembled_argb_pixel_data &= 0x00FFFFFF;
-        assembled_argb_pixel_data <<= 8;
-        assembled_argb_pixel_data += 0xFF;
+        read_data_as_int = (read_data_as_int << 8) | 0x000000FF;
+        // std::cout << std::hex << read_data_as_int << std::endl;
 
-        image_data[i] = assembled_argb_pixel_data;
+        image_data[i] = read_data_as_int;
     }
     tga_file.close();
 }
