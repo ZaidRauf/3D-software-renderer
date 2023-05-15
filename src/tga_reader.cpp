@@ -2,7 +2,7 @@
 
 TGAImage::TGAImage(std::string fileName){
     std::ifstream tga_file;
-    tga_file.open(fileName, std::ios::in | std::ios::binary);
+    tga_file.open(fileName, std::ifstream::in | std::ifstream::binary);
 
     // char read_byte;
     // int read_bytes = 0;
@@ -13,7 +13,7 @@ TGAImage::TGAImage(std::string fileName){
 
     // Only dealing with uncompressed non color mapped RGB TGA images for now
     // std::cout << std::dec << "Position: " << tga_file.tellg() << std::endl;
-    tga_file.seekg(FieldSize::COLOR_MAP_SPEC_SIZE, std::ios::cur);
+    tga_file.seekg(FieldSize::COLOR_MAP_SPEC_SIZE, std::ifstream::cur);
     // std::cout << std::dec << "Position: " << tga_file.tellg() << std::endl;
 
     auto read_int_value = [&tga_file](FieldSize size){

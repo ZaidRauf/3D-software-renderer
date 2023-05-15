@@ -13,6 +13,7 @@
 #include "gamestate.h"
 #include "texture.h"
 #include "tga_reader.h"
+#include "obj_loader.h"
 
 float translation_x = 0.0;
 float translation_y = 0.0;
@@ -59,6 +60,8 @@ void rotation_callback(){
 }
 
 int main(){
+    // auto o = OBJLoader("./assets/models/low_poly_bunny.obj");
+    // return 0;
     FrameBuffer framebuffer = FrameBuffer(100);
     Drawing draw = Drawing(framebuffer);
     Screen screen = Screen(framebuffer, true, 6); // Use scale parameter instead of explicit size to maintain aspect ratio

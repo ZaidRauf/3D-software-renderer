@@ -35,8 +35,6 @@ Texture::Texture(const std::string &filename){
     width = tga_img.width;
     height = tga_img.height;
     texture_data = std::move(tga_img.image_data);
-
-    std::cout << tga_img.image_data.get() << std::endl;
 }
 
 Texture::Texture(enum DefaultTexture default_texture_idx){    

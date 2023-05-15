@@ -3,7 +3,7 @@
 #include <memory>
 #include <cstdint>
 #include <fstream>
-#include <iostream>
+#include <string>
 
 class TGAImage {
     public:

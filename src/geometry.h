@@ -54,4 +54,3 @@ class Mesh{
         Mesh(DefaultMesh meshEnum);
         ~Mesh();
 };
-
