@@ -1,13 +1,16 @@
 #include "texture.h"
 
 uint32_t Texture::GetTexel(int x, int y) const{
-    // Go to Yth row and then go to Xth column
-    if(x < 0) x = 0;
-    if(y < 0) y = 0;
+    // if(x < 0) x = 0;
+    // if(y < 0) y = 0;
 
-    if(x >= width) x = width - 1;
-    if(y >= height) y = height - 1;
-        
+    // if(x >= width) x = width - 1;
+    // if(y >= height) y = height - 1;
+
+    // Go to Yth row and then go to Xth column
+    x = std::clamp(x, 0, width - 1);
+    y = std::clamp(y, 0, height - 1);
+
     return texture_data[(y * width + x)];
 }
 
@@ -16,6 +19,16 @@ Texture::Texture(){
     width = 1;
     texture_data = std::unique_ptr<uint32_t[]>(new uint32_t[1] { 0xFF00FFFF });
 };
+
+Texture::Texture(const TGAImage &tga_img){
+    width = tga_img.width;
+    height = tga_img.height;
+    texture_data = std::make_unique<uint32_t[]>(width * height);
+
+    for(auto i = 0; i < width * height; i++){
+        texture_data[i] = tga_img.image_data[i];
+    }
+}
 
 Texture::Texture(enum DefaultTexture default_texture_idx){    
     switch (default_texture_idx)

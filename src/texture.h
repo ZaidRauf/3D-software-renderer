@@ -3,6 +3,8 @@
 #include <memory>
 #include <cstdint>
 #include <string>
+#include <algorithm>
+#include "tga_reader.h"
 
 class Texture {
     public:
@@ -12,6 +14,7 @@ class Texture {
             Test2
         };
         Texture();
+        Texture(const TGAImage &tga_img);
         Texture(std::string &filename);
         Texture(enum DefaultTexture default_texture_idx);
         ~Texture();

@@ -59,6 +59,9 @@ void rotation_callback(){
 }
 
 int main(){
+    TGAImage tga = TGAImage("./assets/textures/test_cube_texture.tga");
+    // return 0;
+
     FrameBuffer framebuffer = FrameBuffer(100);
     Drawing draw = Drawing(framebuffer);
     Screen screen = Screen(framebuffer, true, 6); // Use scale parameter instead of explicit size to maintain aspect ratio
@@ -69,8 +72,8 @@ int main(){
 
     std::cout << width << " " << height << std::endl;
 
-    Mesh mesh = Mesh(Mesh::DefaultMesh::Cube);
-    Texture tex = Texture(Texture::DefaultTexture::Test);
+    Mesh mesh = Mesh(Mesh::DefaultMesh::Triangle);
+    Texture tex = Texture(tga);
 
     if(!screen.InitSuccessful() || !inputhandler.InitSuccessful()){
         std::cerr << "Failed to Initialize SDL2 Screen or InputHandler" << std::endl;
