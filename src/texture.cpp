@@ -30,6 +30,15 @@ Texture::Texture(const TGAImage &tga_img){
     }
 }
 
+Texture::Texture(const std::string &filename){
+    TGAImage tga_img = TGAImage(filename);
+    width = tga_img.width;
+    height = tga_img.height;
+    texture_data = std::move(tga_img.image_data);
+
+    std::cout << tga_img.image_data.get() << std::endl;
+}
+
 Texture::Texture(enum DefaultTexture default_texture_idx){    
     switch (default_texture_idx)
     {

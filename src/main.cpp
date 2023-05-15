@@ -59,9 +59,6 @@ void rotation_callback(){
 }
 
 int main(){
-    TGAImage tga = TGAImage("./assets/textures/test_cube_texture.tga");
-    // return 0;
-
     FrameBuffer framebuffer = FrameBuffer(100);
     Drawing draw = Drawing(framebuffer);
     Screen screen = Screen(framebuffer, true, 6); // Use scale parameter instead of explicit size to maintain aspect ratio
@@ -73,7 +70,7 @@ int main(){
     std::cout << width << " " << height << std::endl;
 
     Mesh mesh = Mesh(Mesh::DefaultMesh::Cube);
-    Texture tex = Texture(tga);
+    Texture tex = Texture("./assets/textures/test_cube_texture.tga");
 
     if(!screen.InitSuccessful() || !inputhandler.InitSuccessful()){
         std::cerr << "Failed to Initialize SDL2 Screen or InputHandler" << std::endl;
@@ -120,8 +117,9 @@ int main(){
             // Vertices Are Transformed in World Spaace
             Matrix4x4 world_matrix = Matrix4x4::Identity();
             world_matrix = Matrix4x4::Scale(1, 1, 1);
+            //world_matrix = Matrix4x4::XRotationMatrix(rotation) * world_matrix;
             world_matrix = Matrix4x4::YRotationMatrix(rotation) * world_matrix;
-            //world_matrix = Matrix4x4::ZRotationMatrix(rotation) * world_matrix;
+            world_matrix = Matrix4x4::ZRotationMatrix(rotation) * world_matrix;
             world_matrix = Matrix4x4::Translation(translation_x, translation_y, translation_z) * world_matrix;
             t.MapVerts(world_matrix);
 

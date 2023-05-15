@@ -7,6 +7,7 @@
 
 class TGAImage {
     public:
+        friend class Texture;
         TGAImage(std::string fileName);
         ~TGAImage();
         enum FieldSize{
@@ -34,6 +35,8 @@ class TGAImage {
             RUN_LENGTH_ENCODED_TRUE_COLOR = 10,
             RUN_LENGTH_ENCODED_BLACK_AND_WHITE = 11
         };
+
+    private:
         uint8_t id_length;
         uint8_t color_map_type;
         uint8_t image_type;

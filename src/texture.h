@@ -15,7 +15,7 @@ class Texture {
         };
         Texture();
         Texture(const TGAImage &tga_img);
-        Texture(std::string &filename);
+        Texture(const std::string &filename);
         Texture(enum DefaultTexture default_texture_idx);
         ~Texture();
         uint32_t GetTexel(int u, int v) const;
