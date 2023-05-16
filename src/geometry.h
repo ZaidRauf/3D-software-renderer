@@ -1,5 +1,7 @@
 #pragma once
 
+#include "obj_loader.h"
+#include <string>
 #include <memory>
 #include <cstdint>
 #include "linalg.h"
@@ -52,5 +54,6 @@ class Mesh{
         Transform transform;
         Mesh();
         Mesh(DefaultMesh meshEnum);
+        Mesh(const std::string &filename);
         ~Mesh();
 };

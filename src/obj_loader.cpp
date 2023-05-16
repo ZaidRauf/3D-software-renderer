@@ -104,21 +104,21 @@ OBJLoader::OBJLoader(const std::string &filename){
         }
     }
 
-    for(const auto &x : vertices){
-        std::cout << "VERTEX: " << x << std::endl;
-    }
+    // for(const auto &x : vertices){
+    //     std::cout << "VERTEX: " << x << std::endl;
+    // }
 
-    for(const auto &x : uvs){
-        std::cout << "UV: " << x << std::endl;
-    }
+    // for(const auto &x : uvs){
+    //     std::cout << "UV: " << x << std::endl;
+    // }
     
-    for(const auto &x : face_indices){
-        std::cout << "VERTEX FACE IDX: " << Vector3(x.a, x.b, x.c) << std::endl;
-    }
+    // for(const auto &x : face_indices){
+    //     std::cout << "VERTEX FACE IDX: " << Vector3(x.a, x.b, x.c) << std::endl;
+    // }
 
-    for(const auto &x : uv_indices){
-        std::cout << "VERTEX UV IDX: " << Vector3(x.a, x.b, x.c) << std::endl;
-    }
+    // for(const auto &x : uv_indices){
+    //     std::cout << "VERTEX UV IDX: " << Vector3(x.a, x.b, x.c) << std::endl;
+    // }
     
     std::cout << vertex_count << " " << uv_count << " " << face_count << " " << face_idx_count << " " << uv_idx_count << std::endl;
 }

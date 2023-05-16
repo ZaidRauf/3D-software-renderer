@@ -38,6 +38,49 @@ Transform::~Transform(){};
 Mesh::Mesh(){};
 Mesh::~Mesh(){};
 
+Mesh::Mesh(const std::string &filename){
+    OBJLoader obj_data = OBJLoader(filename);
+    _num_triangles = obj_data.face_count;
+    _num_vertices = obj_data.vertex_count;
+
+
+    faces = std::make_unique<Face[]>(obj_data.face_count);
+    vertices = std::make_unique<Vector3[]>(obj_data.vertex_count);
+
+    if(obj_data.uv_count != 0){
+        uv_coords = std::make_unique<Vector2[]>(obj_data.uv_count);
+
+        for(auto i = 0; i < obj_data.uv_count; i++){
+            uv_coords[i] = obj_data.uvs[i];
+        }
+    }
+    else{
+        uv_coords = std::make_unique<Vector2[]>(1);
+        uv_coords[0] = {0, 0};
+    }
+
+    for(auto i = 0; i < obj_data.face_count; i++){
+        faces[i].a = obj_data.face_indices[i].a;
+        faces[i].b = obj_data.face_indices[i].b;
+        faces[i].c = obj_data.face_indices[i].c;
+
+        if(obj_data.uv_idx_count != 0){
+            faces[i].uv_a = obj_data.uv_indices[i].a;
+            faces[i].uv_b = obj_data.uv_indices[i].b;
+            faces[i].uv_c = obj_data.uv_indices[i].c;
+        } 
+        else{
+            faces[i].uv_a = 0;
+            faces[i].uv_b = 0;
+            faces[i].uv_c = 0;
+        }
+    }
+
+    for(auto i = 0; i < obj_data.vertex_count; i++){
+        vertices[i] = obj_data.vertices[i];
+    }
+}
+
 Mesh::Mesh(DefaultMesh meshEnum){
     if(meshEnum == Cube){
         faces = std::make_unique<Face[]>(12);
@@ -45,7 +88,6 @@ Mesh::Mesh(DefaultMesh meshEnum){
         uv_coords = std::make_unique<Vector2[]>(4);
         _num_triangles = 12;
         _num_vertices = 8;
-
 
         vertices[0] = {-1, -1, -1}; // 1
         vertices[1] = {-1, 1,  -1}; // 2
@@ -73,6 +115,12 @@ Mesh::Mesh(DefaultMesh meshEnum){
         uv_coords[1] = {0, 1};
         uv_coords[2] = {1, 0};
         uv_coords[3] = {1, 1};
+
+        for(auto i = 0; i < _num_triangles; i++){
+            faces[i].a -= 1;
+            faces[i].b -= 1;
+            faces[i].c -= 1;
+        }
     }
 
     else if(meshEnum == Triangle){
@@ -92,6 +140,12 @@ Mesh::Mesh(DefaultMesh meshEnum){
         uv_coords[0] = {0, 0};
         uv_coords[1] = {0, 1};
         uv_coords[2] = {1, 0};
+
+        for(auto i = 0; i < _num_triangles; i++){
+            faces[i].a -= 1;
+            faces[i].b -= 1;
+            faces[i].c -= 1;
+        }
     }
 
     else if(meshEnum == Bunny){
@@ -1006,6 +1060,11 @@ Mesh::Mesh(DefaultMesh meshEnum){
             {-0.447524 ,0.536915 ,0.187296}
         });
 
+        for(auto i = 0; i < _num_triangles; i++){
+            faces[i].a -= 1;
+            faces[i].b -= 1;
+            faces[i].c -= 1;
+        }
     }
 }
 

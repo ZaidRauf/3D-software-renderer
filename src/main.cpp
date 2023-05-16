@@ -72,7 +72,9 @@ int main(){
 
     std::cout << width << " " << height << std::endl;
 
-    Mesh mesh = Mesh(Mesh::DefaultMesh::Cube);
+    // Mesh mesh = Mesh(Mesh::DefaultMesh::Cube);
+    // Texture tex = Texture(Texture::DefaultTexture::Test2);
+    Mesh mesh = Mesh("./assets/models/cube.obj");
     Texture tex = Texture("./assets/textures/test_cube_texture.tga");
 
     if(!screen.InitSuccessful() || !inputhandler.InitSuccessful()){
@@ -110,9 +112,9 @@ int main(){
 
             // Vertices are in (Homogenous) Model Space
             Triangle t{
-                mesh.vertices[f.a - 1],
-                mesh.vertices[f.b - 1],
-                mesh.vertices[f.c - 1],
+                mesh.vertices[f.a],
+                mesh.vertices[f.b],
+                mesh.vertices[f.c],
                 mesh.uv_coords[f.uv_a],
                 mesh.uv_coords[f.uv_b],
                 mesh.uv_coords[f.uv_c]};

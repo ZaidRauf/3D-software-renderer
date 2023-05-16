@@ -9,20 +9,23 @@
 #include <iostream>
 
 class OBJLoader{
-    struct IndexStruct {
-        int a = -1;
-        int b = -1;
-        int c = -1;
-        
-        IndexStruct(int a, int b, int c) : a(a), b(b), c(c) {};
-        ~IndexStruct(){};
-    };
-    using IndexStruct = struct IndexStruct;
-
+    friend class Mesh;
     public:
         OBJLoader();
         OBJLoader(const std::string &filename);
         ~OBJLoader();
+
+    private:
+        struct IndexStruct {
+            int a = -1;
+            int b = -1;
+            int c = -1;
+            
+            IndexStruct(int a, int b, int c) : a(a), b(b), c(c) {};
+            ~IndexStruct(){};
+        };
+        using IndexStruct = struct IndexStruct;
+
         std::vector<Vector3> vertices;
         std::vector<Vector2> uvs;
         std::vector<IndexStruct> face_indices;
