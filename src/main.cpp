@@ -72,9 +72,9 @@ int main(){
 
     std::cout << width << " " << height << std::endl;
 
-    // Mesh mesh = Mesh(Mesh::DefaultMesh::Cube);
-    // Texture tex = Texture(Texture::DefaultTexture::Test2);
-    Mesh mesh = Mesh("./assets/models/cube.obj");
+    Mesh mesh = Mesh(Mesh::DefaultMesh::Cube);
+    // Texture tex = Texture(Texture::DefaultTexture::Gray);
+    // Mesh mesh = Mesh("./assets/models/cube.obj");
     Texture tex = Texture("./assets/textures/test_cube_texture.tga");
 
     if(!screen.InitSuccessful() || !inputhandler.InitSuccessful()){
