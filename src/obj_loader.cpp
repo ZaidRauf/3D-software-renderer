@@ -120,7 +120,7 @@ OBJLoader::OBJLoader(const std::string &filename){
     //     std::cout << "VERTEX UV IDX: " << Vector3(x.a, x.b, x.c) << std::endl;
     // }
     
-    std::cout << vertex_count << " " << uv_count << " " << face_count << " " << face_idx_count << " " << uv_idx_count << std::endl;
+    // std::cout << vertex_count << " " << uv_count << " " << face_count << " " << face_idx_count << " " << uv_idx_count << std::endl;
 }
 
 OBJLoader::~OBJLoader(){}

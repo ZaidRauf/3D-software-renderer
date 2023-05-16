@@ -75,7 +75,7 @@ int main(){
     // Mesh mesh = Mesh(Mesh::DefaultMesh::Cube);
     // Texture tex = Texture(Texture::DefaultTexture::Gray);
     Mesh mesh = Mesh("./assets/models/cube.obj");
-    Texture tex = Texture("./assets/textures/test_cube_texture.tga");
+    Texture tex = Texture("./assets/textures/crate.tga");
 
     if(!screen.InitSuccessful() || !inputhandler.InitSuccessful()){
         std::cerr << "Failed to Initialize SDL2 Screen or InputHandler" << std::endl;
