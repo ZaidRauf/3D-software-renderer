@@ -4,6 +4,9 @@
 #include <string>
 #include <memory>
 #include <cstdint>
+#include <vector>
+#include <unordered_map>
+#include <map>
 #include "linalg.h"
 
 // Represents a 2D triangle projected onto the screen
@@ -43,11 +46,17 @@ class Mesh{
     private:
         int _num_triangles = 0;
         int _num_vertices = 0;
-    
+        void calculate_and_set_face_vertex_normals();
+
     public:
         std::unique_ptr<Face[]> faces;
+        std::unique_ptr<Vector3[]> face_normals;
+
         std::unique_ptr<Vector3[]> vertices;
+        std::unique_ptr<Vector3[]> vertex_normals;
+
         std::unique_ptr<Vector2[]> uv_coords;
+
         enum DefaultMesh { Cube, Triangle, Bunny };
         const int &num_triangles = _num_triangles;
         const int &num_vertices = _num_vertices;

@@ -61,7 +61,6 @@ void rotation_callback(){
 
 int main(){
     // auto o = OBJLoader("./assets/models/low_poly_bunny.obj");
-    // return 0;
     FrameBuffer framebuffer = FrameBuffer(100);
     Drawing draw = Drawing(framebuffer);
     Screen screen = Screen(framebuffer, true, 6); // Use scale parameter instead of explicit size to maintain aspect ratio
@@ -103,12 +102,9 @@ int main(){
         // rotation += 0.7 * delta_time;
         std::vector<Triangle> rendered_triangles;
         
-        // TODO: Clean up lighting pass later
-        std::vector<uint32_t> face_colors;
-
         // This loop is essentially the "Vertex Shader" of my renderer
         for (auto i = 0; i < mesh.num_triangles; i++){
-            Face f(mesh.faces[i]);
+            const Face &f = mesh.faces[i];
 
             // Vertices are in (Homogenous) Model Space
             Triangle t{
@@ -122,9 +118,14 @@ int main(){
             // Vertices Are Transformed in World Spaace
             Matrix4x4 world_matrix = Matrix4x4::Identity();
             world_matrix = Matrix4x4::Scale(1, 1, 1);
-            //world_matrix = Matrix4x4::XRotationMatrix(rotation) * world_matrix;
-            world_matrix = Matrix4x4::YRotationMatrix(rotation) * world_matrix;
-            world_matrix = Matrix4x4::ZRotationMatrix(rotation) * world_matrix;
+
+            // Seperate from world matrix as we use to rotate face and vertex normals
+            Matrix4x4 rotation_matrix = Matrix4x4::Scale(1, 1, 1);
+            //rotation_matrix = Matrix4x4::XRotationMatrix(rotation) * rotation_matrix;
+            rotation_matrix = Matrix4x4::YRotationMatrix(rotation) * rotation_matrix;
+            rotation_matrix = Matrix4x4::ZRotationMatrix(rotation) * rotation_matrix;
+
+            world_matrix = rotation_matrix * world_matrix;
             world_matrix = Matrix4x4::Translation(translation_x, translation_y, translation_z) * world_matrix;
             t.MapVerts(world_matrix);
 
@@ -137,7 +138,7 @@ int main(){
             }
 
             // Calculate the normal for lighting calculation
-            auto face_normal = Vector3::Cross(t.a - t.b, t.a - t.c).Normalized();
+            Vector3 face_normal = rotation_matrix * mesh.face_normals[i];
 
             //TODO: Make lighting pass work on more than just a global light
             Vector3 light_dir{0, 0, -1};            
@@ -148,7 +149,6 @@ int main(){
             color += 0xFF;
 
             t.flat_shading_intensity = intensity;
-
             t.color = color;
 
             // Vertices are in Clip Space
@@ -159,11 +159,6 @@ int main(){
 
             //Proper clipping
             std::vector<Vector4> keep_vertex_list;
-            // clip::clip_vertices(t.a, t.b, t.c, keep_vertex_list);
-
-            // std::vector<Triangle> test;
-            // clip::clip_triangle(t, test);
-
             std::vector<Vector2> keep_uv_list;
             clip::clip_vertices_uvs(t, keep_vertex_list, keep_uv_list);
 
@@ -205,7 +200,7 @@ int main(){
            i++;
            //draw.DrawFilledTriangle(t.a, t.b, t.c, t.color);
            draw.DrawFilledTriangle(t, tex, true);
-           draw.DrawTriangle(t.a, t.b, t.c, 0x00FFFFFF);
+           //    draw.DrawTriangle(t.a, t.b, t.c, 0x00FFFFFF);
         }
 
         // Render what we've drawn into the framebuffer

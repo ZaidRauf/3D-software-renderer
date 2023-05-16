@@ -38,6 +38,64 @@ Transform::~Transform(){};
 Mesh::Mesh(){};
 Mesh::~Mesh(){};
 
+void Mesh::calculate_and_set_face_vertex_normals(){
+    // Calculate Normals after vertex and faces are set
+    for(auto i = 0; i < num_triangles; i++){
+        face_normals[i] = Vector3::Cross(
+        vertices[faces[i].a] - vertices[faces[i].b], 
+        vertices[faces[i].a] - vertices[faces[i].c]
+        ).Normalized();
+    }
+
+    std::unordered_map<int, std::vector<int>> vertex_to_face_map;
+    // Estimate vertex normals using weighted area of adjacent faces for a vertex
+    for(auto i = 0; i < num_triangles; i++){
+        auto &f = faces[i];
+        std::array<int, 3> face_vert_idxs = {f.a, f.b, f.c};
+
+        for(auto face_vert_idx : face_vert_idxs){
+            // std::vector<int> *v = new std::vector<int>;
+            std::vector<int> v;
+            if(vertex_to_face_map.find(face_vert_idx) == vertex_to_face_map.end()){
+                vertex_to_face_map.insert({face_vert_idx, v});
+            }
+
+            vertex_to_face_map.at(face_vert_idx).push_back(i);
+        }
+    }
+
+    for(auto it = vertex_to_face_map.begin(); it != vertex_to_face_map.end(); it++){
+        int vertex_number = (*it).first;
+        const auto &vertex_faces = (*it).second;
+        float area_sum = 0.0;
+        Vector3 vertex_normal{0, 0, 0};
+
+        // Find total area
+        for(const auto &face_num : vertex_faces){
+            const auto face = faces[face_num];
+            auto face_area = Vector3::Cross(vertices[face.a] - vertices[face.b], vertices[face.a] - vertices[face.c]).Length();
+            area_sum += face_area/2;
+        }
+
+        // Add weighted sum of face normal vectors
+        for(const auto &face_num : vertex_faces){
+            const auto face = faces[face_num];
+            auto face_area = Vector3::Cross(vertices[face.a] - vertices[face.b], vertices[face.a] - vertices[face.c]).Length();
+            
+            auto face_normal = face_normals[face_num];
+            vertex_normal = vertex_normal + ((face_area/area_sum) * face_normal);
+        }
+
+        vertex_normal = vertex_normal.Normalized();
+
+        vertex_normals[vertex_number] = vertex_normal;
+    }
+
+    for(auto i = 0; i < num_vertices; i++){
+        std::cout << vertex_normals[i] << std::endl;
+    }
+}
+
 Mesh::Mesh(const std::string &filename){
     OBJLoader obj_data = OBJLoader(filename);
     _num_triangles = obj_data.face_count;
@@ -45,7 +103,10 @@ Mesh::Mesh(const std::string &filename){
 
 
     faces = std::make_unique<Face[]>(obj_data.face_count);
+    face_normals = std::make_unique<Vector3[]>(obj_data.face_count);
+
     vertices = std::make_unique<Vector3[]>(obj_data.vertex_count);
+    vertex_normals = std::make_unique<Vector3[]>(obj_data.vertex_count);
 
     if(obj_data.uv_count != 0){
         uv_coords = std::make_unique<Vector2[]>(obj_data.uv_count);
@@ -79,12 +140,18 @@ Mesh::Mesh(const std::string &filename){
     for(auto i = 0; i < obj_data.vertex_count; i++){
         vertices[i] = obj_data.vertices[i];
     }
+
+    calculate_and_set_face_vertex_normals();
 }
 
 Mesh::Mesh(DefaultMesh meshEnum){
     if(meshEnum == Cube){
         faces = std::make_unique<Face[]>(12);
+        face_normals = std::make_unique<Vector3[]>(12);
+
         vertices = std::make_unique<Vector3[]>(8);
+        vertex_normals = std::make_unique<Vector3[]>(8);
+
         uv_coords = std::make_unique<Vector2[]>(4);
         _num_triangles = 12;
         _num_vertices = 8;
@@ -121,6 +188,8 @@ Mesh::Mesh(DefaultMesh meshEnum){
             faces[i].b -= 1;
             faces[i].c -= 1;
         }
+
+        calculate_and_set_face_vertex_normals();
     }
 
     else if(meshEnum == Triangle){
@@ -128,7 +197,10 @@ Mesh::Mesh(DefaultMesh meshEnum){
         // uv_coords[0] = {0, 0};
 
         faces = std::make_unique<Face[]>(1);
+        face_normals = std::make_unique<Vector3[]>(1);
+
         vertices = std::make_unique<Vector3[]>(3);
+        vertex_normals = std::make_unique<Vector3[]>(3);
         _num_triangles = 1;
         _num_vertices = 3;
 
@@ -146,6 +218,8 @@ Mesh::Mesh(DefaultMesh meshEnum){
             faces[i].b -= 1;
             faces[i].c -= 1;
         }
+
+        calculate_and_set_face_vertex_normals();
     }
 
     else if(meshEnum == Bunny){
@@ -154,6 +228,9 @@ Mesh::Mesh(DefaultMesh meshEnum){
 
         _num_triangles = 598;
         _num_vertices = 301;
+
+        face_normals =  std::make_unique<Vector3[]>(num_triangles);
+        vertex_normals = std::make_unique<Vector3[]>(num_vertices);
 
         faces = std::unique_ptr<Face[]>( new Face[598]{
             {3, 2, 4},
@@ -1065,6 +1142,8 @@ Mesh::Mesh(DefaultMesh meshEnum){
             faces[i].b -= 1;
             faces[i].c -= 1;
         }
+
+        calculate_and_set_face_vertex_normals();
     }
 }
 
