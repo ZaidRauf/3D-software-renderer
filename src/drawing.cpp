@@ -238,9 +238,18 @@ void Drawing::DrawFilledTriangle(const Triangle &t, const Texture &tex, bool per
                 uint32_t color_red = (color & 0xFF000000) >> 24;
                 uint32_t color_green = (color & 0x00FF0000) >> 16;
                 uint32_t color_blue = (color & 0x0000FF00) >> 8;
-
+                
                 color = ((int)(t.flat_shading_intensity * color_red) << 24) + ((int)(t.flat_shading_intensity * color_green) << 16) + ((int)(t.flat_shading_intensity * color_blue) << 8);
                 color += 0xFF;
+
+                // Vector3 light_dir{0, 0, -1};            
+                // auto intensity = light_dir * interpolated_vertex_values.vertex_normal.Normalized();
+                // // intensity += 0.05;
+                // intensity = std::max(std::min(intensity, 1.0f), 0.0f);
+
+                // color = ((int)(intensity * color_red) << 24) + ((int)(intensity * color_green) << 16) + ((int)(intensity * color_blue) << 8);
+                // color += 0xFF;
+
 
                 // auto vec_color = vert_int_0.vertex_color * weights.x + vert_int_1.vertex_color * weights.y + vert_int_2.vertex_color * weights.z;
                 // uint32_t color = (((int)vec_color.x) << 24) + (((int)vec_color.y) << 16) + (((int)vec_color.z) << 8) + 0xFF;
@@ -282,7 +291,7 @@ void Drawing::DrawFilledTriangle(const Triangle &t, const Texture &tex, bool per
                 if(perspectiveCorrect){
                     interpolated_vertex_values.vertex_uv = ((vert_int_0.vertex_uv * (weights.x/v0.w)) + (vert_int_1.vertex_uv * (weights.y/v1.w)) + (vert_int_2.vertex_uv * (weights.z/v2.w))) * interpolated_z;
                 }
-                
+
                 uint32_t color = tex.GetTexel(interpolated_vertex_values.vertex_uv.x * tex.width, interpolated_vertex_values.vertex_uv.y * tex.height);
                 uint32_t color_red = (color & 0xFF000000) >> 24;
                 uint32_t color_green = (color & 0x00FF0000) >> 16;
@@ -290,6 +299,15 @@ void Drawing::DrawFilledTriangle(const Triangle &t, const Texture &tex, bool per
 
                 color = ((int)(t.flat_shading_intensity * color_red) << 24) + ((int)(t.flat_shading_intensity * color_green) << 16) + ((int)(t.flat_shading_intensity * color_blue) << 8);
                 color += 0xFF;
+
+                // Vector3 light_dir{0, 0, -1};            
+                // auto intensity = light_dir * interpolated_vertex_values.vertex_normal.Normalized();
+                // // intensity += 0.05;
+                // intensity = std::max(std::min(intensity, 1.0f), 0.0f);
+
+                // color = ((int)(intensity * color_red) << 24) + ((int)(intensity * color_green) << 16) + ((int)(intensity * color_blue) << 8);
+                // color += 0xFF;
+
 
                 // auto vec_color = vert_int_0.vertex_color * weights.x + vert_int_1.vertex_color * weights.y + vert_int_2.vertex_color * weights.z;
                 // uint32_t color = (((int)vec_color.x) << 24) + (((int)vec_color.y) << 16) + (((int)vec_color.z) << 8) + 0xFF;

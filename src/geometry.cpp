@@ -54,9 +54,9 @@ void Triangle::TransformInterpolants(const Matrix4x4 &rotation_mtx, const Matrix
     vert_interp_b.vertex_normal = rotation_mtx * vert_interp_b.vertex_normal;
     vert_interp_c.vertex_normal = rotation_mtx * vert_interp_c.vertex_normal;
 
-    vert_interp_a.vertex_position = world_mtx * vert_interp_a.vertex_normal;
-    vert_interp_b.vertex_position = world_mtx * vert_interp_b.vertex_normal;
-    vert_interp_c.vertex_position = world_mtx * vert_interp_c.vertex_normal;
+    vert_interp_a.vertex_position = world_mtx * vert_interp_a.vertex_position;
+    vert_interp_b.vertex_position = world_mtx * vert_interp_b.vertex_position;
+    vert_interp_c.vertex_position = world_mtx * vert_interp_c.vertex_position;
 }
 
 Triangle::~Triangle(){}
