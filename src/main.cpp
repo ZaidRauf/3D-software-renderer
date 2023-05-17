@@ -35,34 +35,6 @@ void toggle_culling_callback(){
     gamestate.backface_culling_enabled = !gamestate.backface_culling_enabled;
 }
 
-void translation_callback(){
-    translation_x += 0.1;
-}
-
-void translation2_callback(){
-    translation_x -= 0.1;
-}
-
-void translation3_callback(){
-    translation_y -= 0.1;
-}
-
-void translation4_callback(){
-    translation_y += 0.1;
-}
-
-void translation5_callback(){
-    translation_z += 0.1;
-}
-
-void translation6_callback(){
-    translation_z -= 0.1;
-}
-
-void rotation_callback(){
-    rotation += 0.1;
-}
-
 int main(){
     // auto o = OBJLoader("./assets/models/low_poly_bunny.obj");
     FrameBuffer framebuffer = FrameBuffer(100);
@@ -87,14 +59,7 @@ int main(){
     // Move to game logic type file / class later
     inputhandler.RegisterCallback(SDLK_ESCAPE, exit_callback);
     inputhandler.RegisterCallback(SDLK_c, toggle_culling_callback);
-    inputhandler.RegisterCallback(SDLK_d, translation_callback);
-    inputhandler.RegisterCallback(SDLK_a, translation2_callback);
-    inputhandler.RegisterCallback(SDLK_w, translation3_callback);
-    inputhandler.RegisterCallback(SDLK_s, translation4_callback);
-    inputhandler.RegisterCallback(SDLK_q, translation5_callback);
-    inputhandler.RegisterCallback(SDLK_e, translation6_callback);
-    inputhandler.RegisterCallback(SDLK_t, rotation_callback);
-
+    
     Camera camera({0,0,-5}, {0, 0, 0}, {0,0,0});
 
     std::map<std::string, Mesh> mesh_map;
@@ -107,9 +72,10 @@ int main(){
 
     Object3D obj3d = Object3D(mesh_map.at("cube"), tex_map.at("crate"));
     obj3d.position = Vector3(2, 0, 0);
-    obj3d.light_type = LightingType::FULL_BRIGHT;
+    obj3d.light_type = LightingType::FLAT_LIGHTING;
+    obj3d.render_type = RenderType::TEXTURED_WIREFRAME;
+    obj3d.perspective_correct = false;
     obj_list.push_back(obj3d);
-
 
     mesh_map.emplace("bunny", "./assets/models/low_poly_bunny.obj");
     tex_map.emplace("gray", Texture::DefaultTexture::Gray);
@@ -118,7 +84,6 @@ int main(){
     obj3d2.position = Vector3(-1, 0, -3);
     obj3d2.light_type = LightingType::PHONG_LIGHTING;
     obj_list.push_back(obj3d2);
-
 
     while(gamestate.running){
         // Put frame time management in own function or object
@@ -129,6 +94,8 @@ int main(){
         std::vector<Triangle> rendered_triangles;
 
         for(auto &obj3d : obj_list){
+            rendered_triangles.clear();
+
             const Mesh &mesh = obj3d.m;
             const Texture &tex = obj3d.t;
 
@@ -230,8 +197,14 @@ int main(){
                 i++;
                 //draw.DrawFilledTriangle(t.a, t.b, t.c, t.color);
                 // draw.DrawFilledTriangle(t, tex, true);
-                draw.DrawFilledTriangle(t, tex, true, obj3d);
-                // draw.DrawTriangle(t.a, t.b, t.c, 0x00FFFFFF);
+
+                if(obj3d.render_type == RenderType::TEXTURED || obj3d.render_type == RenderType::TEXTURED_WIREFRAME){
+                    draw.DrawFilledTriangle(t, obj3d);
+                }
+
+                if(obj3d.render_type == RenderType::WIREFRAME || obj3d.render_type == RenderType::TEXTURED_WIREFRAME){
+                    draw.DrawTriangle(t.a, t.b, t.c, 0x00FFFFFF);
+                }               
             }
         }
 

@@ -325,7 +325,7 @@ void Drawing::DrawFilledTriangle(const Triangle &t, const Texture &tex, bool per
 }
 
 
-void Drawing::DrawFilledTriangle(const Triangle &t, const Texture &tex, bool perspectiveCorrect, const Object3D &obj3d){
+void Drawing::DrawFilledTriangle(const Triangle &t, const Object3D &obj3d){
     Vector4 v0 = t.a;
     Vector4 v1 = t.b;
     Vector4 v2 = t.c;
@@ -388,11 +388,11 @@ void Drawing::DrawFilledTriangle(const Triangle &t, const Texture &tex, bool per
 
                 VertexInterpolants interpolated_vertex_values = weights.x * vert_int_0 + weights.y * vert_int_1 + weights.z * vert_int_2;
 
-                if(perspectiveCorrect){
+                if(obj3d.perspective_correct){
                     interpolated_vertex_values.vertex_uv = ((vert_int_0.vertex_uv * (weights.x/v0.w)) + (vert_int_1.vertex_uv * (weights.y/v1.w)) + (vert_int_2.vertex_uv * (weights.z/v2.w))) * interpolated_z;
                 }
                 
-                uint32_t color = tex.GetTexel(interpolated_vertex_values.vertex_uv.x * tex.width, interpolated_vertex_values.vertex_uv.y * tex.height);
+                uint32_t color = obj3d.t.GetTexel(interpolated_vertex_values.vertex_uv.x * obj3d.t.width, interpolated_vertex_values.vertex_uv.y * obj3d.t.height);
                 uint32_t color_red = (color & 0xFF000000) >> 24;
                 uint32_t color_green = (color & 0x00FF0000) >> 16;
                 uint32_t color_blue = (color & 0x0000FF00) >> 8;
@@ -447,11 +447,11 @@ void Drawing::DrawFilledTriangle(const Triangle &t, const Texture &tex, bool per
 
                 VertexInterpolants interpolated_vertex_values = weights.x * vert_int_0 + weights.y * vert_int_1 + weights.z * vert_int_2;
 
-                if(perspectiveCorrect){
+                if(obj3d.perspective_correct){
                     interpolated_vertex_values.vertex_uv = ((vert_int_0.vertex_uv * (weights.x/v0.w)) + (vert_int_1.vertex_uv * (weights.y/v1.w)) + (vert_int_2.vertex_uv * (weights.z/v2.w))) * interpolated_z;
                 }
 
-                uint32_t color = tex.GetTexel(interpolated_vertex_values.vertex_uv.x * tex.width, interpolated_vertex_values.vertex_uv.y * tex.height);
+                uint32_t color = obj3d.t.GetTexel(interpolated_vertex_values.vertex_uv.x * obj3d.t.width, interpolated_vertex_values.vertex_uv.y * obj3d.t.height);
                 uint32_t color_red = (color & 0xFF000000) >> 24;
                 uint32_t color_green = (color & 0x00FF0000) >> 16;
                 uint32_t color_blue = (color & 0x0000FF00) >> 8;
