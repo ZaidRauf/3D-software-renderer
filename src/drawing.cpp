@@ -228,18 +228,13 @@ void Drawing::DrawFilledTriangle(const Triangle &t, const Texture &tex, bool per
                 float interpolated_inverse_z = ((weights.x/v0.w) + (weights.y/v1.w) + (weights.z/v2.w));
                 float interpolated_z = 1/interpolated_inverse_z;
 
-                Vector2 interpolated_uv;
+                VertexInterpolants interpolated_vertex_values = weights.x * vert_int_0 + weights.y * vert_int_1 + weights.z * vert_int_2;
 
                 if(perspectiveCorrect){
-                    // Perspective correct interpolation is scaling the Z value for each uv based off the Z value of the vertex
-                    // and the interpolated Z value at the pixel
-                    interpolated_uv = ((uv0 * (weights.x/v0.w)) + (uv1 * (weights.y/v1.w)) + (uv2 * (weights.z/v2.w))) * interpolated_z;
-                }
-                else{
-                    interpolated_uv = (uv0 * weights.x) + (uv1 * weights.y) + (uv2 * weights.z);
+                    interpolated_vertex_values.vertex_uv = ((vert_int_0.vertex_uv * (weights.x/v0.w)) + (vert_int_1.vertex_uv * (weights.y/v1.w)) + (vert_int_2.vertex_uv * (weights.z/v2.w))) * interpolated_z;
                 }
                 
-                uint32_t color = tex.GetTexel(interpolated_uv.x * tex.width, interpolated_uv.y * tex.height);
+                uint32_t color = tex.GetTexel(interpolated_vertex_values.vertex_uv.x * tex.width, interpolated_vertex_values.vertex_uv.y * tex.height);
                 uint32_t color_red = (color & 0xFF000000) >> 24;
                 uint32_t color_green = (color & 0x00FF0000) >> 16;
                 uint32_t color_blue = (color & 0x0000FF00) >> 8;
@@ -282,16 +277,13 @@ void Drawing::DrawFilledTriangle(const Triangle &t, const Texture &tex, bool per
                 float interpolated_inverse_z = ((weights.x/v0.w) + (weights.y/v1.w) + (weights.z/v2.w));
                 float interpolated_z = 1/interpolated_inverse_z;
 
-                Vector2 interpolated_uv;
+                VertexInterpolants interpolated_vertex_values = weights.x * vert_int_0 + weights.y * vert_int_1 + weights.z * vert_int_2;
 
                 if(perspectiveCorrect){
-                    interpolated_uv = ((uv0 * (weights.x/v0.w)) + (uv1 * (weights.y/v1.w)) + (uv2 * (weights.z/v2.w))) * interpolated_z;
-                }
-                else{
-                    interpolated_uv = (uv0 * weights.x) + (uv1 * weights.y) + (uv2 * weights.z);
+                    interpolated_vertex_values.vertex_uv = ((vert_int_0.vertex_uv * (weights.x/v0.w)) + (vert_int_1.vertex_uv * (weights.y/v1.w)) + (vert_int_2.vertex_uv * (weights.z/v2.w))) * interpolated_z;
                 }
                 
-                uint32_t color = tex.GetTexel(interpolated_uv.x * tex.width, interpolated_uv.y * tex.height);
+                uint32_t color = tex.GetTexel(interpolated_vertex_values.vertex_uv.x * tex.width, interpolated_vertex_values.vertex_uv.y * tex.height);
                 uint32_t color_red = (color & 0xFF000000) >> 24;
                 uint32_t color_green = (color & 0x00FF0000) >> 16;
                 uint32_t color_blue = (color & 0x0000FF00) >> 8;

@@ -99,7 +99,7 @@ int main(){
         gamestate.WaitForFrame();
         float delta_time = gamestate.delta_time;
            
-        // rotation += 0.7 * delta_time;
+        rotation += 0.7 * delta_time;
         std::vector<Triangle> rendered_triangles;
         
         // This loop is essentially the "Vertex Shader" of my renderer
@@ -154,9 +154,13 @@ int main(){
             t.MapVerts(projection_matrix);
 
             //Proper clipping
+            // std::vector<Vector4> keep_vertex_list;
+            // std::vector<Vector2> keep_uv_list;
+            // clip::clip_vertices_uvs(t, keep_vertex_list, keep_uv_list);
+
             std::vector<Vector4> keep_vertex_list;
-            std::vector<Vector2> keep_uv_list;
-            clip::clip_vertices_uvs(t, keep_vertex_list, keep_uv_list);
+            std::vector<Triangle::VertexInterpolants> keep_interpolants_list;
+            clip::clip_vertices_uvs(t, keep_vertex_list, keep_interpolants_list);
 
             // Vertices are in NDC
             auto persp_divide = [](Vector4 &v){
@@ -187,7 +191,8 @@ int main(){
             }
 
             // retriangulate kept
-            clip::retriangulate_clipped_vertices_uvs(t, keep_vertex_list, keep_uv_list, rendered_triangles);
+            // clip::retriangulate_clipped_vertices_uvs(t, keep_vertex_list, keep_uv_list, rendered_triangles);
+            clip::retriangulate_clipped_vertices_uvs(t, keep_vertex_list, keep_interpolants_list, rendered_triangles);
         }
 
         // TODO: Fragment Pass here

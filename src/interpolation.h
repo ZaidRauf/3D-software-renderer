@@ -1,5 +1,6 @@
 #pragma once
 
+#include "geometry.h"
 #include "linalg.h"
 #include <cmath>
 

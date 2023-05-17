@@ -12,6 +12,15 @@ Triangle::Triangle(Vector4 v1, Vector4 v2, Vector4 v3, Vector2 uv_a, Vector2 uv_
     flat_shading_intensity = 1.0;
 }
 
+Triangle::Triangle(Vector4 v1, Vector4 v2, Vector4 v3, VertexInterpolants interp1, VertexInterpolants interp2, VertexInterpolants interp3) : a(v1), b(v2), c(v3), vert_interp_a(interp1), vert_interp_b(interp2), vert_interp_c(interp3) {
+    flat_shading_intensity = 1.0;
+
+    uv_a = interp1.vertex_uv;
+    uv_b = interp2.vertex_uv;
+    uv_c = interp3.vertex_uv;
+}
+
+
 Triangle::Triangle(const Face &f, const Mesh &m){
     flat_shading_intensity = 1.0;
 
@@ -65,7 +74,7 @@ Triangle::VertexInterpolants::VertexInterpolants(){
     vertex_uv = Vector2();
 }
 
-Triangle::VertexInterpolants::VertexInterpolants(Vector3 pos, Vector3 color, Vector3 normal, Vector2 uv) : vertex_color(color), vertex_position(pos), vertex_normal(normal), vertex_uv(uv){}
+Triangle::VertexInterpolants::VertexInterpolants(Vector3 pos, Vector3 color, Vector3 normal, Vector2 uv) : vertex_position(pos), vertex_color(color), vertex_normal(normal), vertex_uv(uv){}
 
 Triangle::VertexInterpolants::~VertexInterpolants(){}
 
@@ -73,9 +82,36 @@ Triangle::VertexInterpolants Triangle::VertexInterpolants::operator=(const Verte
     this->vertex_position = other.vertex_position;
     this->vertex_color = other.vertex_color;
     this->vertex_normal = other.vertex_normal;
+    this->vertex_uv = other.vertex_uv;
 
     return *this;
 }
+
+VertexInterpolants operator*(const float &scalar, const VertexInterpolants &interp){
+    return VertexInterpolants {
+    scalar * interp.vertex_position,
+    scalar * interp.vertex_color,
+    scalar * interp.vertex_normal,
+    scalar * interp.vertex_uv};
+}
+
+VertexInterpolants operator-(const VertexInterpolants &interp1, const VertexInterpolants &interp2){
+    return VertexInterpolants {
+    interp1.vertex_position - interp2.vertex_position,
+    interp1.vertex_color - interp2.vertex_color,
+    interp1.vertex_normal - interp2.vertex_normal,
+    interp1.vertex_uv - interp2.vertex_uv};
+}
+
+VertexInterpolants operator+(const VertexInterpolants &interp1, const VertexInterpolants &interp2){
+    return VertexInterpolants {
+    interp1.vertex_position + interp2.vertex_position,
+    interp1.vertex_color + interp2.vertex_color,
+    interp1.vertex_normal + interp2.vertex_normal,
+    interp1.vertex_uv + interp2.vertex_uv};
+}
+
+
 
 Face::Face(){}
 
