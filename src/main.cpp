@@ -107,26 +107,8 @@ int main(){
             const Face &f = mesh.faces[i];
 
             // Vertices are in (Homogenous) Model Space
-            Triangle t{
-                mesh.vertices[f.a],
-                mesh.vertices[f.b],
-                mesh.vertices[f.c],
-                mesh.uv_coords[f.uv_a],
-                mesh.uv_coords[f.uv_b],
-                mesh.uv_coords[f.uv_c]};
-
-            t.vert_interp_a.vertex_normal = mesh.vertex_normals[f.a];
-            t.vert_interp_b.vertex_normal = mesh.vertex_normals[f.b];
-            t.vert_interp_c.vertex_normal = mesh.vertex_normals[f.c];
-
-            t.vert_interp_a.vertex_position = mesh.vertices[f.a];
-            t.vert_interp_b.vertex_position = mesh.vertices[f.b];
-            t.vert_interp_c.vertex_position = mesh.vertices[f.c];
-
-            t.vert_interp_a.vertex_color = Vector3(255, 0, 0);
-            t.vert_interp_b.vertex_color = Vector3(0, 255, 0);
-            t.vert_interp_c.vertex_color = Vector3(0, 0, 255);
-
+            Triangle t{f, mesh};
+                
             // Vertices Are Transformed in World Spaace
             Matrix4x4 world_matrix = Matrix4x4::Identity();
             world_matrix = Matrix4x4::Scale(1, 1, 1);
@@ -148,6 +130,8 @@ int main(){
             if(gamestate.backface_culling_enabled && cull::should_backface_cull(t.a, t.b, t.c, camera.position)){
                 continue;
             }
+
+            t.TransformInterpolants(rotation_matrix, world_matrix);
 
             // Calculate the normal for lighting calculation
             Vector3 face_normal = rotation_matrix * mesh.face_normals[i];

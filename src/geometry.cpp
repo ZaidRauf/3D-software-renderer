@@ -12,6 +12,44 @@ Triangle::Triangle(Vector4 v1, Vector4 v2, Vector4 v3, Vector2 uv_a, Vector2 uv_
     flat_shading_intensity = 1.0;
 }
 
+Triangle::Triangle(const Face &f, const Mesh &m){
+    flat_shading_intensity = 1.0;
+
+    a = m.vertices[f.a];
+    b = m.vertices[f.b];
+    c = m.vertices[f.c];
+
+    uv_a = m.uv_coords[f.uv_a];
+    uv_b = m.uv_coords[f.uv_b];
+    uv_c = m.uv_coords[f.uv_c];
+
+    vert_interp_a.vertex_normal = m.vertex_normals[f.a];
+    vert_interp_b.vertex_normal = m.vertex_normals[f.b];
+    vert_interp_c.vertex_normal = m.vertex_normals[f.c];
+
+    vert_interp_a.vertex_position = m.vertices[f.a];
+    vert_interp_b.vertex_position = m.vertices[f.b];
+    vert_interp_c.vertex_position = m.vertices[f.c];
+
+    vert_interp_a.vertex_color = Vector3(255, 0, 0);
+    vert_interp_b.vertex_color = Vector3(0, 255, 0);
+    vert_interp_c.vertex_color = Vector3(0, 0, 255);
+
+    vert_interp_a.vertex_uv = m.uv_coords[f.uv_a];
+    vert_interp_b.vertex_uv = m.uv_coords[f.uv_b];
+    vert_interp_c.vertex_uv = m.uv_coords[f.uv_c];
+}
+
+void Triangle::TransformInterpolants(const Matrix4x4 &rotation_mtx, const Matrix4x4 &world_mtx){
+    vert_interp_a.vertex_normal = rotation_mtx * vert_interp_a.vertex_normal;
+    vert_interp_b.vertex_normal = rotation_mtx * vert_interp_b.vertex_normal;
+    vert_interp_c.vertex_normal = rotation_mtx * vert_interp_c.vertex_normal;
+
+    vert_interp_a.vertex_position = world_mtx * vert_interp_a.vertex_normal;
+    vert_interp_b.vertex_position = world_mtx * vert_interp_b.vertex_normal;
+    vert_interp_c.vertex_position = world_mtx * vert_interp_c.vertex_normal;
+}
+
 Triangle::~Triangle(){}
 
 void Triangle::MapVerts(const Matrix4x4 &m){
@@ -19,13 +57,15 @@ void Triangle::MapVerts(const Matrix4x4 &m){
     b = m * b;
     c = m * c;
 }
+
 Triangle::VertexInterpolants::VertexInterpolants(){
     vertex_position = Vector3();
     vertex_color = Vector3();
     vertex_normal = Vector3();
+    vertex_uv = Vector2();
 }
 
-Triangle::VertexInterpolants::VertexInterpolants(Vector3 pos, Vector3 color, Vector3 normal) : vertex_color(color), vertex_position(pos), vertex_normal(normal){}
+Triangle::VertexInterpolants::VertexInterpolants(Vector3 pos, Vector3 color, Vector3 normal, Vector2 uv) : vertex_color(color), vertex_position(pos), vertex_normal(normal), vertex_uv(uv){}
 
 Triangle::VertexInterpolants::~VertexInterpolants(){}
 
