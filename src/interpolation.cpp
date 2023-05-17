@@ -1,5 +1,4 @@
 #include "interpolation.h"
-#include <cmath>
 
 Vector3 interpolation::barycentric_weights(const Vector2 &a, const Vector2 &b, const Vector2 &c, const Vector2 &p){
     

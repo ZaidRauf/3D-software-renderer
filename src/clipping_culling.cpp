@@ -268,6 +268,11 @@ void clip::retriangulate_clipped_vertices_uvs(const Triangle &orig_tri, std::vec
         t_clipped.flat_shading_intensity = orig_tri.flat_shading_intensity;
         t_clipped.color = orig_tri.color;
 
+        // // TODO: remove later as we will interpolate
+        // t_clipped.vert_interp_a = orig_tri.vert_interp_a;
+        // t_clipped.vert_interp_b = orig_tri.vert_interp_b;
+        // t_clipped.vert_interp_c = orig_tri.vert_interp_c;
+
         rebuilt_triangles.push_back(t_clipped);
     }
 }

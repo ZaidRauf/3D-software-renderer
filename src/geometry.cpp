@@ -19,6 +19,23 @@ void Triangle::MapVerts(const Matrix4x4 &m){
     b = m * b;
     c = m * c;
 }
+Triangle::VertexInterpolants::VertexInterpolants(){
+    vertex_position = Vector3();
+    vertex_color = Vector3();
+    vertex_normal = Vector3();
+}
+
+Triangle::VertexInterpolants::VertexInterpolants(Vector3 pos, Vector3 color, Vector3 normal) : vertex_color(color), vertex_position(pos), vertex_normal(normal){}
+
+Triangle::VertexInterpolants::~VertexInterpolants(){}
+
+Triangle::VertexInterpolants Triangle::VertexInterpolants::operator=(const VertexInterpolants &other){
+    this->vertex_position = other.vertex_position;
+    this->vertex_color = other.vertex_color;
+    this->vertex_normal = other.vertex_normal;
+
+    return *this;
+}
 
 Face::Face(){}
 
@@ -91,9 +108,9 @@ void Mesh::calculate_and_set_face_vertex_normals(){
         vertex_normals[vertex_number] = vertex_normal;
     }
 
-    for(auto i = 0; i < num_vertices; i++){
-        std::cout << vertex_normals[i] << std::endl;
-    }
+    // for(auto i = 0; i < num_vertices; i++){
+    //     std::cout << vertex_normals[i] << std::endl;
+    // }
 }
 
 Mesh::Mesh(const std::string &filename){

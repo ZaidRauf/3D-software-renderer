@@ -1,6 +1,7 @@
 #pragma once
 
 #include "linalg.h"
+#include <cmath>
 
 namespace interpolation{
     template <class T>

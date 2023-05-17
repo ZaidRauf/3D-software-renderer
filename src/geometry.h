@@ -20,6 +20,19 @@ class Triangle{
         Triangle(Vector4 v1, Vector4 v2, Vector4 v3, Vector2 uv_a, Vector2 uv_b, Vector2 uv_c);
         ~Triangle();
         void MapVerts(const Matrix4x4 &m);
+
+        struct VertexInterpolants {
+            VertexInterpolants();
+            VertexInterpolants(Vector3 pos, Vector3 color, Vector3 normal);
+            ~VertexInterpolants();
+            Vector3 vertex_position;
+            Vector3 vertex_color;
+            Vector3 vertex_normal;
+            VertexInterpolants operator=(const VertexInterpolants &other);
+        };
+        using VertexInterpolants = struct VertexInterpolants;
+
+        VertexInterpolants vert_interp_a, vert_interp_b, vert_interp_c;
 };
 
 // Represents a 3d Triangular Face of a mesh

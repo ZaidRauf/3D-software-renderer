@@ -176,19 +176,26 @@ void Drawing::DrawFilledTriangle(const Triangle &t, const Texture &tex, bool per
     Vector2 uv1 = t.uv_b;
     Vector2 uv2 = t.uv_c;
 
+    Triangle::VertexInterpolants vert_int_0 = t.vert_interp_a;
+    Triangle::VertexInterpolants vert_int_1 = t.vert_interp_b;
+    Triangle::VertexInterpolants vert_int_2 = t.vert_interp_c;
+
     if(v0.y > v1.y){
         std::swap(v0, v1);
         std::swap(uv0, uv1);
+        std::swap(vert_int_0, vert_int_1);
     }
 
     if(v1.y > v2.y){
         std::swap(v1, v2);
         std::swap(uv1, uv2);
+        std::swap(vert_int_1, vert_int_2);
     }
 
     if(v0.y > v1.y){
         std::swap(v0, v1);
         std::swap(uv0, uv1);
+        std::swap(vert_int_0, vert_int_1);
     }
 
     Pixel p0 = Pixel(v0);
@@ -232,7 +239,6 @@ void Drawing::DrawFilledTriangle(const Triangle &t, const Texture &tex, bool per
                     interpolated_uv = (uv0 * weights.x) + (uv1 * weights.y) + (uv2 * weights.z);
                 }
                 
-
                 uint32_t color = tex.GetTexel(interpolated_uv.x * tex.width, interpolated_uv.y * tex.height);
                 uint32_t color_red = (color & 0xFF000000) >> 24;
                 uint32_t color_green = (color & 0x00FF0000) >> 16;
@@ -240,6 +246,9 @@ void Drawing::DrawFilledTriangle(const Triangle &t, const Texture &tex, bool per
 
                 color = ((int)(t.flat_shading_intensity * color_red) << 24) + ((int)(t.flat_shading_intensity * color_green) << 16) + ((int)(t.flat_shading_intensity * color_blue) << 8);
                 color += 0xFF;
+
+                // auto vec_color = vert_int_0.vertex_color * weights.x + vert_int_1.vertex_color * weights.y + vert_int_2.vertex_color * weights.z;
+                // uint32_t color = (((int)vec_color.x) << 24) + (((int)vec_color.y) << 16) + (((int)vec_color.z) << 8) + 0xFF;
 
                 if(frame_buffer.GetZPixel(x, y) > interpolated_z){
                     frame_buffer.SetZPixel(x, y, interpolated_z);
@@ -289,6 +298,9 @@ void Drawing::DrawFilledTriangle(const Triangle &t, const Texture &tex, bool per
 
                 color = ((int)(t.flat_shading_intensity * color_red) << 24) + ((int)(t.flat_shading_intensity * color_green) << 16) + ((int)(t.flat_shading_intensity * color_blue) << 8);
                 color += 0xFF;
+
+                // auto vec_color = vert_int_0.vertex_color * weights.x + vert_int_1.vertex_color * weights.y + vert_int_2.vertex_color * weights.z;
+                // uint32_t color = (((int)vec_color.x) << 24) + (((int)vec_color.y) << 16) + (((int)vec_color.z) << 8) + 0xFF;
 
                 if(frame_buffer.GetZPixel(x, y) > interpolated_z){
                     frame_buffer.SetZPixel(x, y, interpolated_z);

@@ -114,7 +114,19 @@ int main(){
                 mesh.uv_coords[f.uv_a],
                 mesh.uv_coords[f.uv_b],
                 mesh.uv_coords[f.uv_c]};
-            
+
+            t.vert_interp_a.vertex_normal = mesh.vertex_normals[f.a];
+            t.vert_interp_b.vertex_normal = mesh.vertex_normals[f.b];
+            t.vert_interp_c.vertex_normal = mesh.vertex_normals[f.c];
+
+            t.vert_interp_a.vertex_position = mesh.vertices[f.a];
+            t.vert_interp_b.vertex_position = mesh.vertices[f.b];
+            t.vert_interp_c.vertex_position = mesh.vertices[f.c];
+
+            t.vert_interp_a.vertex_color = Vector3(255, 0, 0);
+            t.vert_interp_b.vertex_color = Vector3(0, 255, 0);
+            t.vert_interp_c.vertex_color = Vector3(0, 0, 255);
+
             // Vertices Are Transformed in World Spaace
             Matrix4x4 world_matrix = Matrix4x4::Identity();
             world_matrix = Matrix4x4::Scale(1, 1, 1);
@@ -140,7 +152,7 @@ int main(){
             // Calculate the normal for lighting calculation
             Vector3 face_normal = rotation_matrix * mesh.face_normals[i];
 
-            //TODO: Make lighting pass work on more than just a global light
+            //Flat Lighting Pass
             Vector3 light_dir{0, 0, -1};            
             auto intensity = light_dir * face_normal;
             intensity += 0.05;
@@ -200,7 +212,7 @@ int main(){
            i++;
            //draw.DrawFilledTriangle(t.a, t.b, t.c, t.color);
            draw.DrawFilledTriangle(t, tex, true);
-           //    draw.DrawTriangle(t.a, t.b, t.c, 0x00FFFFFF);
+           draw.DrawTriangle(t.a, t.b, t.c, 0x00FFFFFF);
         }
 
         // Render what we've drawn into the framebuffer
