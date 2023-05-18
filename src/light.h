@@ -23,8 +23,13 @@ class PointLight : public Light {
         float calculate_intensity(const Vector3 &face_point, const Vector3 &face_normal, const Vector3 &camera_position, const TextureParameters &tex_params) const;
 };
 
-// class SpotLight : public Light {
-//     public:
-//         SpotLight();
-//         ~SpotLight();
-// };
+class SpotLight : public Light {
+    public:
+        float min_alignment = 0.0;
+        Vector3 spotlight_direction_normal;
+        Vector3 rotation; 
+        SpotLight();
+        ~SpotLight();
+        void rotate_spotlight(float x_rot, float y_rot, float z_rot);
+        float calculate_intensity(const Vector3 &face_point, const Vector3 &face_normal, const Vector3 &camera_position, const TextureParameters &tex_params) const;
+};

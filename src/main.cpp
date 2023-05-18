@@ -112,16 +112,17 @@ int main(){
     obj_list.push_back(obj3d);
 
     // mesh_map.emplace("bunny", "./assets/models/low_poly_bunny.obj");
+    tex_map.emplace("test", "./assets/textures/test_cube_texture.tga");
     tex_map.emplace("gray", Texture::DefaultTexture::Gray);
 
-    // Object3D obj3d2 = Object3D(mesh_map.at("bunny"), tex_map.at("gray"));
-    // obj3d2.position = Vector3(-1, 0, -3);
-    // obj3d2.light_type = LightingType::PHONG_SHADING;
+    // Object3D obj3d2 = Object3D(mesh_map.at("cube"), tex_map.at("test"));
+    // obj3d2.position = Vector3(-1, 0, 0);
+    // obj3d2.light_type = LightingType::FLAT_LIGHTING;
     // obj_list.push_back(obj3d2);
     
     Object3D obj3d3 = Object3D(mesh_map.at("cube"), tex_map.at("gray"));
     obj3d3.position = Vector3(0, 2, 0);
-    obj3d3.light_type = LightingType::PHONG_SHADING;
+    obj3d3.light_type = LightingType::FULL_BRIGHT;
     obj3d3.render_type = RenderType::TEXTURED;
     obj3d3.scale = Vector3(0.15, 0.15, 0.15);
     obj_list.push_back(obj3d3);
@@ -132,7 +133,15 @@ int main(){
     point_light.diffuse_intensity = 2.0;
     point_light.specular_intensity = 0.25;
 
-    // float rot = 0;
+    SpotLight spot_light;
+    spot_light.position = Vector3(0, 2, 0);
+    spot_light.ambient_intensity = 0.5;
+    spot_light.diffuse_intensity = 2.0;
+    spot_light.specular_intensity = 0.25;
+    spot_light.spotlight_direction_normal = Vector3(0, -1, 0);
+    spot_light.min_alignment = 0.5;
+
+    float rot = 0;
 
     while(gamestate.running){
         // Put frame time management in own function or object
@@ -141,9 +150,10 @@ int main(){
            
         std::vector<Triangle> rendered_triangles;
 
-        // rot += 1 * delta_time;
+        rot = 1 * delta_time;
         // point_light.position = Vector3(2*cos(rot), 2, 2*sin(rot));
-
+        
+        spot_light.rotate_spotlight(0, 0, rot);
         for(auto &obj3d : obj_list){
             rendered_triangles.clear();
 
@@ -200,6 +210,9 @@ int main(){
                 }
 
                 t.TransformInterpolants(rotation_matrix, world_matrix);
+                t.vert_interp_a.vertex_color = t.a;
+                t.vert_interp_b.vertex_color = t.b;
+                t.vert_interp_c.vertex_color = t.c;
 
                 //Flat Lighting Pass
                 if(obj3d.light_type == LightingType::FLAT_LIGHTING){
@@ -259,7 +272,7 @@ int main(){
                 // draw.DrawFilledTriangle(t, tex, true);
 
                 if(obj3d.render_type == RenderType::TEXTURED || obj3d.render_type == RenderType::TEXTURED_WIREFRAME){
-                    draw.DrawFilledTriangle(t, obj3d, point_light, camera.position);
+                    draw.DrawFilledTriangle(t, obj3d, spot_light, camera.position);
                 }
 
                 if(obj3d.render_type == RenderType::WIREFRAME || obj3d.render_type == RenderType::TEXTURED_WIREFRAME){

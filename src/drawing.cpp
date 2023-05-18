@@ -115,12 +115,12 @@ void Drawing::DrawFilledTriangle(const Triangle &t, const Object3D &obj3d, const
                 float interpolated_inverse_z = ((weights.x/v0.w) + (weights.y/v1.w) + (weights.z/v2.w));
                 float interpolated_z = 1/interpolated_inverse_z;
 
-                VertexInterpolants interpolated_vertex_values = weights.x * vert_int_0 + weights.y * vert_int_1 + weights.z * vert_int_2;
+                VertexInterpolants interpolated_vertex_values = (weights.x * vert_int_0) + (weights.y * vert_int_1) + (weights.z * vert_int_2);
 
                 if(obj3d.perspective_correct){
                     interpolated_vertex_values.vertex_uv = ((vert_int_0.vertex_uv * (weights.x/v0.w)) + (vert_int_1.vertex_uv * (weights.y/v1.w)) + (vert_int_2.vertex_uv * (weights.z/v2.w))) * interpolated_z;
                 }
-                
+                                
                 uint32_t color = obj3d.t.GetTexel(interpolated_vertex_values.vertex_uv.x * obj3d.t.width, interpolated_vertex_values.vertex_uv.y * obj3d.t.height);
                 uint32_t color_red = (color & 0xFF000000) >> 24;
                 uint32_t color_green = (color & 0x00FF0000) >> 16;
@@ -136,14 +136,10 @@ void Drawing::DrawFilledTriangle(const Triangle &t, const Object3D &obj3d, const
                     color += 0xFF;
                 }
 
-                // auto vec_color = vert_int_0.vertex_color * weights.x + vert_int_1.vertex_color * weights.y + vert_int_2.vertex_color * weights.z;
-                // uint32_t color = (((int)vec_color.x) << 24) + (((int)vec_color.y) << 16) + (((int)vec_color.z) << 8) + 0xFF;
-
                 if(frame_buffer.GetZPixel(x, y) > interpolated_z){
                     frame_buffer.SetZPixel(x, y, interpolated_z);
                     frame_buffer.SetPixel(x, y, color);
                 }
-                // frame_buffer.SetPixel(x, y, color);
             }
 
             x_start += slope_side_1;
@@ -171,7 +167,7 @@ void Drawing::DrawFilledTriangle(const Triangle &t, const Object3D &obj3d, const
                 float interpolated_inverse_z = ((weights.x/v0.w) + (weights.y/v1.w) + (weights.z/v2.w));
                 float interpolated_z = 1/interpolated_inverse_z;
 
-                VertexInterpolants interpolated_vertex_values = weights.x * vert_int_0 + weights.y * vert_int_1 + weights.z * vert_int_2;
+                VertexInterpolants interpolated_vertex_values = (weights.x * vert_int_0) + (weights.y * vert_int_1) + (weights.z * vert_int_2);
 
                 if(obj3d.perspective_correct){
                     interpolated_vertex_values.vertex_uv = ((vert_int_0.vertex_uv * (weights.x/v0.w)) + (vert_int_1.vertex_uv * (weights.y/v1.w)) + (vert_int_2.vertex_uv * (weights.z/v2.w))) * interpolated_z;
@@ -191,9 +187,6 @@ void Drawing::DrawFilledTriangle(const Triangle &t, const Object3D &obj3d, const
                     color = (std::min((int)(intensity * color_red), 0xFF) << 24) + (std::min((int)(intensity * color_green), 0xFF) << 16) + ((int)(std::min((int)(intensity * color_blue), 0xFF)) << 8);
                     color += 0xFF;
                 }
-
-                // auto vec_color = vert_int_0.vertex_color * weights.x + vert_int_1.vertex_color * weights.y + vert_int_2.vertex_color * weights.z;
-                // uint32_t color = (((int)vec_color.x) << 24) + (((int)vec_color.y) << 16) + (((int)vec_color.z) << 8) + 0xFF;
 
                 if(frame_buffer.GetZPixel(x, y) > interpolated_z){
                     frame_buffer.SetZPixel(x, y, interpolated_z);
