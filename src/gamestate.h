@@ -13,12 +13,10 @@ class GameState{
         GameState();
         ~GameState();
         void WaitForFrame();
-
         bool running = true;
         bool backface_culling_enabled = true;
         int FRAMES_PER_SECOND = 120;
         int FRAME_LENGTH_MS = 1000/FRAMES_PER_SECOND;
         int frame_count = 0;
         float &delta_time = _delta_time;
-
 };

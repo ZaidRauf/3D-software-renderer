@@ -17,7 +17,6 @@ Screen::Screen(FrameBuffer &fb, bool setFrameBufferMaxSize, int render_scale_fac
         max_height = display_mode.h;
     }
 
-
     window = SDL_CreateWindow(
             "3D Software Renderer",
             SDL_WINDOWPOS_CENTERED,
@@ -80,12 +79,6 @@ Screen::~Screen(){
 }
 
 void Screen::RenderFrame(FrameBuffer &fb){
-    // SDL_UpdateTexture(
-    //        texture,
-    //        NULL,
-    //        fb.GetFrameBuffer(),
-    //        fb.buffer_width * sizeof(uint32_t));
-
     SDL_LockTexture(
             texture, 
             NULL, 

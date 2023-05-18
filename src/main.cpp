@@ -93,7 +93,7 @@ int main(){
     inputhandler.RegisterCallback(SDLK_e, translation6_callback);
     inputhandler.RegisterCallback(SDLK_t, rotation_callback);
 
-    Camera camera({0,3,-5}, {0, 0, 0}, {0,0,0});
+    Camera camera({0,0,-5}, {0, 0, 0}, {0,0,0});
 
     std::map<std::string, Mesh> mesh_map;
     std::map<std::string, Texture> tex_map;
@@ -141,7 +141,7 @@ int main(){
     spot_light.spotlight_direction_normal = Vector3(0, -1, 0);
     spot_light.min_alignment = 0.5;
 
-    float rot = 0;
+    // float rot = 0;
 
     while(gamestate.running){
         // Put frame time management in own function or object
@@ -150,10 +150,10 @@ int main(){
            
         std::vector<Triangle> rendered_triangles;
 
-        rot = 1 * delta_time;
+        // rot = 1 * delta_time;
         // point_light.position = Vector3(2*cos(rot), 2, 2*sin(rot));
         
-        spot_light.rotate_spotlight(0, 0, rot);
+        // spot_light.rotate_spotlight(0, 0, rot);
         for(auto &obj3d : obj_list){
             rendered_triangles.clear();
 
@@ -268,11 +268,9 @@ int main(){
             int i = 0;
             for(Triangle t : rendered_triangles){
                 i++;
-                //draw.DrawFilledTriangle(t.a, t.b, t.c, t.color);
-                // draw.DrawFilledTriangle(t, tex, true);
 
                 if(obj3d.render_type == RenderType::TEXTURED || obj3d.render_type == RenderType::TEXTURED_WIREFRAME){
-                    draw.DrawFilledTriangle(t, obj3d, spot_light, camera.position);
+                    draw.DrawFilledTriangle(t, obj3d, point_light, camera.position);
                 }
 
                 if(obj3d.render_type == RenderType::WIREFRAME || obj3d.render_type == RenderType::TEXTURED_WIREFRAME){

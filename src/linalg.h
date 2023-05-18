@@ -130,8 +130,6 @@ class Matrix4x4{
         Matrix4x4();
 };
 
-std::ostream& operator<<(std::ostream &os, const Matrix4x4 mat);
-
 namespace linalg{
     float Determinant(const Vector2 &a, Vector2 const &b);
 }

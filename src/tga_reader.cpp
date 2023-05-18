@@ -3,18 +3,13 @@
 TGAImage::TGAImage(std::string fileName){
     std::ifstream tga_file;
     tga_file.open(fileName, std::ifstream::in | std::ifstream::binary);
-
-    // char read_byte;
-    // int read_bytes = 0;
     
     tga_file.read(reinterpret_cast<char*>(&id_length), FieldSize::ID_LENGTH_SIZE);
     tga_file.read(reinterpret_cast<char*>(&color_map_type), FieldSize::COLOR_MAP_TYPE_SIZE);
     tga_file.read(reinterpret_cast<char*>(&image_type), FieldSize::IMAGE_TYPE_SIZE);
 
     // Only dealing with uncompressed non color mapped RGB TGA images for now
-    // std::cout << std::dec << "Position: " << tga_file.tellg() << std::endl;
     tga_file.seekg(FieldSize::COLOR_MAP_SPEC_SIZE, std::ifstream::cur);
-    // std::cout << std::dec << "Position: " << tga_file.tellg() << std::endl;
 
     auto read_int_value = [&tga_file](FieldSize size){
         char int_data_buf[2];
@@ -37,7 +32,6 @@ TGAImage::TGAImage(std::string fileName){
 
     image_data = std::make_unique<uint32_t[]>(width * height);
 
-    // std::cout << tga_file.tellg() << std::endl;
     char color_data_buf[4];
     for(int i = 0; i < width * height; i++){
         tga_file.read(color_data_buf, bytes_per_pixel);
@@ -46,7 +40,6 @@ TGAImage::TGAImage(std::string fileName){
         read_data_as_int = *reinterpret_cast<uint32_t*>(color_data_buf);
 
         read_data_as_int = (read_data_as_int << 8) | 0x000000FF;
-        // std::cout << std::hex << read_data_as_int << std::endl;
 
         image_data[i] = read_data_as_int;
     }

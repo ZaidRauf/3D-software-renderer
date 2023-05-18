@@ -1,6 +1,5 @@
 #include "geometry.h"
 
-
 Triangle::Triangle(Vector4 v1, Vector4 v2, Vector4 v3) : a(v1), b(v2), c(v3){
     uv_a = Vector2();
     uv_b = Vector2();
@@ -183,10 +182,6 @@ void Mesh::calculate_and_set_face_vertex_normals(){
 
         vertex_normals[vertex_number] = vertex_normal;
     }
-
-    // for(auto i = 0; i < num_vertices; i++){
-    //     std::cout << vertex_normals[i] << std::endl;
-    // }
 }
 
 Mesh::Mesh(const std::string &filename){

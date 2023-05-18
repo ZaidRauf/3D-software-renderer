@@ -18,7 +18,7 @@ class FrameBuffer{
         FrameBuffer(int width, int height, int max_depth);
         ~FrameBuffer();
         uint32_t* GetFrameBuffer();
-        uint32_t* GetZBuffer();
+        float* GetZBuffer();
         uint32_t GetPixel(int x, int y);
         void SetPixel(int x, int y, uint32_t color);
         float GetZPixel(int x, int y);

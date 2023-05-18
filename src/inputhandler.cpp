@@ -6,8 +6,6 @@ InputHandler::InputHandler(){
     if(SDL_Init(SDL_INIT_EVERYTHING) != 0){
         init_successful = false;
     }
-
-    // SDL_SetRelativeMouseMode(SDL_TRUE);
 }
 
 InputHandler::~InputHandler(){
@@ -29,10 +27,6 @@ void InputHandler::HandleInput(){
                 key_map[input_key]();
             };
         }
-
-        // if(event.type == SDL_MOUSEMOTION){
-        //     std::cout << event.motion.xrel << std::endl;
-        // }
     }
 }
 

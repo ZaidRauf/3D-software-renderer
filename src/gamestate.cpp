@@ -1,12 +1,8 @@
 #include "gamestate.h"
 
-GameState::GameState() {
+GameState::GameState() {}
 
-}
-
-GameState::~GameState() {
-
-}
+GameState::~GameState() {}
 
 void GameState::WaitForFrame(){
     auto frame_start_time = std::chrono::steady_clock::now();

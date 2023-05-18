@@ -1,12 +1,6 @@
 #include "texture.h"
 
 uint32_t Texture::GetTexel(int x, int y) const{
-    // if(x < 0) x = 0;
-    // if(y < 0) y = 0;
-
-    // if(x >= width) x = width - 1;
-    // if(y >= height) y = height - 1;
-
     // Go to Yth row and then go to Xth column
     x = std::clamp(x, 0, width - 1);
     y = std::clamp(y, 0, height - 1);
