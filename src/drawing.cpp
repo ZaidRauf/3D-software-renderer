@@ -54,278 +54,7 @@ void Drawing::DrawTriangle(const Pixel &a, const Pixel &b, const Pixel &c, uint3
     this->DrawLine(c, a, color);
 }
 
-// Flat top flat bottom algorithm`
-void Drawing::DrawFilledTriangle(const Vector4 &a, const Vector4 &b, const Vector4 &c, uint32_t color){
-    Vector4 v0 = a;
-    Vector4 v1 = b;
-    Vector4 v2 = c;
-
-    if(v0.y > v1.y){
-        std::swap(v0, v1);
-    }
-
-    if(v1.y > v2.y){
-        std::swap(v1, v2);
-    }
-
-    if(v0.y > v1.y){
-        std::swap(v0, v1);
-    }
-
-    Pixel p0 = Pixel(v0);
-    Pixel p1 = Pixel(v1);
-    Pixel p2 = Pixel(v2);
-
-    float slope_side_1 = 0;
-    float slope_side_2 = 0;
-
-    if (p1.y - p0.y != 0) slope_side_1 = static_cast<float>((p1.x - p0.x)) / static_cast<float>((p1.y - p0.y));
-    if (p2.y - p0.y != 0) slope_side_2 = static_cast<float>((p2.x - p0.x)) / static_cast<float>((p2.y - p0.y));
-    
-    float x_start = p0.x;
-    float x_end = p0.x;
-    
-    // If triangle is not flat top run flat bottom
-    if(p1.y - p0.y != 0){
-        for(auto y = p0.y; y <= p1.y; y++){
-            int trunc_x_end = static_cast<int>(std::roundf(x_end));
-            int trunc_x_start = static_cast<int>(std::roundf(x_start));
-
-            if(trunc_x_end < trunc_x_start){
-                std::swap(trunc_x_end, trunc_x_start);
-            }
-
-            for(int x = trunc_x_start; x <= trunc_x_end; x++){
-                // Set the Z Buffer value
-                // Returns weights of alpha, beta, gamma in xyz respectively
-                Vector3 weights = interpolation::barycentric_weights(v0, v1, v2, Vector2(x, y));
-                float interpolated_z = 1/((weights.x/v0.w) + (weights.y/v1.w) + (weights.z/v2.w));
-
-                if(frame_buffer.GetZPixel(x, y) > interpolated_z){
-                    frame_buffer.SetZPixel(x, y, interpolated_z);
-                    frame_buffer.SetPixel(x, y, color);
-                }
-                // frame_buffer.SetPixel(x, y, color);
-            }
-
-            x_start += slope_side_1;
-            x_end += slope_side_2;
-        }
-    }
-    
-    slope_side_1 = 0;
-    if (p2.y - p1.y != 0) slope_side_1 = static_cast<float>((p2.x - p1.x)) / static_cast<float>((p2.y - p1.y));
-    x_start = p2.x;
-    x_end = p2.x;
-
-    // If triangle is not flat bottom
-    if(p2.y - p1.y != 0){
-        for(auto y = p2.y; y >= p1.y; y--){
-            int trunc_x_end = static_cast<int>(std::roundf(x_end));
-            int trunc_x_start = static_cast<int>(std::roundf(x_start));
-
-            if(trunc_x_end < trunc_x_start){
-                std::swap(trunc_x_end, trunc_x_start);
-            }
-
-            for(int x = trunc_x_start; x <= trunc_x_end; x++){
-               Vector3 weights = interpolation::barycentric_weights(a, b, c, Vector2(x, y));
-               float interpolated_z = 1/((weights.x/v0.w) + (weights.y/v1.w) + (weights.z/v2.w));
-            //    std::cout << weights.x + weights.y + weights.z << std::endl;
-
-               if(frame_buffer.GetZPixel(x, y) > interpolated_z){
-                   frame_buffer.SetZPixel(x, y, interpolated_z);
-                   frame_buffer.SetPixel(x, y, color);
-               }
-            //    frame_buffer.SetPixel(x, y, color);
-            }
-
-            x_start -= slope_side_1;
-            x_end -= slope_side_2;
-        }
-    }
-}
-
-//void Drawing::DrawBresenhamLine(const Pixel &start, const Pixel &end, const uint32_t color){
-//    int dx = end.x - start.x;
-//    int dy = end.y - start.y;
-//    int D = 2*dy - dx;
-//    int current_y = start.y;
-//
-//    for (auto x = start.x; x <= end.x; x++){
-//        frame_buffer.SetPixel(x, current_y, color);
-//
-//        if(D > 0){
-//            current_y = current_y+1;
-//            D -= 2 * dx;
-//        }
-//
-//        D += 2 * dy;
-//    }
-//
-//    return;
-//}
-
-// Flat top flat bottom algorithm`
-void Drawing::DrawFilledTriangle(const Triangle &t, const Texture &tex, bool perspectiveCorrect){
-    Vector4 v0 = t.a;
-    Vector4 v1 = t.b;
-    Vector4 v2 = t.c;
-
-    Vector2 uv0 = t.uv_a;
-    Vector2 uv1 = t.uv_b;
-    Vector2 uv2 = t.uv_c;
-
-    Triangle::VertexInterpolants vert_int_0 = t.vert_interp_a;
-    Triangle::VertexInterpolants vert_int_1 = t.vert_interp_b;
-    Triangle::VertexInterpolants vert_int_2 = t.vert_interp_c;
-
-    if(v0.y > v1.y){
-        std::swap(v0, v1);
-        std::swap(uv0, uv1);
-        std::swap(vert_int_0, vert_int_1);
-    }
-
-    if(v1.y > v2.y){
-        std::swap(v1, v2);
-        std::swap(uv1, uv2);
-        std::swap(vert_int_1, vert_int_2);
-    }
-
-    if(v0.y > v1.y){
-        std::swap(v0, v1);
-        std::swap(uv0, uv1);
-        std::swap(vert_int_0, vert_int_1);
-    }
-
-    Pixel p0 = Pixel(v0);
-    Pixel p1 = Pixel(v1);
-    Pixel p2 = Pixel(v2);
-
-    float slope_side_1 = 0;
-    float slope_side_2 = 0;
-
-    if (p1.y - p0.y != 0) slope_side_1 = static_cast<float>((p1.x - p0.x)) / static_cast<float>((p1.y - p0.y));
-    if (p2.y - p0.y != 0) slope_side_2 = static_cast<float>((p2.x - p0.x)) / static_cast<float>((p2.y - p0.y));
-    
-    float x_start = p0.x;
-    float x_end = p0.x;
-    
-    // If triangle is not flat top run flat bottom
-    if(p1.y - p0.y != 0){
-        for(auto y = p0.y; y <= p1.y; y++){
-            int trunc_x_end = static_cast<int>(std::roundf(x_end));
-            int trunc_x_start = static_cast<int>(std::roundf(x_start));
-
-            if(trunc_x_end < trunc_x_start){
-                std::swap(trunc_x_end, trunc_x_start);
-            }
-
-            for(int x = trunc_x_start; x <= trunc_x_end; x++){
-                // Set the Z Buffer value
-                // Returns weights of alpha, beta, gamma in xyz respectively
-                Vector3 weights = interpolation::barycentric_weights(v0, v1, v2, Vector2(x, y));
-                float interpolated_inverse_z = ((weights.x/v0.w) + (weights.y/v1.w) + (weights.z/v2.w));
-                float interpolated_z = 1/interpolated_inverse_z;
-
-                VertexInterpolants interpolated_vertex_values = weights.x * vert_int_0 + weights.y * vert_int_1 + weights.z * vert_int_2;
-
-                if(perspectiveCorrect){
-                    interpolated_vertex_values.vertex_uv = ((vert_int_0.vertex_uv * (weights.x/v0.w)) + (vert_int_1.vertex_uv * (weights.y/v1.w)) + (vert_int_2.vertex_uv * (weights.z/v2.w))) * interpolated_z;
-                }
-                
-                uint32_t color = tex.GetTexel(interpolated_vertex_values.vertex_uv.x * tex.width, interpolated_vertex_values.vertex_uv.y * tex.height);
-                uint32_t color_red = (color & 0xFF000000) >> 24;
-                uint32_t color_green = (color & 0x00FF0000) >> 16;
-                uint32_t color_blue = (color & 0x0000FF00) >> 8;
-                
-                color = ((int)(t.flat_shading_intensity * color_red) << 24) + ((int)(t.flat_shading_intensity * color_green) << 16) + ((int)(t.flat_shading_intensity * color_blue) << 8);
-                color += 0xFF;
-
-                // Vector3 light_dir{0, 0, -1};            
-                // auto intensity = light_dir * interpolated_vertex_values.vertex_normal.Normalized();
-                // // intensity += 0.05;
-                // intensity = std::max(std::min(intensity, 1.0f), 0.0f);
-
-                // color = ((int)(intensity * color_red) << 24) + ((int)(intensity * color_green) << 16) + ((int)(intensity * color_blue) << 8);
-                // color += 0xFF;
-
-
-                // auto vec_color = vert_int_0.vertex_color * weights.x + vert_int_1.vertex_color * weights.y + vert_int_2.vertex_color * weights.z;
-                // uint32_t color = (((int)vec_color.x) << 24) + (((int)vec_color.y) << 16) + (((int)vec_color.z) << 8) + 0xFF;
-
-                if(frame_buffer.GetZPixel(x, y) > interpolated_z){
-                    frame_buffer.SetZPixel(x, y, interpolated_z);
-                    frame_buffer.SetPixel(x, y, color);
-                }
-                // frame_buffer.SetPixel(x, y, color);
-            }
-
-            x_start += slope_side_1;
-            x_end += slope_side_2;
-        }
-    }
-    
-    slope_side_1 = 0;
-    if (p2.y - p1.y != 0) slope_side_1 = static_cast<float>((p2.x - p1.x)) / static_cast<float>((p2.y - p1.y));
-    x_start = p2.x;
-    x_end = p2.x;
-
-    // If triangle is not flat bottom
-    if(p2.y - p1.y != 0){
-        for(auto y = p2.y; y >= p1.y; y--){
-            int trunc_x_end = static_cast<int>(std::roundf(x_end));
-            int trunc_x_start = static_cast<int>(std::roundf(x_start));
-
-            if(trunc_x_end < trunc_x_start){
-                std::swap(trunc_x_end, trunc_x_start);
-            }
-
-            for(int x = trunc_x_start; x <= trunc_x_end; x++){
-               Vector3 weights = interpolation::barycentric_weights(v0, v1, v2, Vector2(x, y));
-                float interpolated_inverse_z = ((weights.x/v0.w) + (weights.y/v1.w) + (weights.z/v2.w));
-                float interpolated_z = 1/interpolated_inverse_z;
-
-                VertexInterpolants interpolated_vertex_values = weights.x * vert_int_0 + weights.y * vert_int_1 + weights.z * vert_int_2;
-
-                if(perspectiveCorrect){
-                    interpolated_vertex_values.vertex_uv = ((vert_int_0.vertex_uv * (weights.x/v0.w)) + (vert_int_1.vertex_uv * (weights.y/v1.w)) + (vert_int_2.vertex_uv * (weights.z/v2.w))) * interpolated_z;
-                }
-
-                uint32_t color = tex.GetTexel(interpolated_vertex_values.vertex_uv.x * tex.width, interpolated_vertex_values.vertex_uv.y * tex.height);
-                uint32_t color_red = (color & 0xFF000000) >> 24;
-                uint32_t color_green = (color & 0x00FF0000) >> 16;
-                uint32_t color_blue = (color & 0x0000FF00) >> 8;
-
-                color = ((int)(t.flat_shading_intensity * color_red) << 24) + ((int)(t.flat_shading_intensity * color_green) << 16) + ((int)(t.flat_shading_intensity * color_blue) << 8);
-                color += 0xFF;
-
-                // Vector3 light_dir{0, 0, -1};            
-                // auto intensity = light_dir * interpolated_vertex_values.vertex_normal.Normalized();
-                // // intensity += 0.05;
-                // intensity = std::max(std::min(intensity, 1.0f), 0.0f);
-
-                // color = ((int)(intensity * color_red) << 24) + ((int)(intensity * color_green) << 16) + ((int)(intensity * color_blue) << 8);
-                // color += 0xFF;
-
-
-                // auto vec_color = vert_int_0.vertex_color * weights.x + vert_int_1.vertex_color * weights.y + vert_int_2.vertex_color * weights.z;
-                // uint32_t color = (((int)vec_color.x) << 24) + (((int)vec_color.y) << 16) + (((int)vec_color.z) << 8) + 0xFF;
-
-                if(frame_buffer.GetZPixel(x, y) > interpolated_z){
-                    frame_buffer.SetZPixel(x, y, interpolated_z);
-                    frame_buffer.SetPixel(x, y, color);
-                }
-            }
-
-            x_start -= slope_side_1;
-            x_end -= slope_side_2;
-        }
-    }
-}
-
-
-void Drawing::DrawFilledTriangle(const Triangle &t, const Object3D &obj3d){
+void Drawing::DrawFilledTriangle(const Triangle &t, const Object3D &obj3d, const Light &l){
     Vector4 v0 = t.a;
     Vector4 v1 = t.b;
     Vector4 v2 = t.c;
@@ -398,15 +127,12 @@ void Drawing::DrawFilledTriangle(const Triangle &t, const Object3D &obj3d){
                 uint32_t color_blue = (color & 0x0000FF00) >> 8;
 
                 if(obj3d.light_type == LightingType::FLAT_LIGHTING){
-                    color = ((int)(t.flat_shading_intensity * color_red) << 24) + ((int)(t.flat_shading_intensity * color_green) << 16) + ((int)(t.flat_shading_intensity * color_blue) << 8);
+                    color = (std::min((int)(t.flat_shading_intensity * color_red), 0xFF) << 24) + (std::min((int)(t.flat_shading_intensity * color_green), 0xFF) << 16) + ((int)(std::min((int)(t.flat_shading_intensity * color_blue), 0xFF)) << 8);
                     color += 0xFF;
                 }
-                else if(obj3d.light_type == LightingType::PHONG_LIGHTING){
-                    Vector3 light_dir{0, 0, -1};            
-                    auto intensity = light_dir * interpolated_vertex_values.vertex_normal.Normalized();
-                    intensity = std::max(std::min(intensity, 1.0f), 0.0f);
-
-                    color = ((int)(intensity * color_red) << 24) + ((int)(intensity * color_green) << 16) + ((int)(intensity * color_blue) << 8);
+                else if(obj3d.light_type == LightingType::PHONG_SHADING){
+                    float intensity = l.calculate_intensity(interpolated_vertex_values.vertex_position, interpolated_vertex_values.vertex_normal, {0, -5, 0}, obj3d.tex_params);
+                    color = (std::min((int)(intensity * color_red), 0xFF) << 24) + (std::min((int)(intensity * color_green), 0xFF) << 16) + ((int)(std::min((int)(intensity * color_blue), 0xFF)) << 8);
                     color += 0xFF;
                 }
 
@@ -457,15 +183,12 @@ void Drawing::DrawFilledTriangle(const Triangle &t, const Object3D &obj3d){
                 uint32_t color_blue = (color & 0x0000FF00) >> 8;
 
                 if(obj3d.light_type == LightingType::FLAT_LIGHTING){
-                    color = ((int)(t.flat_shading_intensity * color_red) << 24) + ((int)(t.flat_shading_intensity * color_green) << 16) + ((int)(t.flat_shading_intensity * color_blue) << 8);
+                    color = (std::min((int)(t.flat_shading_intensity * color_red), 0xFF) << 24) + (std::min((int)(t.flat_shading_intensity * color_green), 0xFF) << 16) + ((int)(std::min((int)(t.flat_shading_intensity * color_blue), 0xFF)) << 8);
                     color += 0xFF;
                 }
-                else if(obj3d.light_type == LightingType::PHONG_LIGHTING){
-                    Vector3 light_dir{0, 0, -1};            
-                    auto intensity = light_dir * interpolated_vertex_values.vertex_normal.Normalized();
-                    intensity = std::max(std::min(intensity, 1.0f), 0.0f);
-
-                    color = ((int)(intensity * color_red) << 24) + ((int)(intensity * color_green) << 16) + ((int)(intensity * color_blue) << 8);
+                else if(obj3d.light_type == LightingType::PHONG_SHADING){      
+                    float intensity = l.calculate_intensity(interpolated_vertex_values.vertex_position, interpolated_vertex_values.vertex_normal, {0, -5, 0}, obj3d.tex_params);
+                    color = (std::min((int)(intensity * color_red), 0xFF) << 24) + (std::min((int)(intensity * color_green), 0xFF) << 16) + ((int)(std::min((int)(intensity * color_blue), 0xFF)) << 8);
                     color += 0xFF;
                 }
 

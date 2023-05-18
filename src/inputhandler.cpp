@@ -6,6 +6,8 @@ InputHandler::InputHandler(){
     if(SDL_Init(SDL_INIT_EVERYTHING) != 0){
         init_successful = false;
     }
+
+    // SDL_SetRelativeMouseMode(SDL_TRUE);
 }
 
 InputHandler::~InputHandler(){
@@ -16,6 +18,8 @@ void InputHandler::RegisterCallback(int inputKey, void (*funcPtr)()){
     key_map[inputKey] = funcPtr;
 }
 
+
+#include <iostream>
 void InputHandler::HandleInput(){
     while(SDL_PollEvent(&event)){
         if(event.type == SDL_KEYDOWN){
@@ -25,6 +29,10 @@ void InputHandler::HandleInput(){
                 key_map[input_key]();
             };
         }
+
+        // if(event.type == SDL_MOUSEMOTION){
+        //     std::cout << event.motion.xrel << std::endl;
+        // }
     }
 }
 

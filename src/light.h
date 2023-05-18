@@ -1,35 +1,30 @@
 #pragma once
 
 #include "linalg.h"
-
-enum LightingType{
-    FULL_BRIGHT,
-    FLAT_LIGHTING,
-    PHONG_LIGHTING
-};
+#include <cmath>
+#include "object3d.h"
 
 class Light {
     public:
         Light();
-        ~Light();
-        Vector3 color;
+        virtual ~Light();
+        virtual float calculate_intensity(const Vector3 &face_point, const Vector3 &face_normal, const Vector3 &camera_position, const TextureParameters &tex_params) const = 0;
         Vector3 position;
-        float intensity_specular;
-        float intensity_diffuse;
+        float ambient_intensity;
+        float diffuse_intensity;
+        float specular_intensity;
 };
 
-class PointLight : private Light {
+
+class PointLight : public Light {
     public:
-        PointLight(){
-            color = Vector3();
-        };
+        PointLight();
         ~PointLight();
+        float calculate_intensity(const Vector3 &face_point, const Vector3 &face_normal, const Vector3 &camera_position, const TextureParameters &tex_params) const;
 };
 
-class SpotLight : public Light {
-    public:
-        SpotLight(){
-            color = Vector3();
-        };
-        ~SpotLight();
-};
+// class SpotLight : public Light {
+//     public:
+//         SpotLight();
+//         ~SpotLight();
+// };

@@ -19,12 +19,9 @@
 #include <list>
 #include <map>
 
-float translation_x = 0.0;
-float translation_y = 0.0;
-float translation_z = 0.0; // -4.5 for the bunny
-float rotation = 0;
-
 GameState gamestate = GameState();
+Vector3 camera_position{0, 0, 0};
+float rotation = 0.0;
 
 // TODO: Move game logic into it's own file
 void exit_callback(){
@@ -34,6 +31,35 @@ void exit_callback(){
 void toggle_culling_callback(){
     gamestate.backface_culling_enabled = !gamestate.backface_culling_enabled;
 }
+
+void translation_callback(){
+    camera_position.x += 0.1;
+}
+
+void translation2_callback(){
+    camera_position.x -= 0.1;
+}
+
+void translation3_callback(){
+    camera_position.y -= 0.1;
+}
+
+void translation4_callback(){
+    camera_position.y += 0.1;
+}
+
+void translation5_callback(){
+    camera_position.z += 0.1;
+}
+
+void translation6_callback(){
+    camera_position.z -= 0.1;
+}
+
+void rotation_callback(){
+    rotation += 0.1;
+}
+
 
 int main(){
     // auto o = OBJLoader("./assets/models/low_poly_bunny.obj");
@@ -59,8 +85,15 @@ int main(){
     // Move to game logic type file / class later
     inputhandler.RegisterCallback(SDLK_ESCAPE, exit_callback);
     inputhandler.RegisterCallback(SDLK_c, toggle_culling_callback);
-    
-    Camera camera({0,0,-5}, {0, 0, 0}, {0,0,0});
+    inputhandler.RegisterCallback(SDLK_d, translation_callback);
+    inputhandler.RegisterCallback(SDLK_a, translation2_callback);
+    inputhandler.RegisterCallback(SDLK_w, translation3_callback);
+    inputhandler.RegisterCallback(SDLK_s, translation4_callback);
+    inputhandler.RegisterCallback(SDLK_q, translation5_callback);
+    inputhandler.RegisterCallback(SDLK_e, translation6_callback);
+    inputhandler.RegisterCallback(SDLK_t, rotation_callback);
+
+    Camera camera({0,3,-5}, {0, 0, 0}, {0,0,0});
 
     std::map<std::string, Mesh> mesh_map;
     std::map<std::string, Texture> tex_map;
@@ -71,37 +104,57 @@ int main(){
     tex_map.emplace("crate", "./assets/textures/crate.tga");
 
     Object3D obj3d = Object3D(mesh_map.at("cube"), tex_map.at("crate"));
-    obj3d.position = Vector3(2, 0, 0);
-    obj3d.light_type = LightingType::FLAT_LIGHTING;
-    obj3d.render_type = RenderType::TEXTURED_WIREFRAME;
+    obj3d.position = Vector3(0, 0, 0);
+    obj3d.light_type = LightingType::PHONG_SHADING;
+    obj3d.render_type = RenderType::TEXTURED;
     obj3d.perspective_correct = false;
+    obj3d.obj_id = 1;
     obj_list.push_back(obj3d);
 
     mesh_map.emplace("bunny", "./assets/models/low_poly_bunny.obj");
     tex_map.emplace("gray", Texture::DefaultTexture::Gray);
 
-    Object3D obj3d2 = Object3D(mesh_map.at("bunny"), tex_map.at("gray"));
-    obj3d2.position = Vector3(-1, 0, -3);
-    obj3d2.light_type = LightingType::PHONG_LIGHTING;
-    obj_list.push_back(obj3d2);
+    // Object3D obj3d2 = Object3D(mesh_map.at("bunny"), tex_map.at("gray"));
+    // obj3d2.position = Vector3(-1, 0, -3);
+    // obj3d2.light_type = LightingType::PHONG_SHADING;
+    // obj_list.push_back(obj3d2);
+    
+    Object3D obj3d3 = Object3D(mesh_map.at("cube"), tex_map.at("gray"));
+    obj3d3.position = Vector3(0, 2, 0);
+    obj3d3.light_type = LightingType::PHONG_SHADING;
+    obj3d3.render_type = RenderType::TEXTURED;
+    obj3d3.scale = Vector3(0.15, 0.15, 0.15);
+    obj_list.push_back(obj3d3);
+
+    PointLight point_light;
+    point_light.position = Vector3(0, 2, 0);
+    point_light.ambient_intensity = 0.5;
+    point_light.diffuse_intensity = 2.0;
+    point_light.specular_intensity = 0.25;
+
+    // float rot = 0;
 
     while(gamestate.running){
         // Put frame time management in own function or object
         gamestate.WaitForFrame();
         float delta_time = gamestate.delta_time;
            
-        rotation += 0.7 * delta_time;
         std::vector<Triangle> rendered_triangles;
+
+        // rot += 1 * delta_time;
+        // point_light.position = Vector3(2*cos(rot), 2, 2*sin(rot));
 
         for(auto &obj3d : obj_list){
             rendered_triangles.clear();
+
+            // obj3d.position = Vector3(2*cos(rot), 2, 2*sin(rot));
 
             const Mesh &mesh = obj3d.m;
             const Texture &tex = obj3d.t;
 
             //TODO: Execute per frame obj updates here
-            obj3d.rotation.y += 0.7 * delta_time;
-            obj3d.rotation.z += 0.7 * delta_time;
+            // obj3d.rotation.y += 0.7 * delta_time;
+            // obj3d.rotation.z += 0.7 * delta_time;
 
             // This loop is essentially the "Vertex Shader" of my renderer
             for (auto i = 0; i < mesh.num_triangles; i++){
@@ -112,16 +165,30 @@ int main(){
                     
                 // Vertices Are Transformed in World Spaace
                 Matrix4x4 world_matrix = Matrix4x4::Identity();
-                world_matrix = Matrix4x4::Scale(1, 1, 1);
+                world_matrix = Matrix4x4::Scale(obj3d.scale.x, obj3d.scale.y, obj3d.scale.z) * world_matrix;
 
                 // Seperate from world matrix as we use to rotate face and vertex normals
-                Matrix4x4 rotation_matrix = Matrix4x4::Scale(1, 1, 1);
-                rotation_matrix = Matrix4x4::XRotationMatrix(obj3d.rotation.x) * rotation_matrix;
-                rotation_matrix = Matrix4x4::YRotationMatrix(obj3d.rotation.y) * rotation_matrix;
-                rotation_matrix = Matrix4x4::ZRotationMatrix(obj3d.rotation.z) * rotation_matrix;
+                Matrix4x4 rotation_matrix = Matrix4x4::Identity();
+
+                if(obj3d.obj_id == 1){
+                    rotation_matrix = Matrix4x4::YRotationMatrix(rotation) * rotation_matrix;
+                }
+                else{
+                    rotation_matrix = Matrix4x4::XRotationMatrix(obj3d.rotation.x) * rotation_matrix;
+                    rotation_matrix = Matrix4x4::YRotationMatrix(obj3d.rotation.y) * rotation_matrix;
+                    rotation_matrix = Matrix4x4::ZRotationMatrix(obj3d.rotation.z) * rotation_matrix;
+                }
 
                 world_matrix = rotation_matrix * world_matrix;
-                world_matrix = Matrix4x4::Translation(obj3d.position.x, obj3d.position.y, obj3d.position.z) * world_matrix;
+
+                if(obj3d.obj_id == 1){
+                    world_matrix = Matrix4x4::Translation(camera_position.x, camera_position.y, camera_position.z) * world_matrix;
+
+                }
+                else{
+                    world_matrix = Matrix4x4::Translation(obj3d.position.x, obj3d.position.y, obj3d.position.z) * world_matrix;
+                }
+
                 t.MapVerts(world_matrix);
 
                 // Add View Matrix support
@@ -134,19 +201,12 @@ int main(){
 
                 t.TransformInterpolants(rotation_matrix, world_matrix);
 
-                // Calculate the normal for lighting calculation
-                Vector3 face_normal = rotation_matrix * mesh.face_normals[i];
-
                 //Flat Lighting Pass
                 if(obj3d.light_type == LightingType::FLAT_LIGHTING){
-                    Vector3 light_dir{0, 0, -1};            
-                    auto intensity = light_dir * face_normal;
-                    intensity += 0.05;
-                    intensity = std::max(std::min(intensity, 1.0f), 0.0f);
-                    // uint32_t color = ((int)(intensity * 0xFF) << 24) + ((int)(intensity * 0xFF) << 16) + ((int)(intensity * 0xFF) << 8);
-                    // color += 0xFF;
-                    t.flat_shading_intensity = intensity;
-                    // t.color = color;
+                    // Calculate the normal for lighting calculation
+                    Vector3 face_normal = rotation_matrix * mesh.face_normals[i];
+                    Vector3 face_midpoint = ((float)1/(float)3) * (t.vert_interp_a.vertex_position + t.vert_interp_b.vertex_position + t.vert_interp_c.vertex_position);
+                    t.flat_shading_intensity = point_light.calculate_intensity(face_midpoint, face_normal, camera.position, obj3d.tex_params);
                 }
 
                 // Vertices are in Clip Space
@@ -199,7 +259,7 @@ int main(){
                 // draw.DrawFilledTriangle(t, tex, true);
 
                 if(obj3d.render_type == RenderType::TEXTURED || obj3d.render_type == RenderType::TEXTURED_WIREFRAME){
-                    draw.DrawFilledTriangle(t, obj3d);
+                    draw.DrawFilledTriangle(t, obj3d, point_light);
                 }
 
                 if(obj3d.render_type == RenderType::WIREFRAME || obj3d.render_type == RenderType::TEXTURED_WIREFRAME){

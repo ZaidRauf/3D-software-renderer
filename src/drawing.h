@@ -30,9 +30,7 @@ class Drawing{
         void DrawLine(const Pixel &start, const Pixel &end, uint32_t color);
         void DrawTriangle(const Pixel &a, const Pixel &b, const Pixel &c, uint32_t color);
         void DrawVertex(Vector2 v, uint32_t color);
-        void DrawFilledTriangle(const Vector4 &a, const Vector4 &b, const Vector4 &c, uint32_t color);
-        void DrawFilledTriangle(const Triangle &t, const Texture &tex, bool perspectiveCorrect);
-        void DrawFilledTriangle(const Triangle &t, const Object3D &obj3d);
+        void DrawFilledTriangle(const Triangle &t, const Object3D &obj3d,  const Light &l);
         // void DrawTexturedTriangle(const Triangle &t, const Texture &tex);
         //void DrawBresenhamLine(const Pixel &start, const Pixel &end, const uint32_t color);
     private:
