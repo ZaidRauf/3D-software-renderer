@@ -40,8 +40,14 @@ void Camera::camera_rotate_left() {
     side = Vector3::Cross(forward, up).Normalized();
 }
 
-// void Camera::camera_rotate_up() {
-//     forward = Matrix4x4::RotationMatrix(-0.1) * forward;
-//     target = position + forward;
-//     side = Vector3::Cross(forward, up).Normalized();
-// }
+void Camera::camera_rotate_up() {
+    forward = Matrix4x4::AxisAngleRotationMatrix(side, 0.1) * forward;
+    target = position + forward;
+    // side = Vector3::Cross(forward, up).Normalized();
+}
+
+void Camera::camera_rotate_down() {
+    forward = Matrix4x4::AxisAngleRotationMatrix(side, -0.1) * forward;
+    target = position + forward;
+    // side = Vector3::Cross(forward, up).Normalized();
+}

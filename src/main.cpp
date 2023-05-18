@@ -56,6 +56,13 @@ void camera_rotate_right() {
     camera.camera_rotate_right();
 }
 
+void camera_rotate_up() {
+    camera.camera_rotate_up();
+}
+
+void camera_rotate_down() {
+    camera.camera_rotate_down();
+}
 
 int main(){
     // auto o = OBJLoader("./assets/models/low_poly_bunny.obj");
@@ -87,6 +94,8 @@ int main(){
     inputhandler.RegisterCallback(SDLK_d, camera_strafe_right);
     inputhandler.RegisterCallback(SDLK_q, camera_rotate_left);
     inputhandler.RegisterCallback(SDLK_e, camera_rotate_right);
+    inputhandler.RegisterCallback(SDLK_r, camera_rotate_up);
+    inputhandler.RegisterCallback(SDLK_f, camera_rotate_down);
 
     // Camera camera({0,0,-5}, {0, 0, 0}, {0,0,0});
 
@@ -187,7 +196,7 @@ int main(){
                 t.MapVerts(world_matrix);
 
                 // Add View Matrix support
-                Matrix4x4 view_matrix = Matrix4x4::ViewMatrix(camera.position, camera.target, {0, 1, 0});
+                Matrix4x4 view_matrix = Matrix4x4::ViewMatrix(camera.position, camera.target, camera.up);
                 t.MapVerts(view_matrix);
 
                 if(gamestate.backface_culling_enabled && cull::should_backface_cull(t.a, t.b, t.c, {0, 0, 0})){

@@ -17,4 +17,6 @@ class Camera{
         void camera_strafe_right();
         void camera_rotate_right();
         void camera_rotate_left();
+        void camera_rotate_up();
+        void camera_rotate_down();
 };

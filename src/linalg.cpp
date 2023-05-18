@@ -410,3 +410,23 @@ Matrix4x4 Matrix4x4::ViewMatrix(const Vector3 &position, const Vector3 &target, 
 float linalg::Determinant(const Vector2 &a, Vector2 const &b){
     return (a.x * b.y) - (a.y * b.x);
 }
+
+Matrix4x4 Matrix4x4::AxisAngleRotationMatrix(const Vector3 &v, float angleRadians){
+    auto axis = v;
+    axis = axis.Normalized();
+    auto m = Matrix4x4::Identity();
+
+    m.matrix[0][0] = cos(angleRadians) + pow(axis.x, 2) * (1 - cos(angleRadians));
+    m.matrix[0][1] = axis.x * axis.y * (1 - cos(angleRadians)) - axis.z * sin(angleRadians);
+    m.matrix[0][2] = axis.x * axis.z * (1 - cos(angleRadians)) + axis.y * sin(angleRadians);
+
+    m.matrix[1][0] = axis.y * axis.x * (1 - cos(angleRadians)) + axis.z * sin(angleRadians);
+    m.matrix[1][1] = cos(angleRadians) + pow(axis.y, 2) * (1 - cos(angleRadians));
+    m.matrix[1][2] = axis.y * axis.z * (1 - cos(angleRadians)) - axis.x * sin(angleRadians);
+
+    m.matrix[2][0] = axis.z * axis.x * (1 - cos(angleRadians)) - axis.y * sin(angleRadians);
+    m.matrix[2][1] = axis.z * axis.y * (1 - cos(angleRadians)) + axis.x * sin(angleRadians);
+    m.matrix[2][2] = cos(angleRadians) + pow(axis.z, 2) * (1 - cos(angleRadians));
+
+    return m;
+}
