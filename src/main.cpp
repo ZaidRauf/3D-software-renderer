@@ -20,8 +20,8 @@
 #include <map>
 
 GameState gamestate = GameState();
-Vector3 camera_position{0, 0, 0};
-float rotation = 0.0;
+Camera camera({0,3,-5}, {0, 0, 0}, {0,1,0});
+float rot = 0.0;
 
 // TODO: Move game logic into it's own file
 void exit_callback(){
@@ -32,32 +32,28 @@ void toggle_culling_callback(){
     gamestate.backface_culling_enabled = !gamestate.backface_culling_enabled;
 }
 
-void translation_callback(){
-    camera_position.x += 0.1;
+void camera_forward() {
+    camera.camera_forward();
 }
 
-void translation2_callback(){
-    camera_position.x -= 0.1;
+void camera_backward() {
+    camera.camera_backward();
 }
 
-void translation3_callback(){
-    camera_position.y -= 0.1;
+void camera_strafe_left() {
+    camera.camera_strafe_left();
 }
 
-void translation4_callback(){
-    camera_position.y += 0.1;
+void camera_strafe_right() {
+    camera.camera_strafe_right();
 }
 
-void translation5_callback(){
-    camera_position.z += 0.1;
+void camera_rotate_left() {
+    camera.camera_rotate_left();
 }
 
-void translation6_callback(){
-    camera_position.z -= 0.1;
-}
-
-void rotation_callback(){
-    rotation += 0.1;
+void camera_rotate_right() {
+    camera.camera_rotate_right();
 }
 
 
@@ -85,15 +81,14 @@ int main(){
     // Move to game logic type file / class later
     inputhandler.RegisterCallback(SDLK_ESCAPE, exit_callback);
     inputhandler.RegisterCallback(SDLK_c, toggle_culling_callback);
-    inputhandler.RegisterCallback(SDLK_d, translation_callback);
-    inputhandler.RegisterCallback(SDLK_a, translation2_callback);
-    inputhandler.RegisterCallback(SDLK_w, translation3_callback);
-    inputhandler.RegisterCallback(SDLK_s, translation4_callback);
-    inputhandler.RegisterCallback(SDLK_q, translation5_callback);
-    inputhandler.RegisterCallback(SDLK_e, translation6_callback);
-    inputhandler.RegisterCallback(SDLK_t, rotation_callback);
+    inputhandler.RegisterCallback(SDLK_w, camera_forward);
+    inputhandler.RegisterCallback(SDLK_a, camera_strafe_left);
+    inputhandler.RegisterCallback(SDLK_s, camera_backward);
+    inputhandler.RegisterCallback(SDLK_d, camera_strafe_right);
+    inputhandler.RegisterCallback(SDLK_q, camera_rotate_left);
+    inputhandler.RegisterCallback(SDLK_e, camera_rotate_right);
 
-    Camera camera({0,0,-5}, {0, 0, 0}, {0,0,0});
+    // Camera camera({0,0,-5}, {0, 0, 0}, {0,0,0});
 
     std::map<std::string, Mesh> mesh_map;
     std::map<std::string, Texture> tex_map;
@@ -152,6 +147,7 @@ int main(){
 
         // rot = 1 * delta_time;
         // point_light.position = Vector3(2*cos(rot), 2, 2*sin(rot));
+        rot += 1 * delta_time;
         
         // spot_light.rotate_spotlight(0, 0, rot);
         for(auto &obj3d : obj_list){
@@ -180,24 +176,13 @@ int main(){
                 // Seperate from world matrix as we use to rotate face and vertex normals
                 Matrix4x4 rotation_matrix = Matrix4x4::Identity();
 
-                if(obj3d.obj_id == 1){
-                    rotation_matrix = Matrix4x4::YRotationMatrix(rotation) * rotation_matrix;
-                }
-                else{
-                    rotation_matrix = Matrix4x4::XRotationMatrix(obj3d.rotation.x) * rotation_matrix;
-                    rotation_matrix = Matrix4x4::YRotationMatrix(obj3d.rotation.y) * rotation_matrix;
-                    rotation_matrix = Matrix4x4::ZRotationMatrix(obj3d.rotation.z) * rotation_matrix;
-                }
+                rotation_matrix = Matrix4x4::XRotationMatrix(obj3d.rotation.x) * rotation_matrix;
+                rotation_matrix = Matrix4x4::YRotationMatrix(obj3d.rotation.y) * rotation_matrix;
+                rotation_matrix = Matrix4x4::ZRotationMatrix(obj3d.rotation.z) * rotation_matrix;
 
                 world_matrix = rotation_matrix * world_matrix;
 
-                if(obj3d.obj_id == 1){
-                    world_matrix = Matrix4x4::Translation(camera_position.x, camera_position.y, camera_position.z) * world_matrix;
-
-                }
-                else{
-                    world_matrix = Matrix4x4::Translation(obj3d.position.x, obj3d.position.y, obj3d.position.z) * world_matrix;
-                }
+                world_matrix = Matrix4x4::Translation(obj3d.position.x, obj3d.position.y, obj3d.position.z) * world_matrix;
 
                 t.MapVerts(world_matrix);
 
@@ -205,7 +190,7 @@ int main(){
                 Matrix4x4 view_matrix = Matrix4x4::ViewMatrix(camera.position, camera.target, {0, 1, 0});
                 t.MapVerts(view_matrix);
 
-                if(gamestate.backface_culling_enabled && cull::should_backface_cull(t.a, t.b, t.c, camera.position)){
+                if(gamestate.backface_culling_enabled && cull::should_backface_cull(t.a, t.b, t.c, {0, 0, 0})){
                     continue;
                 }
 
