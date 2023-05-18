@@ -54,7 +54,7 @@ void Drawing::DrawTriangle(const Pixel &a, const Pixel &b, const Pixel &c, uint3
     this->DrawLine(c, a, color);
 }
 
-void Drawing::DrawFilledTriangle(const Triangle &t, const Object3D &obj3d, const Light &l){
+void Drawing::DrawFilledTriangle(const Triangle &t, const Object3D &obj3d, const Light &l, const Vector3 &camera_position){
     Vector4 v0 = t.a;
     Vector4 v1 = t.b;
     Vector4 v2 = t.c;
@@ -131,7 +131,7 @@ void Drawing::DrawFilledTriangle(const Triangle &t, const Object3D &obj3d, const
                     color += 0xFF;
                 }
                 else if(obj3d.light_type == LightingType::PHONG_SHADING){
-                    float intensity = l.calculate_intensity(interpolated_vertex_values.vertex_position, interpolated_vertex_values.vertex_normal, {0, -5, 0}, obj3d.tex_params);
+                    float intensity = l.calculate_intensity(interpolated_vertex_values.vertex_position, interpolated_vertex_values.vertex_normal, camera_position, obj3d.tex_params);
                     color = (std::min((int)(intensity * color_red), 0xFF) << 24) + (std::min((int)(intensity * color_green), 0xFF) << 16) + ((int)(std::min((int)(intensity * color_blue), 0xFF)) << 8);
                     color += 0xFF;
                 }
@@ -187,7 +187,7 @@ void Drawing::DrawFilledTriangle(const Triangle &t, const Object3D &obj3d, const
                     color += 0xFF;
                 }
                 else if(obj3d.light_type == LightingType::PHONG_SHADING){      
-                    float intensity = l.calculate_intensity(interpolated_vertex_values.vertex_position, interpolated_vertex_values.vertex_normal, {0, -5, 0}, obj3d.tex_params);
+                    float intensity = l.calculate_intensity(interpolated_vertex_values.vertex_position, interpolated_vertex_values.vertex_normal, camera_position, obj3d.tex_params);
                     color = (std::min((int)(intensity * color_red), 0xFF) << 24) + (std::min((int)(intensity * color_green), 0xFF) << 16) + ((int)(std::min((int)(intensity * color_blue), 0xFF)) << 8);
                     color += 0xFF;
                 }

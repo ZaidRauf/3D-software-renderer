@@ -111,7 +111,7 @@ int main(){
     obj3d.obj_id = 1;
     obj_list.push_back(obj3d);
 
-    mesh_map.emplace("bunny", "./assets/models/low_poly_bunny.obj");
+    // mesh_map.emplace("bunny", "./assets/models/low_poly_bunny.obj");
     tex_map.emplace("gray", Texture::DefaultTexture::Gray);
 
     // Object3D obj3d2 = Object3D(mesh_map.at("bunny"), tex_map.at("gray"));
@@ -259,7 +259,7 @@ int main(){
                 // draw.DrawFilledTriangle(t, tex, true);
 
                 if(obj3d.render_type == RenderType::TEXTURED || obj3d.render_type == RenderType::TEXTURED_WIREFRAME){
-                    draw.DrawFilledTriangle(t, obj3d, point_light);
+                    draw.DrawFilledTriangle(t, obj3d, point_light, camera.position);
                 }
 
                 if(obj3d.render_type == RenderType::WIREFRAME || obj3d.render_type == RenderType::TEXTURED_WIREFRAME){
