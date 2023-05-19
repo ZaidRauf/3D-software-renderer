@@ -116,33 +116,15 @@ int main(){
     inputhandler.RegisterMouseMoveCallback(InputHandler::MouseMove::MOVE_LEFT, camera_rotate_left);
 
     Scene scene = Scene(SceneSelection::TestScene);
-    const std::list<Object3D> &obj_list = scene.get_obj_list_ref();
+    const std::vector<Object3D> &obj_list = scene.get_obj_list_ref();
     const std::vector<std::unique_ptr<Light>> &light_vec = scene.get_light_vec_ref();
-
-    // std::vector<Light> light_list; 
-
-    // PointLight point_light;
-    // point_light.position = Vector3(0, 2, 0);
-    // point_light.ambient_intensity = 0.5;
-    // point_light.diffuse_intensity = 2.0;
-    // point_light.specular_intensity = 0.25;
-    // light_list.push_back(point_light);
-
-    // SpotLight spot_light;
-    // spot_light.position = Vector3(0, 2, 0);
-    // spot_light.ambient_intensity = 0.5;
-    // spot_light.diffuse_intensity = 2.0;
-    // spot_light.specular_intensity = 0.25;
-    // spot_light.spotlight_direction_normal = Vector3(0, -1, 0);
-    // spot_light.min_alignment = 0.5;
-    // light_list.push_back(spot_light);
-
-    // float rot = 0;
 
     while(gamestate.running){
         // Put frame time management in own function or object
         gamestate.WaitForFrame();
         float delta_time = gamestate.delta_time;
+
+        scene.perform_frame_update(delta_time);
            
         std::vector<Triangle> rendered_triangles;
 
