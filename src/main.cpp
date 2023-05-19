@@ -20,7 +20,7 @@
 #include <map>
 
 GameState gamestate = GameState();
-Camera camera({0,3,-5}, {0, 0, 0}, {0,1,0});
+Camera camera({0,0,-5}, {0, 0, 0}, {0,1,0});
 float rot = 0.0;
 
 // TODO: Move game logic into it's own file
@@ -64,6 +64,23 @@ void camera_rotate_down() {
     camera.camera_rotate_down();
 }
 
+void camera_rotate_left_big() {
+    camera.camera_rotate_left_big();
+}
+
+void camera_rotate_right_big() {
+    camera.camera_rotate_right_big();
+}
+
+void camera_rotate_up_big() {
+    camera.camera_rotate_up_big();
+}
+
+void camera_rotate_down_big() {
+    camera.camera_rotate_down_big();
+}
+
+
 int main(){
     // auto o = OBJLoader("./assets/models/low_poly_bunny.obj");
     FrameBuffer framebuffer = FrameBuffer(100);
@@ -92,10 +109,14 @@ int main(){
     inputhandler.RegisterCallback(SDLK_a, camera_strafe_left);
     inputhandler.RegisterCallback(SDLK_s, camera_backward);
     inputhandler.RegisterCallback(SDLK_d, camera_strafe_right);
-    inputhandler.RegisterCallback(SDLK_q, camera_rotate_left);
-    inputhandler.RegisterCallback(SDLK_e, camera_rotate_right);
-    inputhandler.RegisterCallback(SDLK_r, camera_rotate_up);
-    inputhandler.RegisterCallback(SDLK_f, camera_rotate_down);
+    inputhandler.RegisterCallback(SDLK_q, camera_rotate_left_big);
+    inputhandler.RegisterCallback(SDLK_e, camera_rotate_right_big);
+    inputhandler.RegisterCallback(SDLK_r, camera_rotate_up_big);
+    inputhandler.RegisterCallback(SDLK_f, camera_rotate_down_big);
+    inputhandler.RegisterMouseMoveCallback(InputHandler::MouseMove::MOVE_DOWN, camera_rotate_up);
+    inputhandler.RegisterMouseMoveCallback(InputHandler::MouseMove::MOVE_UP, camera_rotate_down);
+    inputhandler.RegisterMouseMoveCallback(InputHandler::MouseMove::MOVE_RIGHT, camera_rotate_right);
+    inputhandler.RegisterMouseMoveCallback(InputHandler::MouseMove::MOVE_LEFT, camera_rotate_left);
 
     // Camera camera({0,0,-5}, {0, 0, 0}, {0,0,0});
 

@@ -29,25 +29,50 @@ void Camera::camera_strafe_right() {
 }
 
 void Camera::camera_rotate_right() {
-    forward = Matrix4x4::YRotationMatrix(0.1) * forward;
+    forward = Matrix4x4::YRotationMatrix(0.005) * forward;
     target = position + forward;
     side = Vector3::Cross(forward, up).Normalized();
 }
 
 void Camera::camera_rotate_left() {
-    forward = Matrix4x4::YRotationMatrix(-0.1) * forward;
+    forward = Matrix4x4::YRotationMatrix(-0.005) * forward;
     target = position + forward;
     side = Vector3::Cross(forward, up).Normalized();
 }
 
 void Camera::camera_rotate_up() {
-    forward = Matrix4x4::AxisAngleRotationMatrix(side, 0.1) * forward;
+    forward = Matrix4x4::AxisAngleRotationMatrix(side, 0.005) * forward;
     target = position + forward;
     // side = Vector3::Cross(forward, up).Normalized();
 }
 
 void Camera::camera_rotate_down() {
-    forward = Matrix4x4::AxisAngleRotationMatrix(side, -0.1) * forward;
+    forward = Matrix4x4::AxisAngleRotationMatrix(side, -0.005) * forward;
     target = position + forward;
     // side = Vector3::Cross(forward, up).Normalized();
 }
+
+void Camera::camera_rotate_right_big() {
+    forward = Matrix4x4::YRotationMatrix(0.05) * forward;
+    target = position + forward;
+    side = Vector3::Cross(forward, up).Normalized();
+}
+
+void Camera::camera_rotate_left_big() {
+    forward = Matrix4x4::YRotationMatrix(-0.05) * forward;
+    target = position + forward;
+    side = Vector3::Cross(forward, up).Normalized();
+}
+
+void Camera::camera_rotate_up_big() {
+    forward = Matrix4x4::AxisAngleRotationMatrix(side, 0.05) * forward;
+    target = position + forward;
+    // side = Vector3::Cross(forward, up).Normalized();
+}
+
+void Camera::camera_rotate_down_big() {
+    forward = Matrix4x4::AxisAngleRotationMatrix(side, -0.05) * forward;
+    target = position + forward;
+    // side = Vector3::Cross(forward, up).Normalized();
+}
+
