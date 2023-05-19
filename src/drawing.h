@@ -30,7 +30,8 @@ class Drawing{
         void DrawLine(const Pixel &start, const Pixel &end, uint32_t color);
         void DrawTriangle(const Pixel &a, const Pixel &b, const Pixel &c, uint32_t color);
         void DrawVertex(Vector2 v, uint32_t color);
-        void DrawFilledTriangle(const Triangle &t, const Object3D &obj3d,  const Light &l, const Vector3 &camera_position);
+        void DrawFilledTriangle(const Triangle &t, const Object3D &obj3d, const Light &l, const Vector3 &camera_position);
+        void DrawFilledTriangle(const Triangle &t, const Object3D &obj3d, const std::vector<std::unique_ptr<Light>> &light_vec, const Vector3 &camera_position);
     private:
         FrameBuffer &frame_buffer;
 };

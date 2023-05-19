@@ -18,10 +18,11 @@
 #include "object3d.h"
 #include <list>
 #include <map>
+#include "scene.h"
 
 GameState gamestate = GameState();
 Camera camera({0,0,-5}, {0, 0, 0}, {0,1,0});
-float rot = 0.0;
+// float rot = 0.0;
 
 // TODO: Move game logic into it's own file
 void exit_callback(){
@@ -93,10 +94,6 @@ int main(){
 
     std::cout << width << " " << height << std::endl;
 
-    // Read scene description and load models/textures into proper structures
-    // Mesh m = Mesh("./assets/models/cube.obj");
-    // Texture t = Texture("./assets/textures/crate.tga");
-
     if(!screen.InitSuccessful() || !inputhandler.InitSuccessful()){
         std::cerr << "Failed to Initialize SDL2 Screen or InputHandler" << std::endl;
         return -1;
@@ -118,53 +115,27 @@ int main(){
     inputhandler.RegisterMouseMoveCallback(InputHandler::MouseMove::MOVE_RIGHT, camera_rotate_right);
     inputhandler.RegisterMouseMoveCallback(InputHandler::MouseMove::MOVE_LEFT, camera_rotate_left);
 
-    // Camera camera({0,0,-5}, {0, 0, 0}, {0,0,0});
+    Scene scene = Scene(SceneSelection::TestScene);
+    const std::list<Object3D> &obj_list = scene.get_obj_list_ref();
+    const std::vector<std::unique_ptr<Light>> &light_vec = scene.get_light_vec_ref();
 
-    std::map<std::string, Mesh> mesh_map;
-    std::map<std::string, Texture> tex_map;
-    std::list<Object3D> obj_list;
+    // std::vector<Light> light_list; 
 
-    // TODO: Read scene description and load models/textures into proper structures
-    mesh_map.emplace("cube", "./assets/models/cube.obj");
-    tex_map.emplace("crate", "./assets/textures/crate.tga");
+    // PointLight point_light;
+    // point_light.position = Vector3(0, 2, 0);
+    // point_light.ambient_intensity = 0.5;
+    // point_light.diffuse_intensity = 2.0;
+    // point_light.specular_intensity = 0.25;
+    // light_list.push_back(point_light);
 
-    Object3D obj3d = Object3D(mesh_map.at("cube"), tex_map.at("crate"));
-    obj3d.position = Vector3(0, 0, 0);
-    obj3d.light_type = LightingType::PHONG_SHADING;
-    obj3d.render_type = RenderType::TEXTURED;
-    obj3d.perspective_correct = false;
-    obj3d.obj_id = 1;
-    obj_list.push_back(obj3d);
-
-    // mesh_map.emplace("bunny", "./assets/models/low_poly_bunny.obj");
-    tex_map.emplace("test", "./assets/textures/test_cube_texture.tga");
-    tex_map.emplace("gray", Texture::DefaultTexture::Gray);
-
-    // Object3D obj3d2 = Object3D(mesh_map.at("cube"), tex_map.at("test"));
-    // obj3d2.position = Vector3(-1, 0, 0);
-    // obj3d2.light_type = LightingType::FLAT_LIGHTING;
-    // obj_list.push_back(obj3d2);
-    
-    Object3D obj3d3 = Object3D(mesh_map.at("cube"), tex_map.at("gray"));
-    obj3d3.position = Vector3(0, 2, 0);
-    obj3d3.light_type = LightingType::FULL_BRIGHT;
-    obj3d3.render_type = RenderType::TEXTURED;
-    obj3d3.scale = Vector3(0.15, 0.15, 0.15);
-    obj_list.push_back(obj3d3);
-
-    PointLight point_light;
-    point_light.position = Vector3(0, 2, 0);
-    point_light.ambient_intensity = 0.5;
-    point_light.diffuse_intensity = 2.0;
-    point_light.specular_intensity = 0.25;
-
-    SpotLight spot_light;
-    spot_light.position = Vector3(0, 2, 0);
-    spot_light.ambient_intensity = 0.5;
-    spot_light.diffuse_intensity = 2.0;
-    spot_light.specular_intensity = 0.25;
-    spot_light.spotlight_direction_normal = Vector3(0, -1, 0);
-    spot_light.min_alignment = 0.5;
+    // SpotLight spot_light;
+    // spot_light.position = Vector3(0, 2, 0);
+    // spot_light.ambient_intensity = 0.5;
+    // spot_light.diffuse_intensity = 2.0;
+    // spot_light.specular_intensity = 0.25;
+    // spot_light.spotlight_direction_normal = Vector3(0, -1, 0);
+    // spot_light.min_alignment = 0.5;
+    // light_list.push_back(spot_light);
 
     // float rot = 0;
 
@@ -177,10 +148,10 @@ int main(){
 
         // rot = 1 * delta_time;
         // point_light.position = Vector3(2*cos(rot), 2, 2*sin(rot));
-        rot += 1 * delta_time;
+        // rot += 1 * delta_time;
         
         // spot_light.rotate_spotlight(0, 0, rot);
-        for(auto &obj3d : obj_list){
+        for(const auto &obj3d : obj_list){
             rendered_triangles.clear();
 
             // obj3d.position = Vector3(2*cos(rot), 2, 2*sin(rot));
@@ -232,9 +203,15 @@ int main(){
                 //Flat Lighting Pass
                 if(obj3d.light_type == LightingType::FLAT_LIGHTING){
                     // Calculate the normal for lighting calculation
-                    Vector3 face_normal = rotation_matrix * mesh.face_normals[i];
-                    Vector3 face_midpoint = ((float)1/(float)3) * (t.vert_interp_a.vertex_position + t.vert_interp_b.vertex_position + t.vert_interp_c.vertex_position);
-                    t.flat_shading_intensity = point_light.calculate_intensity(face_midpoint, face_normal, camera.position, obj3d.tex_params);
+                    float intensity = 0.0;
+
+                    for (auto const &l : light_vec){
+                        Vector3 face_normal = rotation_matrix * mesh.face_normals[i];
+                        Vector3 face_midpoint = ((float)1/(float)3) * (t.vert_interp_a.vertex_position + t.vert_interp_b.vertex_position + t.vert_interp_c.vertex_position);
+                        intensity += l->calculate_intensity(face_midpoint, face_normal, camera.position, obj3d.tex_params);
+                    }
+
+                    t.flat_shading_intensity = intensity;
                 }
 
                 // Vertices are in Clip Space
@@ -285,7 +262,7 @@ int main(){
                 i++;
 
                 if(obj3d.render_type == RenderType::TEXTURED || obj3d.render_type == RenderType::TEXTURED_WIREFRAME){
-                    draw.DrawFilledTriangle(t, obj3d, point_light, camera.position);
+                    draw.DrawFilledTriangle(t, obj3d, light_vec, camera.position);
                 }
 
                 if(obj3d.render_type == RenderType::WIREFRAME || obj3d.render_type == RenderType::TEXTURED_WIREFRAME){
@@ -301,15 +278,6 @@ int main(){
         framebuffer.ClearZBuffer();
         inputhandler.HandleInput();
     }
-
-    // // Remove all references to textures and models
-    while(!obj_list.empty()){
-        obj_list.pop_back();
-    }
-
-    obj_list.clear();
-    tex_map.clear();
-    mesh_map.clear();
 
     return 0;
 }
