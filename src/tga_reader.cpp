@@ -4,6 +4,12 @@ TGAImage::TGAImage(std::string fileName){
     std::ifstream tga_file;
     tga_file.open(fileName, std::ifstream::in | std::ifstream::binary);
     
+    if(!tga_file.is_open()){
+        std::cout << "Failed Opening: " << fileName <<  " Using Default Error Texture Instead"<< std::endl;
+        load_successful = false;
+        return;
+    }
+
     tga_file.read(reinterpret_cast<char*>(&id_length), FieldSize::ID_LENGTH_SIZE);
     tga_file.read(reinterpret_cast<char*>(&color_map_type), FieldSize::COLOR_MAP_TYPE_SIZE);
     tga_file.read(reinterpret_cast<char*>(&image_type), FieldSize::IMAGE_TYPE_SIZE);
@@ -44,6 +50,8 @@ TGAImage::TGAImage(std::string fileName){
         image_data[i] = read_data_as_int;
     }
     tga_file.close();
+
+    load_successful = true;
 }
 
 TGAImage::~TGAImage(){}

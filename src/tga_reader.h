@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <fstream>
 #include <string>
+#include <iostream>
 
 class TGAImage {
     public:
@@ -48,5 +49,6 @@ class TGAImage {
         uint8_t image_descriptor;
         unsigned short image_origin; 
         unsigned short attribute_bits_per_pixel;
+        bool load_successful = false;
         std::unique_ptr<uint32_t[]> image_data;
 };
