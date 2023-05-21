@@ -128,22 +128,11 @@ int main(){
            
         std::vector<Triangle> rendered_triangles;
 
-        // rot = 1 * delta_time;
-        // point_light.position = Vector3(2*cos(rot), 2, 2*sin(rot));
-        // rot += 1 * delta_time;
-        
-        // spot_light.rotate_spotlight(0, 0, rot);
         for(const auto &obj3d : obj_list){
             rendered_triangles.clear();
 
-            // obj3d.position = Vector3(2*cos(rot), 2, 2*sin(rot));
-
             const Mesh &mesh = obj3d.m;
             const Texture &tex = obj3d.t;
-
-            //TODO: Execute per frame obj updates here
-            // obj3d.rotation.y += 0.7 * delta_time;
-            // obj3d.rotation.z += 0.7 * delta_time;
 
             // This loop is essentially the "Vertex Shader" of my renderer
             for (auto i = 0; i < mesh.num_triangles; i++){

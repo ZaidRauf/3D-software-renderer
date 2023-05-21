@@ -6,9 +6,8 @@ Scene::Scene(SceneSelection select) : selection(select){
     init_scene_objects();
 }
 
-
 Scene::~Scene(){
-    // // Remove all references to textures and models
+    // Remove all references to textures and models
     while(!obj_list.empty()){
         obj_list.pop_back();
     }
@@ -62,7 +61,7 @@ void Scene::init_scene_objects(){
             // spot_light->min_alignment = 0.5;
             // light_vec.push_back( std::move(spot_light) );
 
-            static float rot = 0.0;
+            // static float rot = 0.0;
             static float light_rotation = 0.0;
             auto frame_update = [=](float delta_time) {
               auto &crate = obj_list[0];
@@ -71,8 +70,8 @@ void Scene::init_scene_objects(){
               auto &point = light_vec[0];
               auto &spot = light_vec[1];
 
-              rot += 1 * delta_time;
-              crate.rotation = Vector3(0, rot, 0);
+            //   rot += 1 * delta_time;
+            //   crate.rotation = Vector3(0, rot, 0);
 
               light_rotation += 1 * delta_time;
               auto new_light_pos = Vector3(3*cos(light_rotation), point->position.y, 3*sin(light_rotation));
@@ -87,7 +86,6 @@ void Scene::init_scene_objects(){
 void Scene::perform_frame_update(float delta_time){
     frame_update_func(delta_time);
 }
-
 
 const std::vector<Object3D>& Scene::get_obj_list_ref(){
     return obj_list;
