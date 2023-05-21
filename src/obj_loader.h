@@ -30,6 +30,7 @@ class OBJLoader{
         std::vector<Vector2> uvs;
         std::vector<IndexStruct> face_indices;
         std::vector<IndexStruct> uv_indices;
+        bool load_successful = false;
         int vertex_count = 0;
         int uv_count = 0;
         int face_count = 0;

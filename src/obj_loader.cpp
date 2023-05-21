@@ -39,6 +39,12 @@ OBJLoader::OBJLoader(const std::string &filename){
 
     obj_file.open(filename, std::ifstream::in);
 
+    if(!obj_file.is_open()){
+        std::cout << "Failed Opening: " << filename <<  " Using Default Error Model Instead"<< std::endl;
+        load_successful = false;
+        return;
+    }
+
     std::string input_line;
 
     while(!obj_file.eof()){
@@ -103,6 +109,8 @@ OBJLoader::OBJLoader(const std::string &filename){
             }
         }
     }
+
+    load_successful = true;
 }
 
 OBJLoader::~OBJLoader(){}

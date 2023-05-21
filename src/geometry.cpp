@@ -186,6 +186,25 @@ void Mesh::calculate_and_set_face_vertex_normals(){
 
 Mesh::Mesh(const std::string &filename){
     OBJLoader obj_data = OBJLoader(filename);
+
+
+    if(!obj_data.load_successful){
+        Mesh default_mesh = Mesh(Cube);
+
+        _num_triangles = default_mesh.num_triangles;
+        _num_vertices = default_mesh.num_vertices;
+
+        faces = std::move(default_mesh.faces);
+        face_normals = std::move(default_mesh.face_normals);
+
+        vertices = std::move(default_mesh.vertices);
+        vertex_normals = std::move(default_mesh.vertex_normals);
+
+        uv_coords = std::move(default_mesh.uv_coords);
+
+        return;
+    }
+
     _num_triangles = obj_data.face_count;
     _num_vertices = obj_data.vertex_count;
 
