@@ -123,7 +123,6 @@ int main(){
         float delta_time = gamestate.delta_time;
 
         scene.perform_frame_update(delta_time);
-           
         std::vector<Triangle> rendered_triangles;
 
         for(const auto &obj3d : obj_list){
@@ -165,7 +164,6 @@ int main(){
 
                 //Flat Lighting Pass
                 if(obj3d.light_type == LightingType::FLAT_LIGHTING){
-                    // Calculate the normal for lighting calculation
                     float intensity = 0.0;
 
                     for (auto const &l : light_vec){
@@ -178,7 +176,7 @@ int main(){
                 }
 
                 // Vertices are in Clip Space
-                auto PI = 3.14159;
+                constexpr auto PI = 3.14159;
                 float aspect_ratio = (float)framebuffer.buffer_width / (float)framebuffer.buffer_height;
                 Matrix4x4 projection_matrix = Matrix4x4::PerspectiveProjectionMatrix(PI/3, aspect_ratio, 0.1, 100);
                 t.MapVerts(projection_matrix);
@@ -220,10 +218,7 @@ int main(){
             }
 
             // Fragment Pass here
-            int i = 0;
             for(Triangle t : rendered_triangles){
-                i++;
-
                 if(obj3d.render_type == RenderType::TEXTURED || obj3d.render_type == RenderType::TEXTURED_WIREFRAME){
                     draw.DrawFilledTriangle(t, obj3d, light_vec, camera.position);
                 }

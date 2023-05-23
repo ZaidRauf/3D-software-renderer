@@ -59,29 +59,22 @@ void Drawing::DrawFilledTriangle(const Triangle &t, const Object3D &obj3d, const
     Vector4 v1 = t.b;
     Vector4 v2 = t.c;
 
-    Vector2 uv0 = t.uv_a;
-    Vector2 uv1 = t.uv_b;
-    Vector2 uv2 = t.uv_c;
-
     Triangle::VertexInterpolants vert_int_0 = t.vert_interp_a;
     Triangle::VertexInterpolants vert_int_1 = t.vert_interp_b;
     Triangle::VertexInterpolants vert_int_2 = t.vert_interp_c;
 
     if(v0.y > v1.y){
         std::swap(v0, v1);
-        std::swap(uv0, uv1);
         std::swap(vert_int_0, vert_int_1);
     }
 
     if(v1.y > v2.y){
         std::swap(v1, v2);
-        std::swap(uv1, uv2);
         std::swap(vert_int_1, vert_int_2);
     }
 
     if(v0.y > v1.y){
         std::swap(v0, v1);
-        std::swap(uv0, uv1);
         std::swap(vert_int_0, vert_int_1);
     }
 
