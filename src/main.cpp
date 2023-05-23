@@ -22,7 +22,6 @@
 
 GameState gamestate = GameState();
 Camera camera({0,0,-5}, {0, 0, 0}, {0,1,0});
-// float rot = 0.0;
 
 // TODO: Move game logic into it's own file
 void exit_callback(){
@@ -83,7 +82,6 @@ void camera_rotate_down_big() {
 
 
 int main(){
-    // auto o = OBJLoader("./assets/models/low_poly_bunny.obj");
     FrameBuffer framebuffer = FrameBuffer(100);
     Drawing draw = Drawing(framebuffer);
     Screen screen = Screen(framebuffer, true, 6); // Use scale parameter instead of explicit size to maintain aspect ratio
@@ -146,14 +144,11 @@ int main(){
                 world_matrix = Matrix4x4::Scale(obj3d.scale.x, obj3d.scale.y, obj3d.scale.z) * world_matrix;
 
                 // Seperate from world matrix as we use to rotate face and vertex normals
-                Matrix4x4 rotation_matrix = Matrix4x4::Identity();
-
-                rotation_matrix = Matrix4x4::XRotationMatrix(obj3d.rotation.x) * rotation_matrix;
+                Matrix4x4 rotation_matrix = Matrix4x4::XRotationMatrix(obj3d.rotation.x);
                 rotation_matrix = Matrix4x4::YRotationMatrix(obj3d.rotation.y) * rotation_matrix;
                 rotation_matrix = Matrix4x4::ZRotationMatrix(obj3d.rotation.z) * rotation_matrix;
 
                 world_matrix = rotation_matrix * world_matrix;
-
                 world_matrix = Matrix4x4::Translation(obj3d.position.x, obj3d.position.y, obj3d.position.z) * world_matrix;
 
                 t.MapVerts(world_matrix);
@@ -167,9 +162,6 @@ int main(){
                 }
 
                 t.TransformInterpolants(rotation_matrix, world_matrix);
-                t.vert_interp_a.vertex_color = t.a;
-                t.vert_interp_b.vertex_color = t.b;
-                t.vert_interp_c.vertex_color = t.c;
 
                 //Flat Lighting Pass
                 if(obj3d.light_type == LightingType::FLAT_LIGHTING){

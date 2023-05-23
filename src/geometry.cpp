@@ -39,10 +39,6 @@ Triangle::Triangle(const Face &f, const Mesh &m){
     vert_interp_b.vertex_position = m.vertices[f.b];
     vert_interp_c.vertex_position = m.vertices[f.c];
 
-    vert_interp_a.vertex_color = Vector3(255, 0, 0);
-    vert_interp_b.vertex_color = Vector3(0, 255, 0);
-    vert_interp_c.vertex_color = Vector3(0, 0, 255);
-
     vert_interp_a.vertex_uv = m.uv_coords[f.uv_a];
     vert_interp_b.vertex_uv = m.uv_coords[f.uv_b];
     vert_interp_c.vertex_uv = m.uv_coords[f.uv_c];
@@ -68,18 +64,16 @@ void Triangle::MapVerts(const Matrix4x4 &m){
 
 Triangle::VertexInterpolants::VertexInterpolants(){
     vertex_position = Vector3();
-    vertex_color = Vector3();
     vertex_normal = Vector3();
     vertex_uv = Vector2();
 }
 
-Triangle::VertexInterpolants::VertexInterpolants(Vector3 pos, Vector3 color, Vector3 normal, Vector2 uv) : vertex_position(pos), vertex_color(color), vertex_normal(normal), vertex_uv(uv){}
+Triangle::VertexInterpolants::VertexInterpolants(Vector3 pos, Vector3 normal, Vector2 uv) : vertex_position(pos), vertex_normal(normal), vertex_uv(uv){}
 
 Triangle::VertexInterpolants::~VertexInterpolants(){}
 
 Triangle::VertexInterpolants Triangle::VertexInterpolants::operator=(const VertexInterpolants &other){
     this->vertex_position = other.vertex_position;
-    this->vertex_color = other.vertex_color;
     this->vertex_normal = other.vertex_normal;
     this->vertex_uv = other.vertex_uv;
 
@@ -89,7 +83,6 @@ Triangle::VertexInterpolants Triangle::VertexInterpolants::operator=(const Verte
 VertexInterpolants operator*(const float &scalar, const VertexInterpolants &interp){
     return VertexInterpolants {
     scalar * interp.vertex_position,
-    scalar * interp.vertex_color,
     scalar * interp.vertex_normal,
     scalar * interp.vertex_uv};
 }
@@ -97,7 +90,6 @@ VertexInterpolants operator*(const float &scalar, const VertexInterpolants &inte
 VertexInterpolants operator-(const VertexInterpolants &interp1, const VertexInterpolants &interp2){
     return VertexInterpolants {
     interp1.vertex_position - interp2.vertex_position,
-    interp1.vertex_color - interp2.vertex_color,
     interp1.vertex_normal - interp2.vertex_normal,
     interp1.vertex_uv - interp2.vertex_uv};
 }
@@ -105,7 +97,6 @@ VertexInterpolants operator-(const VertexInterpolants &interp1, const VertexInte
 VertexInterpolants operator+(const VertexInterpolants &interp1, const VertexInterpolants &interp2){
     return VertexInterpolants {
     interp1.vertex_position + interp2.vertex_position,
-    interp1.vertex_color + interp2.vertex_color,
     interp1.vertex_normal + interp2.vertex_normal,
     interp1.vertex_uv + interp2.vertex_uv};
 }

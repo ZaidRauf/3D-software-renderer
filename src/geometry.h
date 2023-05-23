@@ -59,10 +59,9 @@ class Triangle{
     public:
         struct VertexInterpolants {
             VertexInterpolants();
-            VertexInterpolants(Vector3 pos, Vector3 color, Vector3 normal, Vector2 uv);
+            VertexInterpolants(Vector3 pos, Vector3 normal, Vector2 uv);
             ~VertexInterpolants();
             Vector3 vertex_position;
-            Vector3 vertex_color;
             Vector3 vertex_normal;
             Vector2 vertex_uv;
             VertexInterpolants operator=(const VertexInterpolants &other);
