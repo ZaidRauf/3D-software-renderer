@@ -35,6 +35,7 @@ struct Object3D {
     ~Object3D();
     int obj_id;
     bool object_enabled;
+    bool backface_culling_enabled;
     bool perspective_correct;
     const Mesh &m;
     const Texture &t;

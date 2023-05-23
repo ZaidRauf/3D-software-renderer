@@ -3,6 +3,7 @@
 
 Object3D::Object3D(const Mesh &mesh, const Texture &tex) : m(mesh), t(tex){
     object_enabled = true;
+    backface_culling_enabled = true;
     perspective_correct = true;
     light_type = LightingType::PHONG_SHADING;
     render_type = RenderType::TEXTURED;
@@ -19,6 +20,7 @@ Object3D::Object3D(const Object3D &other) : m(other.m), t(other.t), light_type(o
     tex_params = other.tex_params;
     scale = other.scale;
     obj_id = other.obj_id;
+    backface_culling_enabled = other.backface_culling_enabled;
 }
 
 Object3D::~Object3D(){}

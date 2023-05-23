@@ -156,7 +156,7 @@ int main(){
                 Matrix4x4 view_matrix = Matrix4x4::ViewMatrix(camera.position, camera.target, camera.up);
                 t.MapVerts(view_matrix);
 
-                if(gamestate.backface_culling_enabled && cull::should_backface_cull(t.a, t.b, t.c, {0, 0, 0})){
+                if(obj3d.backface_culling_enabled && gamestate.backface_culling_enabled && cull::should_backface_cull(t.a, t.b, t.c, {0, 0, 0})){
                     continue;
                 }
 
