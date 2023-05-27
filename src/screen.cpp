@@ -23,7 +23,7 @@ Screen::Screen(FrameBuffer &fb, bool setFrameBufferMaxSize, int render_scale_fac
             SDL_WINDOWPOS_CENTERED,
             max_width,
             max_height,
-            SDL_WINDOW_BORDERLESS);
+            SDL_WINDOW_FULLSCREEN);
 
     if(!window){
         init_successful = false;
@@ -32,10 +32,6 @@ Screen::Screen(FrameBuffer &fb, bool setFrameBufferMaxSize, int render_scale_fac
     renderer = SDL_CreateRenderer(window, -1, 0x0);
     
     if(!renderer){
-        init_successful = false;
-    }
-
-    if(SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN) != 0){
         init_successful = false;
     }
 
