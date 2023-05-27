@@ -12,9 +12,11 @@
 #include <cmath>
 
 enum SceneSelection {
-    TestScene,
     Dolphin,
-    SCENE_COUNT = 2
+    Crate,
+    PerspCorrect,
+    Spheres,
+    SCENE_COUNT = 4
 };
 
 class Scene {
@@ -25,6 +27,7 @@ class Scene {
         const std::vector<std::unique_ptr<Light>>& get_light_vec_ref() const;
         void perform_frame_update(float delta_time);
         void next_scene();
+        Vector3 get_init_camera_pos();
 
     private:
         Vector3 init_camera_pos;

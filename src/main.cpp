@@ -21,8 +21,8 @@
 #include "scene.h"
 
 GameState gamestate = GameState();
-Camera camera({0,0,-5}, {0, 0, 0}, {0,1,0});
-Scene scene = Scene(SceneSelection::TestScene);
+Scene scene = Scene(SceneSelection::Dolphin);
+Camera camera(scene.get_init_camera_pos(), {0, 0, 0}, {0,1,0});
 
 // TODO: Move game logic into it's own file
 void exit_callback(){
@@ -83,13 +83,13 @@ void camera_rotate_down_big() {
 
 void next_scene() {
     scene.next_scene();
+    camera = {scene.get_init_camera_pos(), {0, 0, 0}, {0, 1, 0}};
 }
-
 
 int main(){
     FrameBuffer framebuffer = FrameBuffer(100);
     Drawing draw = Drawing(framebuffer);
-    Screen screen = Screen(framebuffer, true, 6); // Use scale parameter instead of explicit size to maintain aspect ratio
+    Screen screen = Screen(framebuffer, true, 3); // Use scale parameter instead of explicit size to maintain aspect ratio
     InputHandler inputhandler = InputHandler();
 
     int width = framebuffer.buffer_width;

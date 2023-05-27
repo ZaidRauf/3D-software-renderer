@@ -23,7 +23,7 @@ void Drawing::DrawLine(const Pixel &start, const Pixel &end, const uint32_t colo
     // Calculate the lengths of between start and end along x and y axis
     // 
     //   /| 
-    //  / | <--- delta_x
+    //  / | <--- delta_y
     // /  | 
     // ---- 
     //  ^ delta_x
