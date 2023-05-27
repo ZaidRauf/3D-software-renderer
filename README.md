@@ -4,6 +4,17 @@ A Software Rasterizer/Renderer written in C++ with SDL2.
 ![Demo Image](./img/dolphin.png)
 *Low poly dolphin I modelled. It is rendered with a metal texture using Phong shading and Phong lighting*
 
+## Demo Video
+[Demo Video](https://github.com/ZaidRauf/3D-software-renderer/assets/41550770/10decaf7-7a25-4eb5-8dea-82c707e5ca0f)
+
+## Demo Video Explanation
+The demo video above show cases the demos included with the 3D renderer. Each one is highlighting a different feature. Please note the demo is recorded at a lower framerate which leads to a choppier video, the application itself runs pretty smoothly.
+
+1. The first demo depicts a metal dolphin, and is meant to showcase the overall 3D rendering, texturing, and lighting ability of the renderer.
+2. The second demo is similar to the first except with a simpler mesh.
+3. The third demo showcases the perspective correct UV mapping that this render does (But it can also support affine mapping as an artistic choice).
+4. The fourth demo showcases the differences between flat shading and phong shading to light a mesh and how this renderer supports both modes.
+
 ## Features
 - Uses a software rasterization (No 3D libraries used!) to render 3D objects on to the screen.
 - Implements the phong shading and lighting model to light up objects.
