@@ -12,15 +12,16 @@
 #include <cmath>
 
 enum SceneSelection {
-    TestScene
+    TestScene,
+    MetalSphere
 };
 
 class Scene {
     public:
         Scene(SceneSelection select);
         ~Scene();
-        const std::vector<Object3D>& get_obj_list_ref();
-        const std::vector<std::unique_ptr<Light>>& get_light_vec_ref();
+        const std::vector<Object3D>& get_obj_list_ref() const;
+        const std::vector<std::unique_ptr<Light>>& get_light_vec_ref() const;
         void perform_frame_update(float delta_time);
 
     private:

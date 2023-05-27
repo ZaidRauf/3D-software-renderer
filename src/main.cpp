@@ -139,8 +139,7 @@ int main(){
                 Triangle t{f, mesh};
                     
                 // Vertices Are Transformed in World Spaace
-                Matrix4x4 world_matrix = Matrix4x4::Identity();
-                world_matrix = Matrix4x4::Scale(obj3d.scale.x, obj3d.scale.y, obj3d.scale.z) * world_matrix;
+                Matrix4x4 world_matrix = Matrix4x4::Scale(obj3d.scale.x, obj3d.scale.y, obj3d.scale.z);
 
                 // Seperate from world matrix as we use to rotate face and vertex normals
                 Matrix4x4 rotation_matrix = Matrix4x4::XRotationMatrix(obj3d.rotation.x);

@@ -87,10 +87,10 @@ void Scene::perform_frame_update(float delta_time){
     frame_update_func(delta_time);
 }
 
-const std::vector<Object3D>& Scene::get_obj_list_ref(){
+const std::vector<Object3D>& Scene::get_obj_list_ref() const{
     return obj_list;
 }
 
-const std::vector<std::unique_ptr<Light>>& Scene::get_light_vec_ref(){
+const std::vector<std::unique_ptr<Light>>& Scene::get_light_vec_ref() const{
     return light_vec;
 }
