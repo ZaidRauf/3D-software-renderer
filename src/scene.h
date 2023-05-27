@@ -13,7 +13,7 @@
 
 enum SceneSelection {
     TestScene,
-    MetalSphere,
+    Dolphin,
     SCENE_COUNT = 2
 };
 
