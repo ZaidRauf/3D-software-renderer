@@ -13,7 +13,8 @@
 
 enum SceneSelection {
     TestScene,
-    MetalSphere
+    MetalSphere,
+    SCENE_COUNT = 2
 };
 
 class Scene {
@@ -23,8 +24,10 @@ class Scene {
         const std::vector<Object3D>& get_obj_list_ref() const;
         const std::vector<std::unique_ptr<Light>>& get_light_vec_ref() const;
         void perform_frame_update(float delta_time);
+        void next_scene();
 
     private:
+        Vector3 init_camera_pos;
         SceneSelection selection;
         std::map<std::string, Mesh> mesh_map;
         std::map<std::string, Texture> tex_map;

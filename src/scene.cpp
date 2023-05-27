@@ -15,6 +15,7 @@ Scene::~Scene(){
     obj_list.clear();
     tex_map.clear();
     mesh_map.clear();
+    light_vec.clear();
 }
 
 void Scene::load_assets(){
@@ -93,4 +94,24 @@ const std::vector<Object3D>& Scene::get_obj_list_ref() const{
 
 const std::vector<std::unique_ptr<Light>>& Scene::get_light_vec_ref() const{
     return light_vec;
+}
+
+void Scene::next_scene(){
+    // Remove all references to textures and models
+    while(!obj_list.empty()){
+        obj_list.pop_back();
+    }
+
+    obj_list.clear();
+    tex_map.clear();
+    mesh_map.clear();
+    light_vec.clear();
+
+    auto scene_num = (selection + 1) % SceneSelection::SCENE_COUNT;
+    selection = static_cast<SceneSelection>(scene_num);
+
+    frame_update_func = [=](float delta_time) {};
+
+    load_assets();
+    init_scene_objects();
 }

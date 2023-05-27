@@ -22,6 +22,7 @@
 
 GameState gamestate = GameState();
 Camera camera({0,0,-5}, {0, 0, 0}, {0,1,0});
+Scene scene = Scene(SceneSelection::TestScene);
 
 // TODO: Move game logic into it's own file
 void exit_callback(){
@@ -80,6 +81,10 @@ void camera_rotate_down_big() {
     camera.camera_rotate_down_big();
 }
 
+void next_scene() {
+    scene.next_scene();
+}
+
 
 int main(){
     FrameBuffer framebuffer = FrameBuffer(100);
@@ -108,12 +113,13 @@ int main(){
     inputhandler.RegisterCallback(SDLK_e, camera_rotate_right_big);
     inputhandler.RegisterCallback(SDLK_r, camera_rotate_up_big);
     inputhandler.RegisterCallback(SDLK_f, camera_rotate_down_big);
+    inputhandler.RegisterCallback(SDLK_SPACE, next_scene);
     inputhandler.RegisterMouseMoveCallback(InputHandler::MouseMove::MOVE_DOWN, camera_rotate_up);
     inputhandler.RegisterMouseMoveCallback(InputHandler::MouseMove::MOVE_UP, camera_rotate_down);
     inputhandler.RegisterMouseMoveCallback(InputHandler::MouseMove::MOVE_RIGHT, camera_rotate_right);
     inputhandler.RegisterMouseMoveCallback(InputHandler::MouseMove::MOVE_LEFT, camera_rotate_left);
 
-    Scene scene = Scene(SceneSelection::TestScene);
+    // Scene scene = Scene(SceneSelection::TestScene);
     const std::vector<Object3D> &obj_list = scene.get_obj_list_ref();
     const std::vector<std::unique_ptr<Light>> &light_vec = scene.get_light_vec_ref();
 
