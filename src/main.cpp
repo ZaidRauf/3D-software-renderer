@@ -151,13 +151,14 @@ int main(){
 
                 t.MapVerts(world_matrix);
 
+                // If we do culling after the ViewMatrix trasnform camera position is now at the origin, since we are doing before we can use camera position directly
+                if(obj3d.backface_culling_enabled && gamestate.backface_culling_enabled && cull::should_backface_cull(t.a, t.b, t.c, camera.position)){
+                    continue;
+                }
+
                 // Add View Matrix support
                 Matrix4x4 view_matrix = Matrix4x4::ViewMatrix(camera.position, camera.target, camera.up);
                 t.MapVerts(view_matrix);
-
-                if(obj3d.backface_culling_enabled && gamestate.backface_culling_enabled && cull::should_backface_cull(t.a, t.b, t.c, {0, 0, 0})){
-                    continue;
-                }
 
                 t.TransformInterpolants(rotation_matrix, world_matrix);
 
