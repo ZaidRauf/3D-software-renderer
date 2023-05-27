@@ -1,13 +1,11 @@
 # 3D Software Renderer
 A Software Rasterizer/Renderer written in C++ with SDL2.
 
-![Demo Image](./img/bunny.png)
-
-## To Build (Linux/MacOS)
-Make sure you have installed SDL2. Run `make` in the top level folder and run the code with `./3D_renderer` from the terminal. 
+![Demo Image](./img/dolphin.png)
+*Low poly dolphin I modelled. It is rendered with a metal texture using Phong shading and Phong lighting*
 
 ## Features
-- Uses a software rasterization (No 3D libraries used!) to draw 3D objects on to the screen.
+- Uses a software rasterization (No 3D libraries used!) to render 3D objects on to the screen.
 - Implements the phong shading and lighting model to light up objects.
 - Performs UV mapping to texture objects
 - Reads OBJ and TGA files for models and textures respectively.
@@ -17,6 +15,7 @@ Make sure you have installed SDL2. Run `make` in the top level folder and run th
 - Can move with W, A, S, D to move forward, strafe left, strafe right, and move back respectively
 - Can look by moving the mouse around
 - Can alternatively look around with keys Q, E, R, F to look left, look right, look up, and look down respectively
+- Press Space to cycle through the available demo scenes
 - Clips vertices of the object outside of camera view.
 - Performs back face culling to avoid drawing triangles not pointed towards the camera (Toggle with C)
 - Uses a Z-Buffer to manage pixel draw priority.
@@ -27,6 +26,9 @@ I really wanted to develop a deeper understanding of how the real time 3D graphi
 I also used this as an opportunity to learn some more modern C++ features such as smart pointers and making heavy use of the standard template library when appropriate.
 
 Finally I also learned about the SDL2 library and how it can be used for both input and displaying results as the output.
+
+## To Build (Linux/MacOS)
+Make sure you have installed SDL2. Run `make` in the top level folder and run the code with `./3D_renderer` from the terminal. 
 
 ## References I Used
 - [Pikuma: 3D Computer Graphics Programming](https://pikuma.com/courses/learn-3d-computer-graphics-programming) by Gustavo Pezzi - An excellent course that goes through teaching the theory and practice of building a software rasterizer
