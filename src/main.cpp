@@ -89,7 +89,7 @@ void next_scene() {
 int main(){
     FrameBuffer framebuffer = FrameBuffer(100);
     Drawing draw = Drawing(framebuffer);
-    Screen screen = Screen(framebuffer, true, 3); // Use scale parameter instead of explicit size to maintain aspect ratio
+    Screen screen = Screen(framebuffer, true, 6); // Use scale parameter instead of explicit size to maintain aspect ratio
     InputHandler inputhandler = InputHandler();
 
     int width = framebuffer.buffer_width;
