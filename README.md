@@ -45,3 +45,4 @@ Make sure you have installed SDL2. Run `make` in the top level folder and run th
 ## References I Used
 - [Pikuma: 3D Computer Graphics Programming](https://pikuma.com/courses/learn-3d-computer-graphics-programming) by Gustavo Pezzi - An excellent course that goes through teaching the theory and practice of building a software rasterizer
 - [Scratchapixel](https://www.scratchapixel.com/index.html) - Several articles about the math and implementations of various Computer Graphics algorithms
+- [tinyrenderer](https://github.com/ssloy/tinyrenderer) - Got the idea of using TGA for textures from here, although didn't look at their code to read TGA, wrote that by looking at the spec info myself. Looked at how their renderer worked in comparision to mine as well.
