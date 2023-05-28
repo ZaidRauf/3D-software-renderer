@@ -13,6 +13,7 @@ The demo video above show cases the demos included with the 3D renderer. Each on
 2. The second demo is similar to the first except with a simpler mesh.
 3. The third demo showcases the perspective correct UV mapping that this render does (But it can also support affine mapping as an artistic choice).
 4. The fourth demo showcases the differences between flat shading and phong shading to light a mesh and how this renderer supports both modes.
+5. The fifth demo shows the first scene again except it shows off some of the first person camera movement.
 
 ## Features
 - Uses a software rasterization (No 3D libraries used!) to render 3D objects on to the screen.
