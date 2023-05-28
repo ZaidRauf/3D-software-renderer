@@ -5,9 +5,8 @@ A Software Rasterizer/Renderer written in C++ with SDL2.
 *Low poly dolphin I modelled. It is rendered with a metal texture using Phong shading and Phong lighting*
 
 ## Demo Video
-[Demo Video](https://github.com/ZaidRauf/3D-software-renderer/assets/41550770/10decaf7-7a25-4eb5-8dea-82c707e5ca0f)
+[renderer_demo.webm](https://github.com/ZaidRauf/3D-software-renderer/assets/41550770/0cd01cde-1c4f-4f9c-ac6f-fa531d316945)
 
-## Demo Video Explanation
 The demo video above show cases the demos included with the 3D renderer. Each one is highlighting a different feature. Please note the demo is recorded at a lower framerate which leads to a choppier video, the application itself runs pretty smoothly.
 
 1. The first demo depicts a metal dolphin, and is meant to showcase the overall 3D rendering, texturing, and lighting ability of the renderer.
